@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.8.1 · 2026-11-03
+
+- The unified v3 app icon replaces the old formcompiler icon in `assets/`, with a 256 px copy in `assets/app-icon/` and the family icons in `.github/assets/family/`
+- `.github/CODEOWNERS` adds @gbarnai beside @nodemode-ai on every rule
+
 ## v0.8.0 · 2026-11-03
 
 - Publishing to the download store at https://dl.formai.studio, the `<app>-updates` feeds, the catalogue signature and yanks move to a private companion pipeline. feed.yml, yank.yml and docs/GO_PUBLIC.md are removed; the scripts they ran stay here and the pipeline runs them from this repository
