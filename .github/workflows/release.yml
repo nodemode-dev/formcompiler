@@ -244,7 +244,7 @@ jobs:
           push: true
 
   assemble:
-    name: draft release
+    name: release files
     needs: [gate, desktop, extras, image]
     if: >-
       always() && needs.gate.result == 'success'
@@ -253,36 +253,9 @@ jobs:
       && contains(fromJSON('["success","skipped"]'), needs.image.result)
     runs-on: ubuntu-24.04
     timeout-minutes: 30
-    environment: release
     permissions:
       contents: read
     steps:
-      - name: Release credential
-        id: credential
-        env:
-          REPOSITORY: ${{ fromJSON(needs.gate.outputs.config).repository }}
-          HAS_APP: ${{ secrets.FORMCOMPILER_APP_ID != '' && secrets.FORMCOMPILER_APP_PRIVATE_KEY != '' }}
-          HAS_TOKEN: ${{ secrets.FORMCOMPILER_WRITE_TOKEN != '' }}
-        run: |
-          echo "name=${REPOSITORY#*/}" >> "$GITHUB_OUTPUT"
-          if [ "$HAS_APP" = "true" ]; then
-            echo "shape=app" >> "$GITHUB_OUTPUT"
-          elif [ "$HAS_TOKEN" = "true" ]; then
-            echo "shape=token" >> "$GITHUB_OUTPUT"
-          else
-            echo "::error::no credential can write releases on $REPOSITORY: set FORMCOMPILER_APP_ID and FORMCOMPILER_APP_PRIVATE_KEY (a GitHub App) or FORMCOMPILER_WRITE_TOKEN in the release environment; see docs/ACCOUNTS.md"
-            exit 1
-          fi
-      - name: App token for the app repository
-        id: app-token
-        if: steps.credential.outputs.shape == 'app'
-        uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
-        with:
-          client-id: ${{ secrets.FORMCOMPILER_APP_ID }}
-          private-key: ${{ secrets.FORMCOMPILER_APP_PRIVATE_KEY }}
-          owner: nodemode-dev
-          repositories: ${{ steps.credential.outputs.name }}
-          permission-contents: write
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
@@ -308,6 +281,7 @@ jobs:
           ASSETS: ${{ needs.gate.outputs.assets }}
           FORMCOMPILER_VERSION: ${{ needs.gate.outputs.version }}
           FORMCOMPILER_TAG: ${{ needs.gate.outputs.tag }}
+          FORMCOMPILER_REPOSITORY: ${{ fromJSON(needs.gate.outputs.config).repository }}
         run: DIST="$GITHUB_WORKSPACE/dist" bash -eo pipefail -c "$ASSETS"
       - name: App manifest and skills
         env:
@@ -341,9 +315,58 @@ jobs:
           NOTES: ${{ needs.gate.outputs.notes }}
         run: >-
           python3 -I scripts/notes.py --app-dir=app --version="$VERSION" --repo="$SOURCE"
-          --sha="$SHA" --branch="$BRANCH" --command="$NOTES" --out="$RUNNER_TEMP/release-notes.md"
+          --sha="$SHA" --branch="$BRANCH" --command="$NOTES" --out=release-notes.md
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: formcompiler-release-${{ inputs.app }}
+          path: |
+            dist/*
+            release-notes.md
+          if-no-files-found: error
+          overwrite: true
+
+  publish:
+    name: draft release
+    needs: [gate, assemble]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    environment: release
+    permissions:
+      contents: read
+      id-token: write
+      attestations: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Release credential
+        id: credential
+        env:
+          REPOSITORY: ${{ fromJSON(needs.gate.outputs.config).repository }}
+          HAS_APP: ${{ secrets.FORMCOMPILER_APP_ID != '' && secrets.FORMCOMPILER_APP_PRIVATE_KEY != '' }}
+          HAS_TOKEN: ${{ secrets.FORMCOMPILER_WRITE_TOKEN != '' }}
+        run: bash scripts/release_credential.sh
+      - name: App token for the app repository
+        id: app-token
+        if: steps.credential.outputs.shape == 'app'
+        uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
+        with:
+          client-id: ${{ secrets.FORMCOMPILER_APP_ID }}
+          private-key: ${{ secrets.FORMCOMPILER_APP_PRIVATE_KEY }}
+          owner: nodemode-dev
+          repositories: ${{ steps.credential.outputs.name }}
+          permission-contents: write
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: formcompiler-release-${{ inputs.app }}
+          path: release
+      - name: Attest the provenance of SHA256SUMS.txt
+        if: vars.FORMCOMPILER_ATTEST != 'off'
+        uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
+        with:
+          subject-path: release/dist/SHA256SUMS.txt
       - name: Create or refresh the draft on the app repository
-        working-directory: dist
+        working-directory: release/dist
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token || secrets.FORMCOMPILER_WRITE_TOKEN }}
           GH_REPO: ${{ fromJSON(needs.gate.outputs.config).repository }}
@@ -354,16 +377,27 @@ jobs:
           PRERELEASE: ${{ needs.gate.outputs.prerelease }}
         run: |
           name="$TITLE $VERSION"
-          notes="$RUNNER_TEMP/release-notes.md"
+          notes="$GITHUB_WORKSPACE/release/release-notes.md"
+          still_a_draft() {
+            if [ "$(gh release view "$TAG" --json isDraft --jq .isDraft)" != "true" ]; then
+              echo "::error::$GH_REPO's release $TAG is published (someone published it while this run was working); nothing was changed, bump the version to release again"
+              exit 1
+            fi
+          }
           if draft="$(gh release view "$TAG" --json isDraft --jq .isDraft 2>/dev/null)"; then
             if [ "$draft" != "true" ]; then
               echo "::error::$GH_REPO already has a published release $TAG; bump the version to release again"
               exit 1
             fi
-            gh release view "$TAG" --json assets --jq '.assets[].name' | while read -r asset; do
+            gh release view "$TAG" --json assets --jq '.assets[].name' > "$RUNNER_TEMP/old-assets.txt"
+            while IFS= read -r asset; do
+              [ -n "$asset" ] || continue
+              still_a_draft
               gh release delete-asset "$TAG" "$asset" --yes
-            done
+            done < "$RUNNER_TEMP/old-assets.txt"
+            still_a_draft
             gh release edit "$TAG" --draft --title "$name" --target "$SHA" --prerelease="$PRERELEASE" --notes-file "$notes"
+            still_a_draft
             gh release upload "$TAG" --clobber -- *
           else
             pre=()
@@ -378,11 +412,15 @@ jobs:
           APP: ${{ inputs.app }}
           VERSION: ${{ needs.gate.outputs.version }}
         run: |
-          python3 -I scripts/versions.py older-drafts --app "$APP" --version "$VERSION" --repo "$GH_REPO" > "$RUNNER_TEMP/older-drafts.txt"
-          while IFS= read -r old; do
-            [ -n "$old" ] || continue
-            gh release delete "$old" --yes
-            echo "- superseded and deleted the draft \`$old\` on $GH_REPO" >> "$GITHUB_STEP_SUMMARY"
+          python3 -I scripts/versions.py older-drafts --app "$APP" --version "$VERSION" --repo "$GH_REPO" --token-env GH_TOKEN > "$RUNNER_TEMP/older-drafts.txt"
+          while IFS=$'\t' read -r id old; do
+            [ -n "$id" ] || continue
+            if [ "$(gh api "repos/$GH_REPO/releases/$id" --jq .draft)" != "true" ]; then
+              echo "::warning::$old (release $id) on $GH_REPO is no longer a draft, so it was left alone"
+              continue
+            fi
+            gh api -X DELETE "repos/$GH_REPO/releases/$id"
+            echo "- superseded and deleted the draft \`$old\` (release $id) on $GH_REPO" >> "$GITHUB_STEP_SUMMARY"
           done < "$RUNNER_TEMP/older-drafts.txt"
       - name: Publish (a beta, or registry release is publish)
         if: needs.gate.outputs.prerelease == 'true' || fromJSON(needs.gate.outputs.config).release == 'publish'

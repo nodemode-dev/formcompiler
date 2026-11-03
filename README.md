@@ -24,7 +24,7 @@ Each app is described by one registry file, `apps/<app>.json`: how to read its v
 - **No secrets in the apps** formcompiler watches the app repositories itself, so no app holds a token for it
 - **Every hour, or now** `watch.yml` runs on a schedule (`17 * * * *`, UTC) and from the Run workflow button; with nothing new it makes one or two API calls per app
 - **Checked before anything builds** the branch or tag name, the commit is on main, the version is above the app's highest published one in its channel (a stable above the highest stable, a beta above everything), the version file at that commit agrees, and the app's own check workflows concluded `success` on that commit
-- **Releases live with the app** every release is on the app's repository, tagged `vX.Y.Z` at the gated commit, with its installers, `SHA256SUMS.txt`, `form-app.json` and, for a Tauri-updater app, `latest.json`; the one credential that writes there belongs to the `release` environment and reaches only the draft, supersede and publish steps, never a build
+- **Releases live with the app** every release is on the app's repository, tagged `vX.Y.Z` at the gated commit, with its installers, `SHA256SUMS.txt`, `form-app.json` and, for a Tauri-updater app, `latest.json`; the one credential that writes there belongs to the `release` environment and is held only by the `publish` job, which runs no app code: the files are assembled in a job without it
 - **Drafts, never surprises** every stable release of a `release: draft` app is a draft a maintainer publishes on the app's repository; a published release is never overwritten, a rebuilt draft is refreshed in place, a newer version replaces an older draft, and one release run per app runs at a time
 - **Betas publish themselves** a prerelease version is published as a GitHub prerelease once its builds pass, and lands in the catalogue's beta channel
 - **Public downloads** the files, the update feed and the signed catalogue are copied to the download store at https://dl.formai.studio by a private companion pipeline, and the catalogue points there, with the same sizes and SHA-256
@@ -32,6 +32,7 @@ Each app is described by one registry file, `apps/<app>.json`: how to read its v
 - **Signing in one place** the Apple Developer ID, notarization and Windows signing through Azure Artifact Signing are formcompiler secrets and variables; until they are set, macOS builds are signed ad hoc and Windows builds are unsigned
 - **One catalogue for the family** `releases.json` on main, mirrored to the `catalog` release as `apps.json` and, with the catalogue key, `apps.json.sig`, in FormPortal's `apps.schema.json` shape
 - **Skills and MCP in every release** each release carries `form-app.json` (what the app offers agents) and `<app>-skills-v<version>.zip` (its `.claude/skills`, byte-reproducible), and the catalogue carries both with their digests, so formskills and formMCP read released skills with no step in any app
+- **Provenance** the publish job attests `SHA256SUMS.txt` with `actions/attest-build-provenance` before the draft is made, so the publishing pipeline can prove a release on an app repository came from this workflow (`gh attestation verify SHA256SUMS.txt --repo nodemode-dev/formcompiler --signer-workflow nodemode-dev/formcompiler/.github/workflows/release.yml`) and then checks every file against the sums
 - **Pinned actions** every third-party action is pinned to a full commit SHA; actionlint is checksum-verified in the self-check
 
 ## How a release flows
@@ -51,9 +52,12 @@ app repo                                  formcompiler
                                               desktop: every platform (desktop-release.yml)
                                               extras: phone apps, tarballs, Flatpak, servers
                                               image: the container image, when listed
-                                              draft v1.96.5 on the app's repository, at that commit,
-                                                with SHA256SUMS.txt (the release environment's credential)
-                                              delete the app's older drafts there
+                                              release files: SHA256SUMS.txt, form-app.json, latest.json,
+                                                the notes (no credential; the app's own scripts run here)
+                                              publish job (release environment, formcompiler's checkout only):
+                                                attest SHA256SUMS.txt (provenance for the pipeline)
+                                                draft v1.96.5 on the app's repository, at that commit
+                                                delete the app's older drafts there
                                               a beta (1.97.0-beta.1): publish it as a prerelease
                                                 and tell the publishing pipeline (app, tag, repository)
                                             the publishing pipeline (private; a person publishes,
@@ -95,7 +99,7 @@ or, for an app whose registry entry sets `tag_trigger`, a tag on a commit alread
 git tag -a v1.96.5 -m "formvis 1.96.5" && git push origin v1.96.5
 ```
 
-The next watch run (within the hour, or **Actions, watch, Run workflow** here) starts the build. Review the draft on the app's own Releases page, then publish it: that is the approval, and it creates the `vX.Y.Z` tag at the gated commit (an app with `tag_trigger` already has it). A release asset is at most 2 GB, GitHub's limit; a file above it fails the draft.
+The next watch run (within the hour, or **Actions, watch, Run workflow** here) starts the build. Review the draft on the app's own Releases page, then publish it: that is the approval, and it creates the `vX.Y.Z` tag at the gated commit (an app with `tag_trigger` already has it; a `vX.Y.Z` tag that already points elsewhere refuses the release). A release asset is at most 2 GB, GitHub's limit; a file above it fails the draft.
 
 If a release run fails because of formcompiler or the runner rather than the app, open the run in Actions and use **Re-run failed jobs**, never **Re-run all jobs**: the platforms that already built keep their files, and only the failed ones build again. The watch never restarts a failed run by itself.
 
@@ -135,9 +139,9 @@ Secrets and variables live in this repository at repository level, except the on
 
 | Secret | Purpose |
 | --- | --- |
-| `FORMCOMPILER_APP_TOKEN` | Read access to the app repositories while they are private (contents and actions, read only): checkouts, branches, tags, checks and the published releases. It lists no draft, so the watch also skips a commit whose release run already succeeded |
-| `FORMCOMPILER_APP_ID`, `FORMCOMPILER_APP_PRIVATE_KEY` | In the `release` environment: a GitHub App installed on the nodemode-dev app repositories with Contents read and write. The draft release job mints a token for the one repository it releases on (`actions/create-github-app-token`), creates or refreshes the draft, deletes older drafts and publishes a beta. The App must be on the bypass list of the organisation ruleset that restricts `v*` tags |
-| `FORMCOMPILER_WRITE_TOKEN` | In the `release` environment: the fallback when the App is not set, a fine-grained token with Contents read and write on the app repositories; its user must be on the same bypass list. With neither set the draft release job fails and names docs/ACCOUNTS.md |
+| `FORMCOMPILER_APP_TOKEN` | Read access to the app repositories while they are private (contents and actions, read only): checkouts, branches, tags, checks and the published releases. It lists no draft (GitHub shows drafts only to write access), so the watch and the gate do not see a waiting draft: the watch skips a commit whose release run already succeeded instead, and "superseded by a newer draft" is only applied in the `publish` job, which deletes the app's older drafts |
+| `FORMCOMPILER_APP_ID`, `FORMCOMPILER_APP_PRIVATE_KEY` | In the `release` environment: a GitHub App installed on the nodemode-dev app repositories with Contents read and write. The `publish` job mints a token for the one repository it releases on (`actions/create-github-app-token`), creates or refreshes the draft, deletes older drafts and publishes a beta or a `release: publish` app. The App must be on the bypass list of the organisation ruleset that restricts `v*` tags |
+| `FORMCOMPILER_WRITE_TOKEN` | In the `release` environment: the fallback when the App is not set, a fine-grained token with Contents read and write on the app repositories; its user must be on the same bypass list. With neither set the `publish` job fails and names docs/ACCOUNTS.md |
 | `APPLE_CERTIFICATE`, `APPLE_CERTIFICATE_PASSWORD`, `APPLE_SIGNING_IDENTITY` | Developer ID signing of the macOS apps: the certificate is imported into a temporary build keychain before the build, so app scripts can sign their own engines w/ `APPLE_SIGNING_IDENTITY`, and every disk image is signed and notarized after the build |
 | `APPLE_ID`, `APPLE_PASSWORD`, `APPLE_TEAM_ID` | Notarization of the macOS apps and disk images |
 | `AZURE_CLIENT_ID`, `AZURE_CLIENT_SECRET`, `AZURE_TENANT_ID` | The sign-in formcompiler's Windows builds use for Azure Artifact Signing (role Artifact Signing Certificate Profile Signer on the signing account) |
@@ -149,6 +153,7 @@ Secrets and variables live in this repository at repository level, except the on
 | --- | --- |
 | `TAURI_UPDATER_PUBKEY` | The updater public key, written into each app's build when the private key is set |
 | `FORMCOMPILER_PUBLIC_BASE` | Where the download store is served, `https://dl.formai.studio`; the desktop builds write each app's updater endpoint from it |
+| `FORMCOMPILER_ATTEST` | Unset (the default) attests `SHA256SUMS.txt` in the publish job. `off` skips the attestation, only while this repository is private, since GitHub refuses attestations on a private repository without Enterprise; remove the variable once formcompiler is public, or the publishing pipeline cannot verify any release |
 | `MSIX_IDENTITY_NAME`, `MSIX_PUBLISHER`, `MSIX_PUBLISHER_DISPLAY_NAME` | formvis's Microsoft Store package |
 | `ARTIFACT_SIGNING_ENDPOINT`, `ARTIFACT_SIGNING_ACCOUNT`, `ARTIFACT_SIGNING_PROFILE` | The Azure Artifact Signing account's regional endpoint, account name and certificate profile; with them and the three `AZURE_` secrets set, every app whose registry says `"windows": "certificate"` is signed on Windows |
 
@@ -157,7 +162,7 @@ Secrets and variables live in this repository at repository level, except the on
 ```
 .github/workflows/
 ├── watch.yml             finds ready compile branches and tags and starts release.yml
-├── release.yml           gate, desktop, extras, image, the draft release on the app's repository
+├── release.yml           gate, desktop, extras, image, the release files, the draft on the app's repository
 ├── desktop-release.yml   the per-platform build (called by release.yml)
 └── self-check.yml        actionlint, the registry, the scripts, the text rules
 apps/                     one registry file per app
@@ -174,6 +179,7 @@ scripts/
 ├── agents.py             form-app.json v2 and the skills archive of a release
 ├── with_portal.py        app-plus-FormPortal downloads (registry with_portal)
 ├── release_assets.py     SHA256SUMS.txt and latest.json
+├── release_credential.sh which credential the publish job writes with
 ├── notes.py              release notes from the app's CHANGELOG
 ├── feed.py               an app's release by its tag, its update files, store URLs in latest.json
 ├── versions.py           semver ordering, channels, vX.Y.Z tags, an app repository's published and draft versions

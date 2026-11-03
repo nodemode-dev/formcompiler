@@ -71,6 +71,11 @@ def older_drafts(app, version, releases):
     return [tag_of(v) for v, _ in drafts(app, releases) if semver_key(v) < key and not (beta and channel(v) == STABLE)]
 
 
+def older_draft_ids(app, version, releases):
+    tags = set(older_drafts(app, version, releases))
+    return [(str(r.get("id", "")), tag_of(v)) for v, r in drafts(app, releases) if tag_of(v) in tags]
+
+
 def highest_stable(app, releases):
     published = [v for v, r in app_releases(app, releases) if not r.get("draft") and channel(v) == STABLE]
     return published[0] if published else ""
@@ -90,6 +95,7 @@ def main():
     old.add_argument("--app", required=True)
     old.add_argument("--version", required=True)
     old.add_argument("--repo", default="", help="the app's repository; default: the registry entry's")
+    old.add_argument("--token-env", default="", help="read the release list with this variable's token only (drafts need write access)")
     kind = sub.add_parser("channel")
     kind.add_argument("--version", required=True)
     args = parser.parse_args()
@@ -100,8 +106,8 @@ def main():
     import github_api as gh
     from registry import load
     repo = args.repo or load(args.app)["repository"]
-    for tag in older_drafts(args.app, args.version, gh.releases(repo)):
-        print(tag)
+    for release_id, tag in older_draft_ids(args.app, args.version, gh.releases(repo, token_env=args.token_env)):
+        print(f"{release_id}\t{tag}")
 
 
 if __name__ == "__main__":

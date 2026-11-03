@@ -59,6 +59,12 @@ def evaluate(entry, ref, sha, all_releases, active_titles, check_runs=True):
         what = "tag" if kind == TAG else "branch"
         return REFUSE, f"the {what} `{ref}` points at {sha[:9]}, which is not on {gh.MAIN}; release a commit already on {gh.MAIN}", version
     try:
+        existing = gh.tag_target(entry["repository"], tag)
+    except gh.ApiError as error:
+        return REFUSE, f"could not read the tag {tag} in {entry['repository']}: {error}", version
+    if existing and existing != sha:
+        return REFUSE, f"the tag {tag} already exists in {entry['repository']} at {existing[:9]}, not at {sha[:9]}; a release at this tag would be made at that commit, so move or delete the tag, or bump the version", version
+    try:
         actual = version_at(entry, sha)
     except gh.ApiError as error:
         return REFUSE, f"could not read the version at {sha[:9]}: {error}", version

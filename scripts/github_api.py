@@ -20,16 +20,18 @@ class ApiError(Exception):
         self.status = status
 
 
-def token(app_side=False):
+def token(app_side=False, token_env=""):
+    if token_env:
+        return os.environ.get(token_env, "").strip()
     if app_side and os.environ.get("FORMCOMPILER_APP_TOKEN", "").strip():
         return os.environ["FORMCOMPILER_APP_TOKEN"].strip()
     return os.environ.get("GH_TOKEN", "").strip() or os.environ.get("GITHUB_TOKEN", "").strip()
 
 
-def request(method, path, body=None, app_side=False, raw=False):
+def request(method, path, body=None, app_side=False, raw=False, token_env=""):
     url = path if path.startswith("http") else f"{API}{path}"
     headers = {"Accept": "application/vnd.github+json", "X-GitHub-Api-Version": "2022-11-28", "User-Agent": "formcompiler"}
-    secret = token(app_side)
+    secret = token(app_side, token_env)
     if secret:
         headers["Authorization"] = f"Bearer {secret}"
     data = None
@@ -53,11 +55,11 @@ def get(path, app_side=False):
     return request("GET", path, app_side=app_side)[0]
 
 
-def paged(path, key=None, app_side=False):
+def paged(path, key=None, app_side=False, token_env=""):
     url = path + ("&" if "?" in path else "?") + "per_page=100"
     items = []
     while url:
-        data, link = request("GET", url, app_side=app_side)
+        data, link = request("GET", url, app_side=app_side, token_env=token_env)
         items.extend(data[key] if key else data)
         found = re.search(r'<([^>]+)>;\s*rel="next"', link or "")
         url = found.group(1) if found else ""
@@ -89,6 +91,16 @@ def tag_commit(repo, sha, kind):
     return sha
 
 
+def tag_target(repo: str, name: str) -> str:
+    try:
+        ref = get(f"/repos/{repo}/git/ref/tags/{urllib.parse.quote(name)}", app_side=True)
+    except ApiError as error:
+        if error.status == 404:
+            return ""
+        raise
+    return tag_commit(repo, ref["object"]["sha"], ref["object"]["type"])
+
+
 def on_main(repo, sha):
     data = get(f"/repos/{repo}/compare/{MAIN}...{sha}", app_side=True)
     return data.get("status") in ("identical", "behind")
@@ -118,8 +130,8 @@ def checks_state(repo, sha, workflows):
     return states
 
 
-def releases(repo: str) -> list:
-    return paged(f"/repos/{repo}/releases", app_side=True)
+def releases(repo: str, token_env: str = "") -> list:
+    return paged(f"/repos/{repo}/releases", app_side=True, token_env=token_env)
 
 
 def release_by_tag(all_releases, tag):
@@ -150,9 +162,10 @@ def stopped_release_runs(repo):
     return titles
 
 
-def succeeded_release_runs(repo: str) -> set[str]:
-    runs = get(f"/repos/{repo}/actions/workflows/release.yml/runs?status=success&per_page=100")
-    return {run.get("display_title", "") for run in runs.get("workflow_runs", [])}
+def succeeded_release_runs(repo: str, since: str) -> set[str]:
+    created = urllib.parse.quote(f">={since}", safe="")
+    runs = get(f"/repos/{repo}/actions/workflows/release.yml/runs?status=success&created={created}&per_page=100")
+    return {run.get("display_title", "") for run in runs.get("workflow_runs", []) if run.get("created_at", "") >= since}
 
 
 def run_title(app, version, sha):

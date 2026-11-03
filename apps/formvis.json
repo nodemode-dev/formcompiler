@@ -73,7 +73,7 @@
       "artifacts": ["formvis-linux-riscv64.tar.gz", "formvis-web.tar.gz"]
     }
   ],
-  "assets": "python3 setup/package_desktop.py feed --tag \"formvis-v$FORMCOMPILER_VERSION\" --base-url \"https://github.com/nodemode-dev/formcompiler/releases/download/formvis-v$FORMCOMPILER_VERSION/\" --dir \"$DIST\"\npython3 setup/release_notes.py \"v$FORMCOMPILER_VERSION\" --out release-notes.md\npython3 setup/mcpb.py --out \"$DIST\"\npython3 setup/package_desktop.py sums --dir \"$DIST\"",
+  "assets": "python3 setup/package_desktop.py feed --tag \"$FORMCOMPILER_TAG\" --base-url \"https://github.com/$FORMCOMPILER_REPOSITORY/releases/download/$FORMCOMPILER_TAG/\" --dir \"$DIST\"\npython3 setup/release_notes.py \"v$FORMCOMPILER_VERSION\" --out release-notes.md\npython3 setup/mcpb.py --out \"$DIST\"\npython3 setup/package_desktop.py sums --dir \"$DIST\"",
   "notes": "cat release-notes.md",
   "updater": {"tauri": true, "tag_json": false, "files": ["*.AppImage.zsync"]},
   "signing": {"macos": "apple", "windows": "certificate"},

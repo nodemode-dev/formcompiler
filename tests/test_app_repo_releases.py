@@ -5,7 +5,9 @@ list, the assemble job writes there with a credential from the release environme
 the tag and the repository.
 """
 import json
+import os
 import re
+import subprocess
 import sys
 
 import pytest
@@ -18,6 +20,7 @@ import readiness
 import versions
 import watch
 from conftest import script
+from conftest import REPO, SCRIPTS
 from registry import all_entries, load
 from test_workflow_guards import WORKFLOWS, jobs
 
@@ -41,9 +44,9 @@ def gh_release(version, draft=False, repo="nodemode-dev/formvis"):
 def test_release_lists_are_read_with_the_app_side_token(monkeypatch):
     """The app repositories are read with FORMCOMPILER_APP_TOKEN, as their branches and tags already are."""
     seen = []
-    monkeypatch.setattr(gh, "paged", lambda path, key=None, app_side=False: seen.append((path, app_side)) or [])
+    monkeypatch.setattr(gh, "paged", lambda path, key=None, app_side=False, token_env="": seen.append((path, app_side, token_env)) or [])
     assert gh.releases("nodemode-dev/formtray") == []
-    assert seen == [("/repos/nodemode-dev/formtray/releases", True)]
+    assert seen == [("/repos/nodemode-dev/formtray/releases", True, "")]
 
 
 def test_the_gate_reads_the_app_repository_and_tags_v_version(monkeypatch):
@@ -71,13 +74,55 @@ def test_readiness_names_the_app_and_its_v_tag(monkeypatch):
     assert status == readiness.SKIP and "already drafted" in reason
 
 
-def test_older_drafts_cli_reads_the_registry_repository(monkeypatch, capsys):
+def test_older_drafts_cli_reads_the_registry_repository_and_prints_ids(monkeypatch, capsys):
     read = []
-    monkeypatch.setattr(gh, "releases", lambda repo: read.append(repo) or [{"tag_name": "v0.0.1", "draft": True}, {"tag_name": "v0.0.2", "draft": False}])
-    monkeypatch.setattr(sys, "argv", ["versions.py", "older-drafts", "--app", "formvis", "--version", "9.9.9"])
+    listed = [{"id": 41, "tag_name": "v0.0.1", "draft": True}, {"id": 42, "tag_name": "v0.0.2", "draft": False}, {"id": 43, "tag_name": "v0.0.3-beta.1", "draft": True}]
+    monkeypatch.setattr(gh, "releases", lambda repo, token_env="": read.append((repo, token_env)) or listed)
+    monkeypatch.setattr(sys, "argv", ["versions.py", "older-drafts", "--app", "formvis", "--version", "9.9.9", "--token-env", "GH_TOKEN"])
     versions.main()
-    assert read == [load("formvis")["repository"]]
-    assert capsys.readouterr().out == "v0.0.1\n"
+    assert read == [(load("formvis")["repository"], "GH_TOKEN")]
+    assert capsys.readouterr().out == "43\tv0.0.3-beta.1\n41\tv0.0.1\n"
+
+
+def test_drafts_are_listed_with_the_write_credential_only(monkeypatch):
+    """The read-only app token lists no draft, so the publish job must read with GH_TOKEN even when the other variable is set."""
+    monkeypatch.setenv("FORMCOMPILER_APP_TOKEN", "read-only")
+    monkeypatch.setenv("GH_TOKEN", "write")
+    assert gh.token(app_side=True) == "read-only"
+    assert gh.token(app_side=True, token_env="GH_TOKEN") == "write"
+    seen = []
+    monkeypatch.setattr(gh, "request", lambda method, url, body=None, app_side=False, raw=False, token_env="": seen.append((url, app_side, token_env)) or ([], ""))
+    gh.releases("nodemode-dev/alpha", token_env="GH_TOKEN")
+    assert seen == [("/repos/nodemode-dev/alpha/releases?per_page=100", True, "GH_TOKEN")]
+    supersede = step(jobs(RELEASE)["publish"], "Supersede older drafts")
+    assert "--token-env GH_TOKEN" in supersede and "FORMCOMPILER_APP_TOKEN" not in supersede
+
+
+def test_a_tag_that_already_points_elsewhere_refuses_the_release(monkeypatch):
+    """GitHub makes a release for an existing tag at that tag's commit and ignores --target."""
+    monkeypatch.setattr(gh, "on_main", lambda repo, sha: True)
+    monkeypatch.setattr(gh, "file_at", lambda repo, path, sha: "1.2.0\n")
+    monkeypatch.setattr(gh, "checks_state", lambda repo, sha, workflows: {"ci.yml": "success"})
+    monkeypatch.setattr(gh, "tag_target", lambda repo, name: OTHER if name == "v1.2.0" else "")
+    status, reason, _ = readiness.evaluate(ENTRY, "compile_v1.2.0", SHA, [], set())
+    assert status == readiness.REFUSE and "v1.2.0 already exists in nodemode-dev/alpha at bbbbbbbbb" in reason
+    monkeypatch.setattr(gh, "tag_target", lambda repo, name: SHA)
+    assert readiness.evaluate(ENTRY, "v1.2.0", SHA, [], set())[0] == readiness.READY
+    monkeypatch.setattr(gh, "tag_target", lambda repo, name: "")
+    assert readiness.evaluate(ENTRY, "compile_v1.2.0", SHA, [], set())[0] == readiness.READY
+
+
+def test_tag_target_follows_the_tag_and_answers_empty_for_none(monkeypatch):
+    def get(path, app_side=False):
+        if path.endswith("/git/ref/tags/v9.9.9"):
+            raise gh.ApiError(404, "Not Found")
+        if path.endswith("/git/ref/tags/v1.2.0"):
+            return {"object": {"sha": "c" * 40, "type": "tag"}}
+        return {"object": {"sha": SHA, "type": "commit"}}
+
+    monkeypatch.setattr(gh, "get", get)
+    assert gh.tag_target("nodemode-dev/alpha", "v9.9.9") == ""
+    assert gh.tag_target("nodemode-dev/alpha", "v1.2.0") == SHA
 
 
 @pytest.fixture
@@ -90,7 +135,7 @@ def watching(monkeypatch, capsys):
     monkeypatch.setattr(gh, "releases", lambda repo: calls["releases"].append(repo) or [])
     monkeypatch.setattr(gh, "active_release_runs", lambda repo: set())
     monkeypatch.setattr(gh, "stopped_release_runs", lambda repo: set())
-    monkeypatch.setattr(gh, "succeeded_release_runs", lambda repo: calls["succeeded"])
+    monkeypatch.setattr(gh, "succeeded_release_runs", lambda repo, since: calls["succeeded"])
     monkeypatch.setattr(gh, "dispatch", lambda repo, ref, inputs: calls["dispatched"].append((inputs["app"], inputs["version"])))
     monkeypatch.setattr(readiness, "evaluate", lambda entry, ref, sha, releases, active: (readiness.READY, "ok", readiness.ref_version(ref)[0]))
     monkeypatch.setattr(sys, "argv", ["watch.py"])
@@ -121,11 +166,24 @@ def test_a_succeeded_release_run_stands_in_for_the_draft_the_watch_cannot_see(wa
     assert "| alpha | compile_v1.0.0 | skip | compile_v1.1.0 is ahead" in out
 
 
-def test_succeeded_release_runs_lists_the_successful_titles(monkeypatch):
+def test_a_later_successful_rerun_outranks_an_earlier_failure(watching, monkeypatch):
+    run, calls = watching
+    title = gh.run_title("alpha", "1.1.0", OTHER)
+    calls["succeeded"].add(title)
+    monkeypatch.setattr(gh, "stopped_release_runs", lambda repo: {title})
+    out = run()
+    assert "succeeded; its release is on nodemode-dev/alpha" in out and "failed or was cancelled" not in out
+
+
+def test_succeeded_release_runs_counts_only_runs_since_the_cut_over(monkeypatch):
+    """Successful runs before v0.9.0 drafted on formcompiler, not on the app repository, so they do not stand in for a draft there."""
     seen = []
-    monkeypatch.setattr(gh, "get", lambda path, app_side=False: seen.append(path) or {"workflow_runs": [{"display_title": "alpha 1.0.0 at " + SHA}]})
-    assert gh.succeeded_release_runs("nodemode-dev/formcompiler") == {f"alpha 1.0.0 at {SHA}"}
-    assert seen == ["/repos/nodemode-dev/formcompiler/actions/workflows/release.yml/runs?status=success&per_page=100"]
+    since = watch.RELEASES_ON_APP_REPOS_SINCE
+    runs = [{"display_title": "old 1.0.0 at " + SHA, "created_at": "2026-11-01T00:00:00Z"}, {"display_title": "new 1.0.0 at " + SHA, "created_at": "2026-11-04T00:00:00Z"}]
+    monkeypatch.setattr(gh, "get", lambda path, app_side=False: seen.append(path) or {"workflow_runs": runs})
+    assert gh.succeeded_release_runs("nodemode-dev/formcompiler", since) == {f"new 1.0.0 at {SHA}"}
+    assert seen == [f"/repos/nodemode-dev/formcompiler/actions/workflows/release.yml/runs?status=success&created=%3E%3D{since.replace(':', '%3A')}&per_page=100"]
+    assert re.fullmatch(r"2026-11-0[3-9]T\d\d:\d\d:\d\dZ", since)
 
 
 @pytest.fixture
@@ -218,6 +276,24 @@ def test_feed_refuses_a_tag_that_is_not_v_version_or_an_unknown_app(args, says):
     assert out.returncode != 0 and says in out.stdout + out.stderr
 
 
+@pytest.mark.parametrize("env, shape, code", [
+    ({"HAS_APP": "true", "HAS_TOKEN": "true"}, "app", 0),
+    ({"HAS_APP": "false", "HAS_TOKEN": "true"}, "token", 0),
+    ({"HAS_APP": "false", "HAS_TOKEN": "false"}, "", 1),
+])
+def test_the_release_credential_script_chooses_the_app_then_the_token_then_fails(tmp_path, env, shape, code):
+    output = tmp_path / "output"
+    output.write_text("", encoding="utf-8")
+    run = subprocess.run(["bash", str(SCRIPTS / "release_credential.sh")], capture_output=True, text=True,
+                         env={"PATH": os.environ["PATH"], "REPOSITORY": "nodemode-dev/formtray", "GITHUB_OUTPUT": str(output), **env})
+    assert run.returncode == code, run.stdout + run.stderr
+    lines = output.read_text(encoding="utf-8").splitlines()
+    assert lines[0] == "name=formtray"
+    assert lines[1:] == ([f"shape={shape}"] if shape else [])
+    if code:
+        assert "::error::" in run.stdout and "docs/ACCOUNTS.md" in run.stdout and "FORMCOMPILER_WRITE_TOKEN" in run.stdout
+
+
 def test_feed_files_takes_the_app(tmp_path):
     out = script("feed.py", "files", "--app", "formvis", "--tag", "v1.2.3", "--assets", json.dumps(["latest.json", "formvis-1.2.3-linux-x64.AppImage.zsync", "a.dmg"]))
     assert out.returncode == 0, out.stderr
@@ -257,43 +333,92 @@ def test_yank_checks_the_app_repository_v_tag():
         yank.validate("formvis", "1.2.1", "r", [{"tag_name": "formvis-v1.2.1", "draft": False}], [])
 
 
-def assemble():
-    return jobs(RELEASE)["assemble"]
+def publish():
+    return jobs(RELEASE)["publish"]
 
 
-def test_the_assemble_job_releases_on_the_app_repository_in_the_release_environment():
-    job = assemble()
+def step(job, name):
+    return job.split(f"- name: {name}", 1)[1].split("\n      - ", 1)[0]
+
+
+def test_the_publish_job_releases_on_the_app_repository_in_the_release_environment():
+    job = publish()
     assert re.search(r"(?m)^    environment: release$", job)
     assert re.search(r"(?m)^    permissions:\n      contents: read$", job), "formcompiler's own token needs no write: the releases live on the app repositories"
+    assert re.search(r"(?m)^    needs: \[gate, assemble\]$", job)
     repos = re.findall(r"(?m)^\s+GH_REPO: (.+)$", RELEASE)
     assert repos and all(value == APP_REPOSITORY for value in repos), repos
     assert "GH_REPO: ${{ github.repository }}" not in RELEASE
     assert '--target "$SHA"' in job and "--target main" not in job
     assert "SHA: ${{ needs.gate.outputs.sha }}" in job
-    assert 'REPO: ${{ fromJSON(needs.gate.outputs.config).repository }}' in job
 
 
-def test_only_the_assemble_steps_that_write_hold_the_write_credential():
+def test_the_publish_job_runs_no_app_code_and_the_assemble_job_holds_no_credential():
+    """The registry's assets and notes commands are the app's own; the job that runs them must never hold the write credential."""
+    assemble, job = jobs(RELEASE)["assemble"], publish()
+    assert "environment:" not in assemble and "GH_TOKEN" not in assemble and "secrets.FORMCOMPILER_WRITE_TOKEN" not in assemble
+    assert 'bash -eo pipefail -c "$ASSETS"' in assemble and "scripts/notes.py" in assemble
+    assert "formcompiler-release-${{ inputs.app }}" in assemble and "release-notes.md" in assemble and "overwrite: true" in assemble
+    assert 'REPO: ${{ fromJSON(needs.gate.outputs.config).repository }}' in assemble
+    assert "FORMCOMPILER_TAG: ${{ needs.gate.outputs.tag }}" in assemble and "FORMCOMPILER_REPOSITORY: ${{ fromJSON(needs.gate.outputs.config).repository }}" in assemble
+    assert job.count("uses: actions/checkout@") == 1 and "repository: ${{ fromJSON" not in job and "path: app" not in job
+    assert "ASSETS" not in job and "notes.py" not in job and "agents.py" not in job and "with_portal.py" not in job
+    assert "name: formcompiler-release-${{ inputs.app }}" in job and "path: release" in job
+    assert "working-directory: release/dist" in job and 'notes="$GITHUB_WORKSPACE/release/release-notes.md"' in job
+    assert "pattern: formcompiler-${{ inputs.app }}-*" in assemble and not re.search(r"formcompiler-release-[a-z]", "formcompiler-formvis-*")
+
+
+def test_only_the_publish_steps_that_write_hold_the_write_credential():
     for name, job in jobs(RELEASE).items():
         for secret in WRITE_CREDENTIALS:
-            assert (secret in job) == (name == "assemble"), f"{secret} in {name}"
+            assert (secret in job) == (name == "publish"), f"{secret} in {name}"
     for other in ("desktop-release.yml", "watch.yml", "self-check.yml"):
         text = (WORKFLOWS / other).read_text()
         assert not any(secret in text for secret in WRITE_CREDENTIALS), other
-    job = assemble()
+    job = publish()
     token = "GH_TOKEN: ${{ steps.app-token.outputs.token || secrets.FORMCOMPILER_WRITE_TOKEN }}"
     assert job.count(token) == 3
-    for step in ("Create or refresh the draft on the app repository", "Supersede older drafts", "Publish (a beta, or registry release is publish)"):
-        body = job.split(f"- name: {step}", 1)[1].split("- name: ", 1)[0]
-        assert token in body, step
-    for step in ("App release assets", "App manifest and skills", "App plus FormPortal", "Checksums and updater feed", "Release notes"):
-        body = job.split(f"- name: {step}", 1)[1].split("- name: ", 1)[0]
-        assert "GH_TOKEN" not in body and "FORMCOMPILER_WRITE_TOKEN" not in body, step
-    assert "token: ${{ secrets.FORMCOMPILER_APP_TOKEN || github.token }}" in job
+    for name in ("Create or refresh the draft on the app repository", "Supersede older drafts", "Publish (a beta, or registry release is publish)"):
+        assert token in step(job, name), name
+    assert "token: ${{ secrets.FORMCOMPILER_APP_TOKEN || github.token }}" in jobs(RELEASE)["assemble"]
+
+
+def test_the_publish_job_attests_sha256sums_before_the_draft():
+    """formpipe feeds any published v* release on an app repository, so it verifies SHA256SUMS.txt came from this workflow."""
+    job = publish()
+    assert re.search(r"(?m)^    permissions:\n      contents: read\n      id-token: write\n      attestations: write$", job)
+    attest = step(job, "Attest the provenance of SHA256SUMS.txt")
+    assert re.search(r"uses: actions/attest-build-provenance@[0-9a-f]{40} # v\d+\.\d+\.\d+", attest)
+    assert "if: vars.FORMCOMPILER_ATTEST != 'off'" in attest
+    assert "subject-path: release/dist/SHA256SUMS.txt" in attest
+    assert job.index("- name: Attest the provenance of SHA256SUMS.txt") > job.index("uses: actions/download-artifact@")
+    assert job.index("- name: Attest the provenance of SHA256SUMS.txt") < job.index("- name: Create or refresh the draft on the app repository")
+    for name, other in jobs(RELEASE).items():
+        if name != "publish":
+            assert "attest" not in other and "id-token" not in other, name
+
+
+def test_a_draft_is_only_changed_while_it_is_still_a_draft():
+    draft = step(publish(), "Create or refresh the draft on the app repository")
+    assert "still_a_draft() {" in draft
+    body = draft.split("still_a_draft() {", 1)[1]
+    for mutation in ('gh release delete-asset "$TAG" "$asset" --yes', 'gh release edit "$TAG" --draft', 'gh release upload "$TAG" --clobber'):
+        before = body.split(mutation, 1)[0].rstrip().splitlines()[-1].strip()
+        assert before == "still_a_draft", (mutation, before)
+    assert "already has a published release $TAG; bump the version to release again" in draft
+
+
+def test_older_drafts_are_deleted_by_id_after_a_second_look():
+    supersede = step(publish(), "Supersede older drafts")
+    assert "--token-env GH_TOKEN" in supersede
+    assert "IFS=$'\\t' read -r id old" in supersede
+    assert 'gh api "repos/$GH_REPO/releases/$id" --jq .draft' in supersede
+    assert 'gh api -X DELETE "repos/$GH_REPO/releases/$id"' in supersede
+    assert "gh release delete" not in supersede
 
 
 def test_the_github_app_token_is_pinned_and_scoped_to_the_one_app_repository():
-    job = assemble()
+    job = publish()
     pinned = re.search(r"uses: actions/create-github-app-token@([0-9a-f]{40}) # v\d+\.\d+\.\d+", job)
     assert pinned, "pin the action to a full commit SHA with its version as a trailing comment"
     assert "client-id: ${{ secrets.FORMCOMPILER_APP_ID }}" in job
@@ -301,29 +426,37 @@ def test_the_github_app_token_is_pinned_and_scoped_to_the_one_app_repository():
     assert "owner: nodemode-dev" in job
     assert "repositories: ${{ steps.credential.outputs.name }}" in job
     assert "permission-contents: write" in job
-    assert 'echo "name=${REPOSITORY#*/}" >> "$GITHUB_OUTPUT"' in job
+    assert "run: bash scripts/release_credential.sh" in job
     assert "if: steps.credential.outputs.shape == 'app'" in job
 
 
-def test_a_missing_write_credential_fails_the_assemble_job_naming_the_accounts_page():
-    job = assemble()
-    credential = job.split("- name: Release credential", 1)[1].split("- name: ", 1)[0]
-    assert "::error::" in credential and "docs/ACCOUNTS.md" in credential
-    assert "FORMCOMPILER_APP_ID and FORMCOMPILER_APP_PRIVATE_KEY" in credential and "FORMCOMPILER_WRITE_TOKEN" in credential
-    assert "exit 1" in credential
-    assert job.index("- name: Release credential") < job.index("uses: actions/checkout@"), "fail before any work is done"
+def test_a_missing_write_credential_fails_the_publish_job_before_the_download():
+    job = publish()
+    credential = step(job, "Release credential")
+    assert "HAS_APP: ${{ secrets.FORMCOMPILER_APP_ID != '' && secrets.FORMCOMPILER_APP_PRIVATE_KEY != '' }}" in credential
+    assert "HAS_TOKEN: ${{ secrets.FORMCOMPILER_WRITE_TOKEN != '' }}" in credential
+    assert job.index("- name: Release credential") < job.index("uses: actions/download-artifact@"), "fail before any work is done"
 
 
 def test_the_dispatch_to_formpipe_names_the_app_the_tag_and_the_repository():
-    job = assemble()
+    job = publish()
     assert '"client_payload": {"app": sys.argv[1], "tag": sys.argv[2], "repository": sys.argv[3]}' in job
     assert '"$APP" "$TAG" "$GH_REPO"' in job
     assert '"event_type": "formcompiler-published"' in job
     assert "already has a published release $TAG; bump the version to release again" in job
 
 
-def test_no_workflow_shapes_a_tag_as_app_dash_v():
+def test_no_workflow_or_registry_entry_shapes_a_tag_as_app_dash_v():
     for workflow in sorted(WORKFLOWS.glob("*.yml")):
         text = workflow.read_text()
         assert "tag-prefix" not in text and "}}-v" not in text, workflow.name
     assert "echo '{}' > \"$RUNNER_TEMP/releases.json\"" in (WORKFLOWS / "self-check.yml").read_text()
+    for path in sorted((REPO / "apps").glob("*.json")):
+        entry = json.loads(path.read_text(encoding="utf-8"))
+        commands = json.dumps({k: v for k, v in entry.items() if k != "notes_for_owner"})
+        assert not re.search(r"-v\$", commands), f"{path.name}: a command builds an <app>-v tag"
+        assert "formcompiler/releases" not in commands, f"{path.name}: a command reads a release on formcompiler"
+        for url in re.findall(r"https://github\.com/([^/\s\"]+/[^/\s\"]+)/releases/download/", commands):
+            assert url in (entry["repository"], "$FORMCOMPILER_REPOSITORY"), f"{path.name}: {url} is not the app's own repository"
+    formvis = load("formvis")["assets"]
+    assert '--tag "$FORMCOMPILER_TAG"' in formvis and 'https://github.com/$FORMCOMPILER_REPOSITORY/releases/download/$FORMCOMPILER_TAG/' in formvis

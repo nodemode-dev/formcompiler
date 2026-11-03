@@ -30,6 +30,7 @@ def api(monkeypatch):
     monkeypatch.setattr(gh, "on_main", on_main)
     monkeypatch.setattr(gh, "file_at", file_at)
     monkeypatch.setattr(gh, "checks_state", lambda repo, sha, workflows: dict(state["checks"]))
+    monkeypatch.setattr(gh, "tag_target", lambda repo, name: state.get("tag", ""))
     return calls, state
 
 
@@ -114,7 +115,7 @@ def watched(monkeypatch, capsys):
     monkeypatch.setattr(watch, "validate", lambda entry, _: [])
     monkeypatch.setattr(gh, "active_release_runs", lambda repo: set())
     monkeypatch.setattr(gh, "stopped_release_runs", lambda repo: set())
-    monkeypatch.setattr(gh, "succeeded_release_runs", lambda repo: set())
+    monkeypatch.setattr(gh, "succeeded_release_runs", lambda repo, since: set())
     monkeypatch.setattr(gh, "dispatch", lambda repo, ref, inputs: dispatched.append((inputs["app"], inputs["version"])))
     monkeypatch.setattr(gh, "compile_branches", lambda repo: [])
     monkeypatch.setattr(gh, "version_tags", lambda repo: tag_calls.append(repo) or tags[repo])
