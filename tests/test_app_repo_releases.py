@@ -211,11 +211,23 @@ def test_succeeded_release_runs_counts_only_runs_since_the_cut_over(monkeypatch)
     """Successful runs before v0.9.0 drafted on formcompiler, not on the app repository, so they do not stand in for a draft there."""
     seen = []
     since = watch.RELEASES_ON_APP_REPOS_SINCE
-    runs = [{"display_title": "old 1.0.0 at " + SHA, "created_at": "2026-11-01T00:00:00Z"}, {"display_title": "new 1.0.0 at " + SHA, "created_at": "2026-11-04T00:00:00Z"}]
-    monkeypatch.setattr(gh, "get", lambda path, app_side=False: seen.append(path) or {"workflow_runs": runs})
+    run = {"head_branch": "main", "event": "workflow_dispatch", "conclusion": "success", "created_at": "2026-11-04T00:00:00Z"}
+    runs = [{**run, "display_title": "old 1.0.0 at " + SHA, "created_at": "2026-11-01T00:00:00Z"}, {**run, "display_title": "new 1.0.0 at " + SHA}]
+    monkeypatch.setattr(gh, "get", lambda path, app_side=False, token_env="": seen.append(path) or {"workflow_runs": runs})
     assert gh.succeeded_release_runs("nodemode-dev/formcompiler", since) == {f"new 1.0.0 at {SHA}"}
-    assert seen == [f"/repos/nodemode-dev/formcompiler/actions/workflows/release.yml/runs?status=success&created=%3E%3D{since.replace(':', '%3A')}&per_page=100"]
+    assert seen == [f"/repos/nodemode-dev/formcompiler/actions/workflows/release.yml/runs?status=success&branch=main&event=workflow_dispatch&created=%3E%3D{since.replace(':', '%3A')}&per_page=100"]
     assert re.fullmatch(r"2026-11-0[3-9]T\d\d:\d\d:\d\dZ", since)
+
+
+def test_only_main_dispatch_successes_count_as_built(monkeypatch):
+    """A run from another formcompiler branch, or started by another event, can carry any run-name, so a forged title
+    must not make a tag at another commit look like formcompiler's own; the record is as strong as main's protection."""
+    run = {"display_title": f"alpha 1.0.0 at {OTHER}", "head_branch": "main", "event": "workflow_dispatch", "conclusion": "success", "created_at": "2026-11-04T00:00:00Z"}
+    runs = [run, {**run, "head_branch": "feat/forged-run-name"}, {**run, "event": "push"}, {**run, "conclusion": "failure"}, {**run, "display_title": f"beta 1.0.0 at {OTHER}"}]
+    monkeypatch.setattr(gh, "get", lambda path, app_side=False, token_env="": {"workflow_runs": runs})
+    assert gh.succeeded_release_runs("nodemode-dev/formcompiler", gh.RELEASES_ON_APP_REPOS_SINCE) == {f"alpha 1.0.0 at {OTHER}", f"beta 1.0.0 at {OTHER}"}
+    runs[0] = {**run, "head_branch": "feat/forged-run-name"}
+    assert gh.succeeded_release_runs("nodemode-dev/formcompiler", gh.RELEASES_ON_APP_REPOS_SINCE) == {f"beta 1.0.0 at {OTHER}"}
 
 
 @pytest.fixture

@@ -165,8 +165,13 @@ def stopped_release_runs(repo):
 
 def succeeded_release_runs(repo: str, since: str) -> set[str]:
     created = urllib.parse.quote(f">={since}", safe="")
-    runs = get(f"/repos/{repo}/actions/workflows/release.yml/runs?status=success&created={created}&per_page=100")
-    return {run.get("display_title", "") for run in runs.get("workflow_runs", []) if run.get("created_at", "") >= since}
+    runs = get(f"/repos/{repo}/actions/workflows/release.yml/runs?status=success&branch={MAIN}&event=workflow_dispatch&created={created}&per_page=100")
+    return {
+        run.get("display_title", "")
+        for run in runs.get("workflow_runs", [])
+        if run.get("head_branch") == MAIN and run.get("event") == "workflow_dispatch"
+        and run.get("conclusion") == "success" and run.get("created_at", "") >= since
+    }
 
 
 def run_title(app, version, sha):
