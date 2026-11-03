@@ -1,5 +1,4 @@
 import argparse
-import os
 import sys
 from pathlib import Path
 
@@ -31,13 +30,23 @@ def channel(version):
     return BETA if found.group(4) else STABLE
 
 
+TAG_PREFIX = "v"
+
+
+def tag_of(version: str) -> str:
+    return f"{TAG_PREFIX}{version}"
+
+
+def version_of(tag: str) -> str:
+    version = tag[len(TAG_PREFIX):] if tag.startswith(TAG_PREFIX) else ""
+    return version if version and SEMVER.match(version) else ""
+
+
 def app_releases(app, releases):
-    prefix = f"{app}-v"
     found = []
     for release in releases:
-        tag = release.get("tag_name", "")
-        version = tag[len(prefix):] if tag.startswith(prefix) else ""
-        if version and SEMVER.match(version):
+        version = version_of(release.get("tag_name", ""))
+        if version:
             found.append((version, release))
     return sorted(found, key=lambda item: semver_key(item[0]), reverse=True)
 
@@ -59,7 +68,7 @@ def newer_draft(app, version, releases):
 
 def older_drafts(app, version, releases):
     key, beta = semver_key(version), channel(version) == BETA
-    return [f"{app}-v{v}" for v, _ in drafts(app, releases) if semver_key(v) < key and not (beta and channel(v) == STABLE)]
+    return [tag_of(v) for v, _ in drafts(app, releases) if semver_key(v) < key and not (beta and channel(v) == STABLE)]
 
 
 def highest_stable(app, releases):
@@ -80,7 +89,7 @@ def main():
     old = sub.add_parser("older-drafts")
     old.add_argument("--app", required=True)
     old.add_argument("--version", required=True)
-    old.add_argument("--repo", default=os.environ.get("GITHUB_REPOSITORY", "nodemode-dev/formcompiler"))
+    old.add_argument("--repo", default="", help="the app's repository; default: the registry entry's")
     kind = sub.add_parser("channel")
     kind.add_argument("--version", required=True)
     args = parser.parse_args()
@@ -89,7 +98,9 @@ def main():
         print(channel(args.version))
         return
     import github_api as gh
-    for tag in older_drafts(args.app, args.version, gh.releases(args.repo)):
+    from registry import load
+    repo = args.repo or load(args.app)["repository"]
+    for tag in older_drafts(args.app, args.version, gh.releases(repo)):
         print(tag)
 
 

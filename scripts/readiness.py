@@ -37,20 +37,20 @@ def evaluate(entry, ref, sha, all_releases, active_titles, check_runs=True):
     if not version:
         return SKIP, f"`{ref}` is not a release ref (a compile_vX.Y.Z branch or a vX.Y.Z tag, with an optional -beta.N)", ""
     app = entry["app"]
-    tag = f"{app}-v{version}"
+    tag = versions.tag_of(version)
     release = gh.release_by_tag(all_releases, tag)
     if release and not release.get("draft"):
-        return SKIP, f"{tag} is already published; bump the version to release again", version
+        return SKIP, f"{app} {tag} is already published; bump the version to release again", version
     newer = versions.newer_draft(app, version, all_releases)
     if newer:
-        return SKIP, f"superseded: the draft {app}-v{newer} is newer", version
+        return SKIP, f"superseded: the draft {versions.tag_of(newer)} of {app} is newer", version
     if release and gh.source_of(release)[1] == sha:
-        return SKIP, f"{tag} is already drafted from {sha[:9]}", version
+        return SKIP, f"{app} {tag} is already drafted from {sha[:9]}", version
     above, why = versions.above_published(app, version, all_releases)
     if not above:
         return REFUSE, why, version
     if gh.run_title(app, version, sha) in active_titles:
-        return SKIP, f"a release run for {tag} at {sha[:9]} is already running", version
+        return SKIP, f"a release run for {app} {tag} at {sha[:9]} is already running", version
     try:
         on_main = gh.on_main(entry["repository"], sha)
     except gh.ApiError as error:

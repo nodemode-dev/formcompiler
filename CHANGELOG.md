@@ -1,5 +1,15 @@
 # Changelog
 
+## v0.9.0 · 2026-11-03
+
+- Every app release is created on the app's own repository, the registry entry's `repository`: a draft tagged `vX.Y.Z` at the gated commit, titled `<title> <version>`, with the same files as before (installers, `SHA256SUMS.txt`, `form-app.json`, the skills archive, `latest.json` for a Tauri-updater app, the extras). The app repository owns its Releases page; formcompiler is the factory and the gate and keeps no app release. A stable release of a `release: draft` app is approved by a maintainer publishing the draft there, which creates the tag
+- The draft release job runs in the `release` environment and writes with a credential from it: a GitHub App (`FORMCOMPILER_APP_ID`, `FORMCOMPILER_APP_PRIVATE_KEY`, a token minted for the one repository being released) or, without it, the fine-grained token `FORMCOMPILER_WRITE_TOKEN`. Only the draft, supersede and publish steps hold it; the build jobs keep the read-only `FORMCOMPILER_APP_TOKEN`. With neither secret the job fails and names docs/ACCOUNTS.md, which says how to set either up and that the organisation ruleset `release tags` needs the App or the token's user on its bypass list
+- Tags are `v<version>`, no longer `<app>-v<version>`; the gate's `tag` output, `versions.py`, `readiness.py`, `yank.py` and `plan.py` (whose `--tag-prefix` is gone) follow. The release list every rule reads (published, drafted, superseded, version must go up) is the app repository's, read with the app-side token. Any `v<version>` release the app repository published before formcompiler counts as published
+- The watch skips a commit whose release run already succeeded: a read-only token sees no draft on the app repository, so without this a drafted commit would be rebuilt every hour. Run workflow on release.yml builds the same commit again
+- `latest.json` points at `https://github.com/<repository>/releases/download/v<version>/<file>`
+- `catalog.py build` takes no `--repo`: it reads every enabled entry's repository (`--releases FILE` is now a JSON object of repository to releases); `feed.py resolve`, `files` and `public` take `--app` beside `--tag` (`vX.Y.Z` or `X.Y.Z`), and `resolve` also writes `repository`, `tag` and `prerelease`; `versions.py older-drafts` and `yank.py` read the registry entry's repository. The dispatch to the publishing pipeline carries `app`, `tag` and `repository`
+- The releases made on this repository before v0.9.0 (`<app>-vX.Y.Z`) are not read any more; the owner recreates on the app repositories the ones that should stay in the catalogue, or deletes them. Not yet run in Actions
+
 ## v0.8.0 · 2026-11-03
 
 - Publishing to the download store at https://dl.formai.studio, the `<app>-updates` feeds, the catalogue signature and yanks move to a private companion pipeline. feed.yml, yank.yml and docs/GO_PUBLIC.md are removed; the scripts they ran stay here and the pipeline runs them from this repository

@@ -15,10 +15,6 @@ on:
         description: "The commit of the app to build (the compile branch's head)"
         type: string
         required: true
-      tag-prefix:
-        description: "Release tag prefix, <app>-v"
-        type: string
-        required: true
       expect-version:
         description: "The version the compile branch names; the version file must agree"
         type: string
@@ -233,7 +229,6 @@ jobs:
           VERSION_FILE: ${{ inputs.version-file }}
           VERSION_PATTERN: ${{ inputs.version-pattern }}
           PLATFORMS: ${{ inputs.platforms }}
-          TAG_PREFIX: ${{ inputs.tag-prefix }}
           EXPECT_VERSION: ${{ inputs.expect-version }}
           PLATFORM_ENV: ${{ inputs.platform-env }}
           RUST_TARGETS: ${{ inputs.rust-targets }}
@@ -241,7 +236,7 @@ jobs:
           python3 -I .formcompiler/scripts/plan.py
           --version="$VERSION" --version-file="$VERSION_FILE"
           --version-pattern="$VERSION_PATTERN" --platforms="$PLATFORMS"
-          --tag-prefix="$TAG_PREFIX" --expect-version="$EXPECT_VERSION"
+          --expect-version="$EXPECT_VERSION"
           --platform-env="$PLATFORM_ENV" --rust-targets="$RUST_TARGETS" --ref=""
 
   build:

@@ -118,8 +118,8 @@ def checks_state(repo, sha, workflows):
     return states
 
 
-def releases(repo):
-    return paged(f"/repos/{repo}/releases")
+def releases(repo: str) -> list:
+    return paged(f"/repos/{repo}/releases", app_side=True)
 
 
 def release_by_tag(all_releases, tag):
@@ -148,6 +148,11 @@ def stopped_release_runs(repo):
         runs = get(f"/repos/{repo}/actions/workflows/release.yml/runs?status={status}&per_page=100")
         titles.update(run.get("display_title", "") for run in runs.get("workflow_runs", []))
     return titles
+
+
+def succeeded_release_runs(repo: str) -> set[str]:
+    runs = get(f"/repos/{repo}/actions/workflows/release.yml/runs?status=success&per_page=100")
+    return {run.get("display_title", "") for run in runs.get("workflow_runs", [])}
 
 
 def run_title(app, version, sha):

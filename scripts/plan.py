@@ -85,7 +85,6 @@ def main():
     parser.add_argument("--version", default="")
     parser.add_argument("--platforms", default="macos-arm64,linux-x64,windows-x64")
     parser.add_argument("--ref", default=os.environ.get("GITHUB_REF", ""))
-    parser.add_argument("--tag-prefix", default="v")
     parser.add_argument("--expect-version", default="")
     parser.add_argument("--platform-env", default="{}")
     parser.add_argument("--rust-targets", default="")
@@ -100,9 +99,7 @@ def main():
         fail(f"{version!r} is not a version like 1.2.3 or 1.2.3-rc.1")
     if args.expect_version and args.expect_version.removeprefix("v") != version:
         fail(f"the compile branch names {args.expect_version} but {args.version_file} says {version}; bump the version on main and cut the branch again")
-    if not re.fullmatch(r"[A-Za-z0-9.]+-v|v", args.tag_prefix):
-        fail(f"tag prefix {args.tag_prefix!r} must be v or <app>-v")
-    tag = f"{args.tag_prefix}{version}"
+    tag = f"v{version}"
     if args.ref.startswith("refs/tags/") and args.ref != f"refs/tags/{tag}":
         fail(f"the pushed tag {args.ref.removeprefix('refs/tags/')} does not match the app version {version}; bump the version or push {tag}")
 

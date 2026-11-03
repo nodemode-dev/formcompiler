@@ -12,10 +12,10 @@ import github_api as gh
 import public_urls
 import versions
 import yank
-from plan import SEMVER
 from registry import all_entries
 
 HISTORY = 5
+ORIGIN = "nodemode-dev/formcompiler"
 ARCH_TOKENS = [
     (re.compile(r"(?<![a-z0-9])(aarch64|arm64)(?![a-z0-9])", re.I), "arm64"),
     (re.compile(r"(?<![a-z0-9])(x86_64|x64|amd64|intel)(?![a-z0-9])", re.I), "x86_64"),
@@ -149,21 +149,21 @@ def release_entry(release, version, entry, sums, base=""):
     return body
 
 
-def build(repo, entries, releases_list, base="", yanked=frozenset()):
+def app_releases(entry: dict, releases_list: list, yanked: frozenset) -> list:
+    mine = []
+    for release in releases_list:
+        version = versions.version_of(release.get("tag_name", ""))
+        if version and not release.get("draft") and (entry["app"], version) not in yanked:
+            mine.append((version_key(version), version, release))
+    return sorted(mine, reverse=True)
+
+
+def build(entries, releases_by_repo, base="", yanked=frozenset(), origin=ORIGIN):
     products = []
     for entry in sorted(entries, key=lambda e: e["catalog"]["id"]):
         if not entry.get("enabled"):
             continue
-        prefix = f"{entry['app']}-v"
-        mine = []
-        for release in releases_list:
-            tag = release.get("tag_name", "")
-            if release.get("draft") or not tag.startswith(prefix):
-                continue
-            version = tag[len(prefix):]
-            if SEMVER.match(version) and (entry["app"], version) not in yanked:
-                mine.append((version_key(version), version, release))
-        mine.sort(reverse=True)
+        mine = app_releases(entry, releases_by_repo.get(entry["repository"], []), yanked)
         stable = [m for m in mine if not m[2].get("prerelease") and versions.channel(m[1]) == versions.STABLE]
         beta = [m for m in mine if m[2].get("prerelease") or versions.channel(m[1]) == versions.BETA]
         channels = {}
@@ -194,9 +194,27 @@ def build(repo, entries, releases_list, base="", yanked=frozenset()):
         "format": "formai-catalog",
         "format_version": 1,
         "generated": datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
-        "origin": f"https://github.com/{repo}",
+        "origin": f"https://github.com/{origin}",
         "products": products,
     }
+
+
+def fetch_releases(entries) -> dict:
+    found = {}
+    for entry in entries:
+        if entry.get("enabled") and entry["repository"] not in found:
+            try:
+                found[entry["repository"]] = gh.releases(entry["repository"])
+            except gh.ApiError as error:
+                sys.exit(f"::error::could not list the releases of {entry['repository']}: {error}")
+    return found
+
+
+def read_releases(path: str) -> dict:
+    data = json.loads(Path(path).read_text(encoding="utf-8"))
+    if not isinstance(data, dict) or not all(isinstance(v, list) for v in data.values()):
+        sys.exit(f"::error::{path} must be a JSON object mapping each app repository to its list of releases")
+    return data
 
 
 def listed_releases(document, entries):
@@ -238,9 +256,9 @@ def main():
     parser = argparse.ArgumentParser()
     sub = parser.add_subparsers(dest="command", required=True)
     make = sub.add_parser("build")
-    make.add_argument("--repo", default=os.environ.get("GITHUB_REPOSITORY", "nodemode-dev/formcompiler"))
+    make.add_argument("--origin", default=ORIGIN, help="the repository named as the catalogue's origin")
     make.add_argument("--out", default="releases.json")
-    make.add_argument("--releases", default="", help="a JSON file of releases instead of the API, for a dry run")
+    make.add_argument("--releases", default="", help="a JSON object of repository to releases instead of the API, for a dry run")
     make.add_argument("--yanked", default=str(yank.YANKED), help="the yanked versions, left out of the catalogue")
     signer = sub.add_parser("sign")
     signer.add_argument("--file", default="releases.json")
@@ -271,8 +289,9 @@ def main():
         yanked = yank.yanked_set(yank.load(args.yanked))
     except (ValueError, yank.YankError) as error:
         sys.exit(f"::error::{error}")
-    releases_list = json.loads(Path(args.releases).read_text(encoding="utf-8")) if args.releases else gh.releases(args.repo)
-    document = build(args.repo, all_entries(), releases_list, base, yanked)
+    entries = all_entries()
+    releases_by_repo = read_releases(args.releases) if args.releases else fetch_releases(entries)
+    document = build(entries, releases_by_repo, base, yanked, args.origin)
     text = json.dumps(document, indent=2, ensure_ascii=False) + "\n"
     Path(args.out).write_text(text, encoding="utf-8")
     live = sum(1 for p in document["products"] if p["channels"])

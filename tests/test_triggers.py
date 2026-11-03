@@ -72,20 +72,20 @@ def test_a_compile_branch_off_main_is_refused_before_the_version_is_read(api):
 def test_a_version_not_above_the_highest_published_is_refused(api):
     calls, state = api
     state["version"] = "1.1.9"
-    status, reason, _ = evaluate("v1.1.9", [{"tag_name": "alpha-v1.2.0", "draft": False}])
+    status, reason, _ = evaluate("v1.1.9", [{"tag_name": "v1.2.0", "draft": False}])
     assert status == readiness.REFUSE
     assert "1.2.0" in reason
     assert calls["on_main"] == [] and calls["file_at"] == []
 
 
 def test_a_newer_draft_supersedes_an_older_ref(api):
-    status, reason, _ = evaluate("v1.2.0", [{"tag_name": "alpha-v1.3.0", "draft": True}])
+    status, reason, _ = evaluate("v1.2.0", [{"tag_name": "v1.3.0", "draft": True}])
     assert status == readiness.SKIP
     assert "superseded" in reason
 
 
 def test_a_published_version_is_skipped_quietly(api):
-    status, _, _ = evaluate("v1.2.0", [{"tag_name": "alpha-v1.2.0", "draft": False}])
+    status, _, _ = evaluate("v1.2.0", [{"tag_name": "v1.2.0", "draft": False}])
     assert status == readiness.SKIP
 
 
@@ -114,6 +114,7 @@ def watched(monkeypatch, capsys):
     monkeypatch.setattr(watch, "validate", lambda entry, _: [])
     monkeypatch.setattr(gh, "active_release_runs", lambda repo: set())
     monkeypatch.setattr(gh, "stopped_release_runs", lambda repo: set())
+    monkeypatch.setattr(gh, "succeeded_release_runs", lambda repo: set())
     monkeypatch.setattr(gh, "dispatch", lambda repo, ref, inputs: dispatched.append((inputs["app"], inputs["version"])))
     monkeypatch.setattr(gh, "compile_branches", lambda repo: [])
     monkeypatch.setattr(gh, "version_tags", lambda repo: tag_calls.append(repo) or tags[repo])
@@ -138,7 +139,7 @@ def test_watch_finds_the_newest_tag_and_dereferences_only_it(watched):
 
 
 def test_watch_ignores_tags_below_the_highest_published(watched):
-    dispatched, deref, _, out = watched([{"tag_name": "alpha-v2.0.0", "draft": False}])
+    dispatched, deref, _, out = watched([{"tag_name": "v2.0.0", "draft": False}])
     assert dispatched == []
     assert deref == []
     assert "no compile branch or new version tag" in out
@@ -206,11 +207,11 @@ def test_watch_starts_nothing_below_a_version_already_running(monkeypatch, watch
 def test_watch_finds_a_stable_fix_behind_a_published_beta(monkeypatch, watched):
     tags = [("v1.6.0-beta.1", OTHER, "commit"), ("v1.5.1", TAG_OBJECT, "tag"), ("v1.5.0", OTHER, "commit")]
     monkeypatch.setattr(gh, "version_tags", lambda repo: tags if repo.endswith("alpha") else [])
-    published = [{"tag_name": "alpha-v1.5.0", "draft": False}, {"tag_name": "alpha-v1.6.0-beta.1", "draft": False, "prerelease": True}]
+    published = [{"tag_name": "v1.5.0", "draft": False}, {"tag_name": "v1.6.0-beta.1", "draft": False, "prerelease": True}]
 
     def evaluate(entry, ref, sha, releases, active):
         version = readiness.ref_version(ref)[0]
-        if gh.release_by_tag(releases, f"{entry['app']}-v{version}"):
+        if gh.release_by_tag(releases, f"v{version}"):
             return readiness.SKIP, "already published", version
         return readiness.READY, "ok", version
 
