@@ -1,0 +1,69 @@
+{
+  "app": "formdeck",
+  "repository": "nodemode-dev/formdeck",
+  "title": "formdeck",
+  "enabled": true,
+  "release": "draft",
+  "version": {"file": "src-tauri/tauri.conf.json", "pattern": ""},
+  "checks": ["ci.yml"],
+  "platforms": ["macos-arm64", "macos-x64", "linux-x64", "linux-arm64", "windows-x64"],
+  "toolchain": {
+    "node": "22",
+    "python": "3.12",
+    "rust": true,
+    "rust_targets": "",
+    "rust_cache": ["src-tauri"],
+    "go": "",
+    "linux_packages": "libwebkit2gtk-4.1-dev libayatana-appindicator3-dev librsvg2-dev libxdo-dev libssl-dev patchelf rpm gstreamer1.0-plugins-base gstreamer1.0-plugins-good",
+    "windows_msvc": false
+  },
+  "build": {
+    "mode": "contract",
+    "cli": "formdeck",
+    "install": true,
+    "install_args": "",
+    "install_desktop": true,
+    "windows_shell": "cmd",
+    "macos": "",
+    "linux": "",
+    "windows": "",
+    "tauri_config": ""
+  },
+  "setup": {"macos": "", "linux": "", "windows": ""},
+  "post_build": {"macos": "", "linux": "", "windows": ""},
+  "artifacts": [],
+  "extras": [
+    {
+      "name": "flatpak",
+      "runner": "ubuntu-24.04",
+      "experimental": true,
+      "node": "22",
+      "python": "3.12",
+      "java": "",
+      "go": "",
+      "android": false,
+      "rust_targets": "",
+      "rust": true,
+      "linux_packages": "libwebkit2gtk-4.1-dev libayatana-appindicator3-dev librsvg2-dev libxdo-dev libssl-dev patchelf rpm gstreamer1.0-plugins-base gstreamer1.0-plugins-good flatpak flatpak-builder elfutils",
+      "run": "./formdeck install\n./formdeck install-desktop\n./formdeck desktop build --bundles deb\ncp \"$(ls src-tauri/target/release/bundle/deb/*.deb | head -1)\" src-tauri/flatpak/formdeck.deb\nflatpak remote-add --user --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo\nflatpak install --user -y --noninteractive flathub org.gnome.Platform//47 org.gnome.Sdk//47\ncd src-tauri/flatpak\nflatpak-builder --user --disable-rofiles-fuse --force-clean --repo=../../flatpak-repo ../../flatpak-build ai.nodemode.formdeck.yml\ncd ../..\nflatpak build-bundle flatpak-repo formdeck.flatpak ai.nodemode.formdeck",
+      "artifacts": ["formdeck.flatpak"]
+    }
+  ],
+  "assets": "",
+  "notes": "",
+  "updater": {"tauri": true, "tag_json": false, "files": []},
+  "signing": {"macos": "apple", "windows": "certificate"},
+  "agents": {"skills": ".claude/skills", "mcp": true},
+  "catalog": {
+    "id": "formslide",
+    "name": "FormSlide",
+    "kind": "slides",
+    "summary": "Presentations: build slides, present and export.",
+    "identifier": "ai.nodemode.formdeck",
+    "licence": "Apache-2.0",
+    "state": "live",
+    "project_extensions": [".fdec"],
+    "minimum_os": {"macos": "macOS 12", "windows": "", "linux": ""}
+  },
+  "notes_for_owner": "The Flatpak was built by a separate job in the gnome-47 flatpak-github-actions container (--privileged) from the linux-x64 deb. The extra has no container or artifact hand-over, so it builds its own deb on ubuntu-24.04 (./formdeck desktop build --bundles deb), then runs flatpak-builder and flatpak build-bundle itself against org.gnome.Platform//47; these flatpak commands are written from the manifest and the action's behaviour, not copied from the old workflow, so run the first release and check formdeck.flatpak. The extra is experimental so a Flatpak failure does not block the release, as before. The updater public key in src-tauri/tauri.conf.json is still empty, so the app skips update checks until a key pair is made and TAURI_SIGNING_PRIVATE_KEY is set in formcompiler."
+}

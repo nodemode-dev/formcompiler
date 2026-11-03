@@ -1,0 +1,93 @@
+{
+  "app": "formvis",
+  "repository": "nodemode-dev/formvis",
+  "title": "formvis",
+  "enabled": true,
+  "release": "draft",
+  "file_names": "app",
+  "version": {"file": "src-tauri/tauri.conf.json", "pattern": ""},
+  "checks": ["ci.yml"],
+  "platforms": ["macos-arm64", "macos-x64?", "linux-x64", "linux-arm64?", "windows-x64"],
+  "toolchain": {
+    "node": "22",
+    "python": "3.12",
+    "rust": true,
+    "rust_targets": "",
+    "rust_cache": ["src-tauri"],
+    "go": "",
+    "linux_packages": "libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf libxdo-dev libssl-dev",
+    "windows_msvc": false,
+    "pip_cache_macos": true
+  },
+  "build": {
+    "mode": "contract",
+    "cli": "formvis",
+    "install": true,
+    "install_args": "--lite",
+    "install_desktop": true,
+    "windows_shell": "bash",
+    "macos": "",
+    "linux": "",
+    "windows": "",
+    "tauri_config": ""
+  },
+  "setup": {
+    "macos": "echo \"PIP_NO_BINARY=opencv-python,opencv-python-headless\" >> \"$GITHUB_ENV\"\necho \"CMAKE_ARGS=-DWITH_FFMPEG=OFF -DWITH_GSTREAMER=OFF\" >> \"$GITHUB_ENV\"",
+    "linux": "case \"$(uname -m)\" in x86_64) appimage=amd64 ;; *) appimage=aarch64 ;; esac\necho \"LDAI_UPDATE_INFORMATION=$(python3 setup/package_desktop.py zsync-info --appimage \"$appimage\")\" >> \"$GITHUB_ENV\"",
+    "windows": ""
+  },
+  "post_build": {
+    "macos": "rd=\"$FORMCOMPILER_RELEASE_DIR\"\npython3 setup/package_desktop.py mac-archive --arch \"$FORMCOMPILER_ARCH\" --release-dir \"$rd\"\nif [ -n \"$APPLE_ID\" ] && [ -n \"$APPLE_PASSWORD\" ] && [ -n \"$APPLE_TEAM_ID\" ]; then python3 setup/package_desktop.py notarize --release-dir \"$rd\"; fi\npa=\"$FORMCOMPILER_ARCH\"\nif [ \"$pa\" = x64 ]; then pa=x86_64; fi\npython3 setup/package_desktop.py portable-macos --arch \"$pa\" --release-dir \"$rd\"",
+    "linux": "case \"$FORMCOMPILER_PLATFORM\" in\n  linux-arm64) arch=arm64; debarch=arm64 ;;\n  *) arch=x64; debarch=amd64 ;;\nesac\npython3 setup/package_desktop.py linux-tar --arch \"$arch\" --debarch \"$debarch\"",
+    "windows": "case \"$FORMCOMPILER_PLATFORM\" in\n  windows-x86) arch=x86 ;;\n  windows-arm64) arch=arm64 ;;\n  *) arch=x64 ;;\nesac\npython setup/package_desktop.py portable-windows --arch \"$arch\" --release-dir \"$FORMCOMPILER_RELEASE_DIR\"\nif [ \"$arch\" != x86 ]; then python setup/package_desktop.py msix --arch \"$arch\"; fi"
+  },
+  "artifacts": [
+    "src-tauri/target/**/bundle/dmg/*.dmg",
+    "src-tauri/target/**/bundle/macos/*.app.tar.gz",
+    "src-tauri/target/**/bundle/appimage/*.AppImage",
+    "src-tauri/target/**/bundle/appimage/*.AppImage.zsync",
+    "src-tauri/target/**/bundle/deb/*.deb",
+    "src-tauri/target/**/bundle/rpm/*.rpm",
+    "src-tauri/target/**/bundle/msi/*.msi",
+    "src-tauri/target/**/bundle/nsis/*.exe",
+    "src-tauri/target/**/bundle/*/*.sig",
+    "portable/formvis-portable-windows-*.zip",
+    "formvis-portable-macos-*.zip",
+    "msix/*.msix",
+    "formvis-linux-*.tar.gz"
+  ],
+  "extras": [
+    {
+      "name": "linux-riscv64",
+      "runner": "ubuntu-22.04",
+      "experimental": true,
+      "node": "22",
+      "python": "",
+      "java": "",
+      "go": "",
+      "android": false,
+      "rust_targets": "",
+      "rust": false,
+      "linux_packages": "",
+      "run": "npm ci --prefix frontend\nnpm run build --prefix frontend\npython3 setup/package_desktop.py riscv64",
+      "artifacts": ["formvis-linux-riscv64.tar.gz", "formvis-web.tar.gz"]
+    }
+  ],
+  "assets": "python3 setup/package_desktop.py feed --tag \"formvis-v$FORMCOMPILER_VERSION\" --base-url \"https://github.com/nodemode-dev/formcompiler/releases/download/formvis-v$FORMCOMPILER_VERSION/\" --dir \"$DIST\"\npython3 setup/release_notes.py \"v$FORMCOMPILER_VERSION\" --out release-notes.md\npython3 setup/mcpb.py --out \"$DIST\"\npython3 setup/package_desktop.py sums --dir \"$DIST\"",
+  "notes": "cat release-notes.md",
+  "updater": {"tauri": true, "tag_json": false, "files": ["*.AppImage.zsync"]},
+  "signing": {"macos": "apple", "windows": "certificate"},
+  "agents": {"skills": ".claude/skills", "mcp": true},
+  "catalog": {
+    "id": "formvis",
+    "name": "FormVis",
+    "kind": "image",
+    "summary": "Layered image editing: layers, masks, selections, painting and export.",
+    "identifier": "ai.nodemode.formvis",
+    "licence": "Apache-2.0",
+    "state": "live",
+    "project_extensions": [".fmv", ".formvis"],
+    "minimum_os": {"macos": "macOS 14", "windows": "", "linux": "glibc 2.35"}
+  },
+  "notes_for_owner": "macos-universal, windows-x86 and windows-arm64 are not built: numpy, onnxruntime, opencv-python-headless, Pillow, pillow-heif, rawpy and psd-tools publish no universal2 wheels, onnxruntime, rawpy, pillow-heif, OpenEXR and psd-tools no 32-bit Windows wheels, and opencv-python-headless no Windows ARM64 wheel at the pinned versions (checked on PyPI 2026-10-30), so PyInstaller cannot freeze the engine there. Intel Macs use macos-x64 and Windows on ARM runs the x64 build. The msix step needs the MSIX_IDENTITY_NAME, MSIX_PUBLISHER and MSIX_PUBLISHER_DISPLAY_NAME variables in formcompiler and skips itself without them. FORMVIS_FREEZE_ML stays unset (the old default, 0). Both formvis's own latest.json and SHA256SUMS (from assets) and formcompiler's latest.json and SHA256SUMS.txt are written; formcompiler's latest.json replaces formvis's when the updater key is set, and it also covers darwin-x86_64, whose archive is named formvis_x64.app.tar.gz."
+}

@@ -1,0 +1,748 @@
+{
+  "format": "formai-catalog",
+  "format_version": 1,
+  "generated": "2026-11-03T16:17:58Z",
+  "origin": "https://github.com/nodemode-dev/formcompiler",
+  "products": [
+    {
+      "id": "formai",
+      "name": "FormPortal",
+      "kind": "portal",
+      "summary": "One place to install, open and update every Form app.",
+      "identifier": "dev.formai.portal",
+      "repository": "https://github.com/nodemode-dev/formportal",
+      "licence": "GPL-3.0-only",
+      "state": "public",
+      "agents": {
+        "mcp": true,
+        "skills": true
+      },
+      "channels": {
+        "stable": {
+          "version": "0.53.5",
+          "published": "2026-11-03T16:17:44Z",
+          "notes": "https://github.com/nodemode-dev/formcompiler/releases/tag/formportal-v0.53.5",
+          "artifacts": [
+            {
+              "platform": "linux",
+              "arch": "arm64",
+              "kind": "appimage",
+              "file": "formportal-0.53.5-linux-arm64-update.AppImage",
+              "url": "https://dl.formai.studio/formportal/0.53.5/formportal-0.53.5-linux-arm64-update.AppImage",
+              "bytes": 84179464,
+              "sha256": "c91b63ef7d10d5cab30fdccbfda8e2daa4ed09471f15b0f76799d586147a7033",
+              "minimum_os": ""
+            },
+            {
+              "platform": "linux",
+              "arch": "arm64",
+              "kind": "zip",
+              "file": "formportal-0.53.5-linux-arm64.zip",
+              "url": "https://dl.formai.studio/formportal/0.53.5/formportal-0.53.5-linux-arm64.zip",
+              "bytes": 83549649,
+              "sha256": "2324127b578e2b37a0b4ad0f9faed45915c1b57ce261d81f86eaa035870b38e3",
+              "minimum_os": ""
+            },
+            {
+              "platform": "linux",
+              "arch": "x86_64",
+              "kind": "appimage",
+              "file": "formportal-0.53.5-linux-x86_64-update.AppImage",
+              "url": "https://dl.formai.studio/formportal/0.53.5/formportal-0.53.5-linux-x86_64-update.AppImage",
+              "bytes": 86600184,
+              "sha256": "ee0554dd5758d178115f0df5e3a5c5a87aded484889ef7a1d041a69c762ad014",
+              "minimum_os": ""
+            },
+            {
+              "platform": "linux",
+              "arch": "x86_64",
+              "kind": "zip",
+              "file": "formportal-0.53.5-linux-x86_64.zip",
+              "url": "https://dl.formai.studio/formportal/0.53.5/formportal-0.53.5-linux-x86_64.zip",
+              "bytes": 85922251,
+              "sha256": "6f341a853f5cc3d37c692e7fd58530e762728b7d026464617bcae8562d130808",
+              "minimum_os": ""
+            },
+            {
+              "platform": "macos",
+              "arch": "arm64",
+              "kind": "zip",
+              "file": "formportal-0.53.5-macos-arm64.zip",
+              "url": "https://dl.formai.studio/formportal/0.53.5/formportal-0.53.5-macos-arm64.zip",
+              "bytes": 6306730,
+              "sha256": "b5b32c0b190c11d89048d1cba2968278fd461f10b09df5409792b746a8458cd5",
+              "minimum_os": "macOS 12"
+            },
+            {
+              "platform": "macos",
+              "arch": "x86_64",
+              "kind": "zip",
+              "file": "formportal-0.53.5-macos-x86_64.zip",
+              "url": "https://dl.formai.studio/formportal/0.53.5/formportal-0.53.5-macos-x86_64.zip",
+              "bytes": 6836630,
+              "sha256": "ebe59c12dde236841bae2e2558cf2a684fe02372bee4ba327161535e82c233e5",
+              "minimum_os": "macOS 12"
+            },
+            {
+              "platform": "windows",
+              "arch": "arm64",
+              "kind": "zip",
+              "file": "formportal-0.53.5-windows-arm64.zip",
+              "url": "https://dl.formai.studio/formportal/0.53.5/formportal-0.53.5-windows-arm64.zip",
+              "bytes": 4144412,
+              "sha256": "a751f9a08bf2b9f988808849a457d9cbc18a3da22969416248ddbca8bc9979b3",
+              "minimum_os": "Windows 10"
+            },
+            {
+              "platform": "windows",
+              "arch": "x86_64",
+              "kind": "zip",
+              "file": "formportal-0.53.5-windows-x86_64.zip",
+              "url": "https://dl.formai.studio/formportal/0.53.5/formportal-0.53.5-windows-x86_64.zip",
+              "bytes": 4651484,
+              "sha256": "eabac5db2951bb36a66a6f4939315d661c31de0e01044e5372f1bfff3c06bbc0",
+              "minimum_os": "Windows 10"
+            }
+          ],
+          "commit": "a7b7cbe930cbd32d864d6c6cdd22ae5177e2478d",
+          "agents": {
+            "manifest": {
+              "file": "form-app.json",
+              "url": "https://dl.formai.studio/formportal/0.53.5/form-app.json",
+              "bytes": 2710,
+              "sha256": "4eae37152981c88ee4b543aa1e0f10c2afd0ef73fb03795455ef37cabe56492d"
+            },
+            "skills": {
+              "file": "formportal-skills-v0.53.5.zip",
+              "url": "https://dl.formai.studio/formportal/0.53.5/formportal-skills-v0.53.5.zip",
+              "bytes": 37974,
+              "sha256": "eef8ca04d6dbd886e698dac4019a9ba7e4938ce3dbbec4176c2171dd58e6b05d"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "format",
+      "name": "Format",
+      "kind": "chat",
+      "summary": "A chat and agent workspace for the Claude API, with a terminal, artifacts and documents.",
+      "identifier": "ai.nodemode.format",
+      "repository": "https://github.com/nodemode-dev/format",
+      "licence": "Apache-2.0",
+      "state": "prelaunch",
+      "agents": {
+        "mcp": true,
+        "skills": true
+      },
+      "channels": {}
+    },
+    {
+      "id": "formcel",
+      "name": "FormCel",
+      "kind": "spreadsheet",
+      "summary": "Spreadsheets on your own machine, with Excel files in and out.",
+      "identifier": "ai.nodemode.formcel",
+      "repository": "https://github.com/nodemode-dev/formcel",
+      "licence": "Apache-2.0",
+      "project_extensions": [
+        ".fcel"
+      ],
+      "state": "prelaunch",
+      "agents": {
+        "mcp": false,
+        "skills": false
+      },
+      "channels": {}
+    },
+    {
+      "id": "formcut",
+      "name": "FormCut",
+      "kind": "video",
+      "summary": "Video editing on your own machine: cut, grade, caption and export.",
+      "identifier": "app.formcut.desktop",
+      "repository": "https://github.com/nodemode-dev/formcut",
+      "licence": "Apache-2.0",
+      "project_extensions": [
+        ".fc"
+      ],
+      "state": "live",
+      "agents": {
+        "mcp": true,
+        "skills": true
+      },
+      "channels": {}
+    },
+    {
+      "id": "formdam",
+      "name": "FormDAM",
+      "kind": "library",
+      "summary": "A library for every photo, video and asset you keep.",
+      "identifier": "ai.nodemode.dam",
+      "repository": "https://github.com/nodemode-dev/formDAM",
+      "licence": "Apache-2.0",
+      "state": "live",
+      "agents": {
+        "mcp": false,
+        "skills": false
+      },
+      "channels": {}
+    },
+    {
+      "id": "formdesign",
+      "name": "FormDesign",
+      "kind": "layout",
+      "summary": "Page layout and PDF work in one app: lay out, publish, read, sign and edit.",
+      "identifier": "ai.nodemode.formdesign",
+      "repository": "https://github.com/nodemode-dev/formdesign",
+      "licence": "Apache-2.0",
+      "project_extensions": [
+        ".fdes"
+      ],
+      "state": "live",
+      "agents": {
+        "mcp": true,
+        "skills": true
+      },
+      "channels": {}
+    },
+    {
+      "id": "formencoder",
+      "name": "FormEncoder",
+      "kind": "encoder",
+      "summary": "Convert, compress and export media in batches, with presets.",
+      "identifier": "dev.formai.formencoder",
+      "repository": "https://github.com/nodemode-dev/formencoder",
+      "licence": "Apache-2.0",
+      "project_extensions": [
+        ".fequeue"
+      ],
+      "state": "public",
+      "agents": {
+        "mcp": true,
+        "skills": true
+      },
+      "channels": {}
+    },
+    {
+      "id": "formlit",
+      "name": "FormLit",
+      "kind": "photo",
+      "summary": "Photo library and raw development on your own machine.",
+      "identifier": "ai.nodemode.formlit",
+      "repository": "https://github.com/nodemode-dev/formlit",
+      "licence": "Apache-2.0",
+      "project_extensions": [
+        ".fldb"
+      ],
+      "state": "live",
+      "agents": {
+        "mcp": true,
+        "skills": true
+      },
+      "channels": {}
+    },
+    {
+      "id": "formmcp",
+      "name": "formMCP",
+      "kind": "connect",
+      "summary": "One MCP connection from Claude Code, Codex and Cursor to every Form app.",
+      "identifier": "ai.nodemode.formmcp",
+      "repository": "https://github.com/nodemode-dev/formMCP",
+      "licence": "GPL-3.0-only",
+      "state": "prelaunch",
+      "agents": {
+        "mcp": true,
+        "skills": true
+      },
+      "channels": {}
+    },
+    {
+      "id": "formmd",
+      "name": "Form.md",
+      "kind": "notes",
+      "summary": "Notes, docs and databases built on plain Markdown files.",
+      "identifier": "ai.nodemode.formmd",
+      "repository": "https://github.com/nodemode-dev/form.md",
+      "licence": "Apache-2.0",
+      "state": "live",
+      "agents": {
+        "mcp": true,
+        "skills": true
+      },
+      "channels": {
+        "stable": {
+          "version": "0.47.7",
+          "published": "2026-11-03T13:48:56Z",
+          "notes": "https://github.com/nodemode-dev/formcompiler/releases/tag/form.md-v0.47.7",
+          "artifacts": [
+            {
+              "platform": "linux",
+              "arch": "arm64",
+              "kind": "rpm",
+              "file": "form.md-0.47.7-1.aarch64.rpm",
+              "url": "https://dl.formai.studio/form.md/0.47.7/form.md-0.47.7-1.aarch64.rpm",
+              "bytes": 17772924,
+              "sha256": "304438d51429efe162d90bc8ce678e9ad3d2a01554d88bb03d577c773f0649a0",
+              "minimum_os": ""
+            },
+            {
+              "platform": "linux",
+              "arch": "x86_64",
+              "kind": "rpm",
+              "file": "form.md-0.47.7-1.x86_64.rpm",
+              "url": "https://dl.formai.studio/form.md/0.47.7/form.md-0.47.7-1.x86_64.rpm",
+              "bytes": 18782423,
+              "sha256": "1966fecfbce2e7f1128862a0e4934e615e149bbb6a82915541a48e60896441ad",
+              "minimum_os": ""
+            },
+            {
+              "platform": "linux",
+              "arch": "arm64",
+              "kind": "appimage",
+              "file": "form.md_0.47.7_aarch64.AppImage",
+              "url": "https://dl.formai.studio/form.md/0.47.7/form.md_0.47.7_aarch64.AppImage",
+              "bytes": 103164424,
+              "sha256": "1beddcf13724d3fff8de7248d1461099c625bb85b6951852a4365adf05864c0c",
+              "minimum_os": ""
+            },
+            {
+              "platform": "macos",
+              "arch": "arm64",
+              "kind": "dmg",
+              "file": "form.md_0.47.7_aarch64.dmg",
+              "url": "https://dl.formai.studio/form.md/0.47.7/form.md_0.47.7_aarch64.dmg",
+              "bytes": 17816793,
+              "sha256": "6c5802a529435b9d89240e82bcb0f0c38a2a51060c533406ff4defd1ecd66d59",
+              "minimum_os": "macOS 12"
+            },
+            {
+              "platform": "linux",
+              "arch": "x86_64",
+              "kind": "appimage",
+              "file": "form.md_0.47.7_amd64.AppImage",
+              "url": "https://dl.formai.studio/form.md/0.47.7/form.md_0.47.7_amd64.AppImage",
+              "bytes": 106568184,
+              "sha256": "519e7aa655ece6fda2cdc65208ba2d56a2143d901ef205a1f3c041c8e4ccf8eb",
+              "minimum_os": ""
+            },
+            {
+              "platform": "linux",
+              "arch": "x86_64",
+              "kind": "deb",
+              "file": "form.md_0.47.7_amd64.deb",
+              "url": "https://dl.formai.studio/form.md/0.47.7/form.md_0.47.7_amd64.deb",
+              "bytes": 18789152,
+              "sha256": "f091a36b0226ef91a5aefefdc39ba1d9928918fa59995268733dfb191e3ef1e4",
+              "minimum_os": ""
+            },
+            {
+              "platform": "linux",
+              "arch": "arm64",
+              "kind": "deb",
+              "file": "form.md_0.47.7_arm64.deb",
+              "url": "https://dl.formai.studio/form.md/0.47.7/form.md_0.47.7_arm64.deb",
+              "bytes": 17774080,
+              "sha256": "927198d538dc634d9a6e1d5ece647442605a8188cf6ea25738e3e490a172cdeb",
+              "minimum_os": ""
+            },
+            {
+              "platform": "windows",
+              "arch": "x86_64",
+              "kind": "nsis",
+              "file": "form.md_0.47.7_x64-setup.exe",
+              "url": "https://dl.formai.studio/form.md/0.47.7/form.md_0.47.7_x64-setup.exe",
+              "bytes": 12438256,
+              "sha256": "96b2d399c063d19e608b576f64e17169128132761f6827cd41ba3e0f4b336673",
+              "minimum_os": ""
+            },
+            {
+              "platform": "macos",
+              "arch": "x86_64",
+              "kind": "dmg",
+              "file": "form.md_0.47.7_x64.dmg",
+              "url": "https://dl.formai.studio/form.md/0.47.7/form.md_0.47.7_x64.dmg",
+              "bytes": 19141437,
+              "sha256": "1bcf89a138f854f7738303f18884583c6f79359acbdd0e14a038d845903550b1",
+              "minimum_os": "macOS 12"
+            },
+            {
+              "platform": "windows",
+              "arch": "x86_64",
+              "kind": "msi",
+              "file": "form.md_0.47.7_x64_en-US.msi",
+              "url": "https://dl.formai.studio/form.md/0.47.7/form.md_0.47.7_x64_en-US.msi",
+              "bytes": 17551360,
+              "sha256": "1de2a1bceb87dd50b660dd79c5ceea37634acd2a27d8018e72a05cdd2ab3921c",
+              "minimum_os": ""
+            }
+          ],
+          "commit": "526dbd98bbfd99e4bd4f85bb1d3a7b3944962aa8",
+          "agents": {
+            "manifest": {
+              "file": "form-app.json",
+              "url": "https://dl.formai.studio/form.md/0.47.7/form-app.json",
+              "bytes": 1661,
+              "sha256": "d8cfb7e087acf836b362dd6365d74503a8da87d2fc790f440b863590ef531d3b"
+            },
+            "skills": {
+              "file": "form.md-skills-v0.47.7.zip",
+              "url": "https://dl.formai.studio/form.md/0.47.7/form.md-skills-v0.47.7.zip",
+              "bytes": 20390,
+              "sha256": "753a7b25dc7340afce280de378b824fb7a831bfef4f52e6a45dcb42b5e9bca6c"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "formnet",
+      "name": "FormNET",
+      "kind": "network",
+      "summary": "The network tab for the whole computer: what websites, apps and the machine actually send.",
+      "identifier": "ai.nodemode.formnet",
+      "repository": "https://github.com/nodemode-dev/formNET",
+      "licence": "Apache-2.0",
+      "state": "prelaunch",
+      "agents": {
+        "mcp": false,
+        "skills": false
+      },
+      "channels": {}
+    },
+    {
+      "id": "formpath",
+      "name": "FormPath",
+      "kind": "vector",
+      "summary": "Vector illustration: paths, shapes, type and artboards.",
+      "identifier": "ai.nodemode.formpath",
+      "repository": "https://github.com/nodemode-dev/formpath",
+      "licence": "Apache-2.0",
+      "project_extensions": [
+        ".fpth"
+      ],
+      "state": "live",
+      "agents": {
+        "mcp": true,
+        "skills": true
+      },
+      "channels": {}
+    },
+    {
+      "id": "formpdf",
+      "name": "FormPDF",
+      "kind": "pdf",
+      "summary": "A PDF editor that runs on your computer: view, comment, fill, sign and edit.",
+      "identifier": "ai.nodemode.formpdf",
+      "repository": "https://github.com/nodemode-dev/formpdf",
+      "licence": "Apache-2.0",
+      "state": "prelaunch",
+      "agents": {
+        "mcp": true,
+        "skills": true
+      },
+      "channels": {}
+    },
+    {
+      "id": "formpromo",
+      "name": "FormPromo",
+      "kind": "promo",
+      "summary": "Promo films from your own media, style and sourced claims.",
+      "identifier": "ai.nodemode.formpromo",
+      "repository": "https://github.com/nodemode-dev/formpromo",
+      "licence": "GPL-3.0-only",
+      "project_extensions": [
+        ".fptemplate"
+      ],
+      "state": "prelaunch",
+      "agents": {
+        "mcp": true,
+        "skills": true
+      },
+      "channels": {}
+    },
+    {
+      "id": "formranker",
+      "name": "FormRanker",
+      "kind": "parity",
+      "summary": "Parity, testing and feedback for the Form apps, kept on this computer.",
+      "identifier": "ai.nodemode.formranker",
+      "repository": "https://github.com/nodemode-dev/formranker",
+      "licence": "Apache-2.0",
+      "state": "prelaunch",
+      "agents": {
+        "mcp": true,
+        "skills": false
+      },
+      "channels": {}
+    },
+    {
+      "id": "formref",
+      "name": "FormRef",
+      "kind": "reference",
+      "summary": "Reference boards for images, ideas and creative work.",
+      "identifier": "ai.nodemode.formref",
+      "repository": "https://github.com/nodemode-dev/formref",
+      "licence": "Apache-2.0",
+      "state": "prelaunch",
+      "agents": {
+        "mcp": true,
+        "skills": true
+      },
+      "channels": {}
+    },
+    {
+      "id": "formsculpt",
+      "name": "FormSculpt",
+      "kind": "sculpt",
+      "summary": "3D sculpting and modeling, with a Rust engine and a command set agents can drive.",
+      "identifier": "ai.nodemode.formsculpt",
+      "repository": "https://github.com/nodemode-dev/formsculpt",
+      "licence": "Apache-2.0",
+      "project_extensions": [
+        ".fsc"
+      ],
+      "state": "prelaunch",
+      "agents": {
+        "mcp": true,
+        "skills": true
+      },
+      "channels": {}
+    },
+    {
+      "id": "formskills",
+      "name": "formskills",
+      "kind": "skill",
+      "summary": "The Form apps' released skills: read them, download them, keep your own edits.",
+      "identifier": "ai.nodemode.formskills",
+      "repository": "https://github.com/nodemode-dev/formskills",
+      "licence": "GPL-3.0-only",
+      "state": "prelaunch",
+      "agents": {
+        "mcp": false,
+        "skills": false
+      },
+      "channels": {}
+    },
+    {
+      "id": "formslide",
+      "name": "FormSlide",
+      "kind": "slides",
+      "summary": "Presentations: build slides, present and export.",
+      "identifier": "ai.nodemode.formdeck",
+      "repository": "https://github.com/nodemode-dev/formdeck",
+      "licence": "Apache-2.0",
+      "project_extensions": [
+        ".fdec"
+      ],
+      "state": "live",
+      "agents": {
+        "mcp": true,
+        "skills": true
+      },
+      "channels": {}
+    },
+    {
+      "id": "formsurface",
+      "name": "FormSurface",
+      "kind": "texture",
+      "summary": "Paint textures and materials straight onto 3D models.",
+      "identifier": "ai.nodemode.formsurface",
+      "repository": "https://github.com/nodemode-dev/formsurface",
+      "licence": "Apache-2.0",
+      "state": "prelaunch",
+      "agents": {
+        "mcp": true,
+        "skills": true
+      },
+      "channels": {}
+    },
+    {
+      "id": "formtray",
+      "name": "FormTray",
+      "kind": "launcher",
+      "summary": "One dock icon for every Form app: switch, launch and arrange the family.",
+      "identifier": "ai.nodemode.formtray",
+      "repository": "https://github.com/nodemode-dev/formtray",
+      "licence": "Apache-2.0",
+      "state": "prelaunch",
+      "agents": {
+        "mcp": false,
+        "skills": false
+      },
+      "channels": {
+        "stable": {
+          "version": "0.9.8",
+          "published": "2026-11-02T16:17:55Z",
+          "notes": "https://github.com/nodemode-dev/formcompiler/releases/tag/formtray-v0.9.8",
+          "artifacts": [
+            {
+              "platform": "linux",
+              "arch": "x86_64",
+              "kind": "rpm",
+              "file": "FormTray-0.9.8-1.x86_64.rpm",
+              "url": "https://dl.formai.studio/formtray/0.9.8/FormTray-0.9.8-1.x86_64.rpm",
+              "bytes": 5018071,
+              "sha256": "79d6bb0a3579c9fd0e463ec14a3b639d76fc74aa566f446fa66b2d4ff58413c8",
+              "minimum_os": ""
+            },
+            {
+              "platform": "linux",
+              "arch": "x86_64",
+              "kind": "appimage",
+              "file": "FormTray_0.9.8_amd64.AppImage",
+              "url": "https://dl.formai.studio/formtray/0.9.8/FormTray_0.9.8_amd64.AppImage",
+              "bytes": 83429880,
+              "sha256": "f80d09609f8b950276ae884072541b3404afb3e41d3bfbe597e911c48aa8324a",
+              "minimum_os": ""
+            },
+            {
+              "platform": "linux",
+              "arch": "x86_64",
+              "kind": "deb",
+              "file": "FormTray_0.9.8_amd64.deb",
+              "url": "https://dl.formai.studio/formtray/0.9.8/FormTray_0.9.8_amd64.deb",
+              "bytes": 5016570,
+              "sha256": "db74fc70be8ef3241822766c694de01d059d37a69da6c70e82c05e96f3355a1a",
+              "minimum_os": ""
+            },
+            {
+              "platform": "macos",
+              "arch": "arm64",
+              "kind": "dmg",
+              "file": "FormTray_0.9.8_arm64.dmg",
+              "url": "https://dl.formai.studio/formtray/0.9.8/FormTray_0.9.8_arm64.dmg",
+              "bytes": 4446177,
+              "sha256": "14def69dcdf02420465acf2faf9f8fe28eaa5777c8e7cd4ea51e92f51dc740ca",
+              "minimum_os": "macOS 11"
+            },
+            {
+              "platform": "windows",
+              "arch": "x86_64",
+              "kind": "nsis",
+              "file": "FormTray_0.9.8_x64-setup.exe",
+              "url": "https://dl.formai.studio/formtray/0.9.8/FormTray_0.9.8_x64-setup.exe",
+              "bytes": 2560376,
+              "sha256": "3a009d2f7053160233852f20434a25273527eaf7edf2ce97dd8e119d79466e37",
+              "minimum_os": ""
+            },
+            {
+              "platform": "windows",
+              "arch": "x86_64",
+              "kind": "msi",
+              "file": "FormTray_0.9.8_x64_en-US.msi",
+              "url": "https://dl.formai.studio/formtray/0.9.8/FormTray_0.9.8_x64_en-US.msi",
+              "bytes": 3645440,
+              "sha256": "9a4b6e857020796cc18ad6326f2d765a858cb963aa4e8ee53d793adc8ea20cbc",
+              "minimum_os": ""
+            },
+            {
+              "platform": "macos",
+              "arch": "x86_64",
+              "kind": "dmg",
+              "file": "FormTray_0.9.8_x86_64.dmg",
+              "url": "https://dl.formai.studio/formtray/0.9.8/FormTray_0.9.8_x86_64.dmg",
+              "bytes": 4822361,
+              "sha256": "065841be1c5d4e8b8a4d70a91248fcedad7d50eb6ab38b9a5b6482ce18fbf821",
+              "minimum_os": "macOS 11"
+            }
+          ],
+          "commit": "f05c1389a18d217d6895093088177d520a981f3c",
+          "agents": {
+            "manifest": {
+              "file": "form-app.json",
+              "url": "https://dl.formai.studio/formtray/0.9.8/form-app.json",
+              "bytes": 254,
+              "sha256": "74a0a85d46abadaada321b74ea0838decd7afa195ba2de749233f727ff83c94a"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "formtxt",
+      "name": "FormTxt",
+      "kind": "document",
+      "summary": "Documents on your own machine: paginated and pageless, with .docx and .odt round trips.",
+      "identifier": "ai.nodemode.formtxt",
+      "repository": "https://github.com/nodemode-dev/formtxt",
+      "licence": "Apache-2.0",
+      "state": "prelaunch",
+      "agents": {
+        "mcp": false,
+        "skills": false
+      },
+      "channels": {}
+    },
+    {
+      "id": "formvfx",
+      "name": "FormVFX",
+      "kind": "motion",
+      "summary": "Motion graphics and visual effects on a layered timeline.",
+      "identifier": "ai.nodemode.formvfx",
+      "repository": "https://github.com/nodemode-dev/formvfx",
+      "licence": "Apache-2.0",
+      "project_extensions": [
+        ".fvxproj"
+      ],
+      "state": "live",
+      "agents": {
+        "mcp": true,
+        "skills": true
+      },
+      "channels": {}
+    },
+    {
+      "id": "formvis",
+      "name": "FormVis",
+      "kind": "image",
+      "summary": "Layered image editing: layers, masks, selections, painting and export.",
+      "identifier": "ai.nodemode.formvis",
+      "repository": "https://github.com/nodemode-dev/formvis",
+      "licence": "Apache-2.0",
+      "project_extensions": [
+        ".fmv",
+        ".formvis"
+      ],
+      "state": "live",
+      "agents": {
+        "mcp": true,
+        "skills": true
+      },
+      "channels": {}
+    },
+    {
+      "id": "formwav",
+      "name": "FormWav",
+      "kind": "audio",
+      "summary": "Audio editing: record, edit, repair, mix and export.",
+      "identifier": "ai.nodemode.formwav",
+      "repository": "https://github.com/nodemode-dev/formwav",
+      "licence": "Apache-2.0",
+      "project_extensions": [
+        ".fmw"
+      ],
+      "state": "live",
+      "agents": {
+        "mcp": true,
+        "skills": true
+      },
+      "channels": {}
+    },
+    {
+      "id": "formweb",
+      "name": "FormWeb",
+      "kind": "web",
+      "summary": "Design and publish web pages visually.",
+      "identifier": "ai.nodemode.formweb",
+      "repository": "https://github.com/nodemode-dev/formweb",
+      "licence": "Apache-2.0",
+      "state": "prelaunch",
+      "agents": {
+        "mcp": true,
+        "skills": true
+      },
+      "channels": {}
+    }
+  ]
+}

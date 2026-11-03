@@ -1,0 +1,53 @@
+{
+  "app": "formweb",
+  "repository": "nodemode-dev/formweb",
+  "title": "formweb",
+  "enabled": true,
+  "release": "draft",
+  "version": {"file": "src-tauri/tauri.conf.json", "pattern": ""},
+  "checks": ["ci.yml"],
+  "platforms": ["macos-arm64", "linux-x64", "windows-x64"],
+  "toolchain": {
+    "node": "22",
+    "python": "3.12",
+    "rust": true,
+    "rust_targets": "",
+    "rust_cache": ["src-tauri", "native"],
+    "go": "",
+    "linux_packages": "libwebkit2gtk-4.1-dev build-essential curl wget file libxdo-dev libssl-dev libayatana-appindicator3-dev librsvg2-dev patchelf",
+    "windows_msvc": false
+  },
+  "build": {
+    "mode": "commands",
+    "cli": "formweb",
+    "install": false,
+    "install_args": "",
+    "install_desktop": false,
+    "windows_shell": "cmd",
+    "macos": "./build_app --no-install",
+    "linux": "FORMWEB_BUNDLES=deb,rpm,appimage ./build_app",
+    "windows": "call build_app.bat",
+    "tauri_config": ""
+  },
+  "setup": {"macos": "", "linux": "", "windows": ""},
+  "post_build": {"macos": "", "linux": "", "windows": ""},
+  "artifacts": [],
+  "extras": [],
+  "assets": "",
+  "notes": "",
+  "updater": {"tauri": false, "tag_json": false, "files": []},
+  "signing": {"macos": "apple", "windows": "certificate"},
+  "agents": {"skills": ".claude/skills", "mcp": true},
+  "catalog": {
+    "id": "formweb",
+    "name": "FormWeb",
+    "kind": "web",
+    "summary": "Design and publish web pages visually.",
+    "identifier": "ai.nodemode.formweb",
+    "licence": "Apache-2.0",
+    "state": "prelaunch",
+    "project_extensions": [],
+    "minimum_os": {"macos": "", "windows": "", "linux": ""}
+  },
+  "notes_for_owner": "UNTESTED: formweb had no build workflow, so no earlier run backs this entry (its README says no prebuilt binary is included). './formweb desktop build' only execs ./build_app, which exits 2 on --config and installs everything itself; formweb.bat has no desktop build, so Windows runs build_app.bat. build_app passes its own --config for externalBin and builds only the .app (plus an hdiutil dmg, which formcompiler signs and notarizes after the build) on macOS, and on Linux the deb, rpm and AppImage the registry asks for through FORMWEB_BUNDLES (build_app's default is the deb alone); Windows builds every bundle (nsis and msi). No bundle.macOS.minimumSystemVersion is set, so minimum_os is empty. No Tauri updater. Catalog: identifier is ai.nodemode.formweb (tauri.conf.json); products.json says dev.formai.formweb. products.json lists no project_extensions although tauri.conf.json registers .fweb; the registry follows products.json."
+}

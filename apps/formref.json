@@ -1,0 +1,53 @@
+{
+  "app": "formref",
+  "repository": "nodemode-dev/formref",
+  "title": "formref",
+  "enabled": true,
+  "release": "draft",
+  "version": {"file": "src-tauri/tauri.conf.json", "pattern": ""},
+  "checks": ["ci.yml"],
+  "platforms": ["macos-arm64", "linux-x64", "windows-x64"],
+  "toolchain": {
+    "node": "22",
+    "python": "3.12",
+    "rust": true,
+    "rust_targets": "",
+    "rust_cache": ["src-tauri", "native/formref-core"],
+    "go": "",
+    "linux_packages": "libwebkit2gtk-4.1-dev libayatana-appindicator3-dev librsvg2-dev libxdo-dev libssl-dev pkg-config build-essential file patchelf libcairo2 gstreamer1.0-plugins-base gstreamer1.0-plugins-good",
+    "windows_msvc": false
+  },
+  "build": {
+    "mode": "commands",
+    "cli": "formref",
+    "install": false,
+    "install_args": "",
+    "install_desktop": false,
+    "windows_shell": "cmd",
+    "macos": "./build_app -- $FORMCOMPILER_CONFIG_ARG",
+    "linux": "./build_app -- $FORMCOMPILER_CONFIG_ARG",
+    "windows": "call build_app.bat %FORMCOMPILER_CONFIG_ARG%",
+    "tauri_config": ""
+  },
+  "setup": {"macos": "", "linux": "", "windows": ""},
+  "post_build": {"macos": "", "linux": "", "windows": ""},
+  "artifacts": [],
+  "extras": [],
+  "assets": "",
+  "notes": "",
+  "updater": {"tauri": false, "tag_json": false, "files": []},
+  "signing": {"macos": "apple", "windows": "certificate"},
+  "agents": {"skills": ".claude/skills", "mcp": true},
+  "catalog": {
+    "id": "formref",
+    "name": "FormRef",
+    "kind": "reference",
+    "summary": "Reference boards for images, ideas and creative work.",
+    "identifier": "ai.nodemode.formref",
+    "licence": "Apache-2.0",
+    "state": "prelaunch",
+    "project_extensions": [],
+    "minimum_os": {"macos": "macOS 12", "windows": "", "linux": ""}
+  },
+  "notes_for_owner": "Enabled from FormRef v0.38.0: the shell bundles frontend/dist and starts its PyInstaller onefile engine (binaries/formref-engine) plus the Rust core (binaries/formref-core) as externalBin sidecars; build_app and build_app.bat install, build the Rust core and window, freeze (backend/freeze_engine[.bat]) and run tauri build with --config forwarded. The engine takes 127.0.0.1:8320 or a free port. First run is untested on every OS: check the selfcheck line in the build log, that the macOS notarization accepts both sidecars, and that the installed app opens its board. CairoSVG needs the system Cairo library, which the macOS and Windows installers do not carry, so SVG to PNG and PDF export fail there until it is bundled."
+}

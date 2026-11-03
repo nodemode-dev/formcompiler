@@ -1,0 +1,53 @@
+{
+  "app": "formsurface",
+  "repository": "nodemode-dev/formsurface",
+  "title": "formsurface",
+  "enabled": true,
+  "release": "draft",
+  "version": {"file": "src-tauri/tauri.conf.json", "pattern": ""},
+  "checks": ["ci.yml"],
+  "platforms": ["macos-arm64", "linux-x64", "windows-x64"],
+  "toolchain": {
+    "node": "22",
+    "python": "3.12",
+    "rust": true,
+    "rust_targets": "wasm32-unknown-unknown",
+    "rust_cache": ["src-tauri", "native"],
+    "go": "",
+    "linux_packages": "libwebkit2gtk-4.1-dev build-essential curl wget file libxdo-dev libssl-dev libayatana-appindicator3-dev librsvg2-dev patchelf",
+    "windows_msvc": true
+  },
+  "build": {
+    "mode": "commands",
+    "cli": "formsurface",
+    "install": false,
+    "install_args": "",
+    "install_desktop": false,
+    "windows_shell": "cmd",
+    "macos": "./build_app --no-install $FORMCOMPILER_CONFIG_ARG",
+    "linux": "./build_app $FORMCOMPILER_CONFIG_ARG",
+    "windows": "call formsurface_oc_install.bat\ncall formsurface.bat install-desktop\ncall formsurface.bat desktop build %FORMCOMPILER_CONFIG_ARG%",
+    "tauri_config": ""
+  },
+  "setup": {"macos": "", "linux": "", "windows": ""},
+  "post_build": {"macos": "", "linux": "", "windows": ""},
+  "artifacts": [],
+  "extras": [],
+  "assets": "",
+  "notes": "",
+  "updater": {"tauri": true, "tag_json": false, "files": []},
+  "signing": {"macos": "apple", "windows": "certificate"},
+  "agents": {"skills": ".claude/skills", "mcp": true},
+  "catalog": {
+    "id": "formsurface",
+    "name": "FormSurface",
+    "kind": "texture",
+    "summary": "Paint textures and materials straight onto 3D models.",
+    "identifier": "ai.nodemode.formsurface",
+    "licence": "Apache-2.0",
+    "state": "prelaunch",
+    "project_extensions": [],
+    "minimum_os": {"macos": "macOS 12", "windows": "Windows 10", "linux": ""}
+  },
+  "notes_for_owner": "UNTESTED: formsurface had no build workflow, so no earlier run backs this entry. Since formsurface 0.60.0 ./build_app takes --config and forwards it to tauri build, and Linux builds the deb and the AppImage. Windows (new): formsurface_oc_install.bat installs, formsurface.bat install-desktop prepares the shell and formsurface.bat desktop build forwards %FORMCOMPILER_CONFIG_ARG% to tauri build; each install step now stops on a failure. The Windows path is untested until its first formcompiler run. Updater: plugins.updater has an endpoint but an empty pubkey, so updater.tauri stays true (formcompiler writes latest.json only when its signing key exists). Catalog: identifier is ai.nodemode.formsurface (tauri.conf.json); products.json says dev.formai.formsurface."
+}

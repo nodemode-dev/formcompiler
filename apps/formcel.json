@@ -1,0 +1,53 @@
+{
+  "app": "formcel",
+  "repository": "nodemode-dev/formcel",
+  "title": "formcel",
+  "enabled": true,
+  "release": "draft",
+  "version": {"file": "src-tauri/tauri.conf.json", "pattern": ""},
+  "checks": ["ci.yml"],
+  "platforms": ["macos-arm64", "linux-x64", "windows-x64"],
+  "toolchain": {
+    "node": "22",
+    "python": "3.12",
+    "rust": true,
+    "rust_targets": "wasm32-unknown-unknown",
+    "rust_cache": ["src-tauri", "engine"],
+    "go": "",
+    "linux_packages": "libwebkit2gtk-4.1-dev build-essential curl wget file libxdo-dev libssl-dev libayatana-appindicator3-dev librsvg2-dev patchelf",
+    "windows_msvc": false
+  },
+  "build": {
+    "mode": "commands",
+    "cli": "formcel",
+    "install": false,
+    "install_args": "",
+    "install_desktop": false,
+    "windows_shell": "cmd",
+    "macos": "FORMCEL_CARGO_TARGET=\"$PWD/src-tauri/target\" ./build_app --no-install",
+    "linux": "FORMCEL_CARGO_TARGET=\"$PWD/src-tauri/target\" FORMCEL_BUNDLES=deb,appimage ./build_app",
+    "windows": "call build_app.bat",
+    "tauri_config": ""
+  },
+  "setup": {"macos": "", "linux": "", "windows": ""},
+  "post_build": {"macos": "", "linux": "", "windows": ""},
+  "artifacts": [],
+  "extras": [],
+  "assets": "",
+  "notes": "",
+  "updater": {"tauri": false, "tag_json": false, "files": []},
+  "signing": {"macos": "apple", "windows": "certificate"},
+  "agents": {"skills": "", "mcp": false},
+  "catalog": {
+    "id": "formcel",
+    "name": "FormCel",
+    "kind": "spreadsheet",
+    "summary": "Spreadsheets on your own machine, with Excel files in and out.",
+    "identifier": "ai.nodemode.formcel",
+    "licence": "Apache-2.0",
+    "state": "prelaunch",
+    "project_extensions": [".fcel"],
+    "minimum_os": {"macos": "macOS 11", "windows": "", "linux": ""}
+  },
+  "notes_for_owner": "UNTESTED: formcel had no build workflow, so no earlier run backs this entry. Its launcher has no 'desktop build'; the build is ./build_app (macOS, Linux) and build_app.bat (Windows). Not in formportal's products.json: the catalog entry is written from the README and tauri.conf.json (project file .fcel from the README). build_app puts the Rust build outside the checkout (~/.cache/formcel/tauri-target) unless FORMCEL_CARGO_TARGET is set, so the entry sets it to src-tauri/target to make the bundles findable; build_app.bat has no such override and builds in src-tauri/target. build_app builds only 'deb' on Linux by default; FORMCEL_BUNDLES=deb,appimage (the script's own variable; tauri.conf.json lists deb and appimage, no rpm) is set here and is a choice, not something a workflow did. On macOS build_app builds the .app and packs the dmg itself with hdiutil; it takes no --config, so there are no updater artifacts (the app has no updater plugin anyway). Windows runs build_app.bat, which needs python on PATH."
+}

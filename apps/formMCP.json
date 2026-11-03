@@ -1,0 +1,60 @@
+{
+  "app": "formMCP",
+  "repository": "nodemode-dev/formMCP",
+  "title": "formMCP",
+  "enabled": true,
+  "release": "draft",
+  "version": {"file": "src-tauri/tauri.conf.json", "pattern": ""},
+  "checks": ["ci.yml"],
+  "platforms": ["macos-arm64", "macos-x64", "linux-x64", "windows-x64"],
+  "toolchain": {
+    "node": "22",
+    "python": "",
+    "rust": true,
+    "rust_targets": "",
+    "rust_cache": ["."],
+    "go": "",
+    "linux_packages": "libwebkit2gtk-4.1-dev libayatana-appindicator3-dev librsvg2-dev libxdo-dev libssl-dev libdbus-1-dev pkg-config build-essential file",
+    "windows_msvc": false
+  },
+  "build": {
+    "mode": "commands",
+    "cli": "formmcp",
+    "install": false,
+    "install_args": "",
+    "install_desktop": false,
+    "windows_shell": "cmd",
+    "macos": "./build_app --no-install",
+    "linux": "./build_app --no-install",
+    "windows": "call build_app.bat",
+    "tauri_config": ""
+  },
+  "setup": {"macos": "", "linux": "", "windows": ""},
+  "post_build": {"macos": "", "linux": "", "windows": ""},
+  "artifacts": [
+    "target/release/bundle/dmg/*.dmg",
+    "target/release/bundle/appimage/*.AppImage",
+    "target/release/bundle/deb/*.deb",
+    "target/release/bundle/rpm/*.rpm",
+    "target/release/bundle/msi/*.msi",
+    "target/release/bundle/nsis/*.exe"
+  ],
+  "extras": [],
+  "assets": "",
+  "notes": "",
+  "updater": {"tauri": false, "tag_json": false, "files": []},
+  "signing": {"macos": "apple", "windows": "certificate"},
+  "agents": {"skills": ".claude/skills", "mcp": true},
+  "catalog": {
+    "id": "formmcp",
+    "name": "formMCP",
+    "kind": "connect",
+    "summary": "One MCP connection from Claude Code, Codex and Cursor to every Form app.",
+    "identifier": "ai.nodemode.formmcp",
+    "licence": "GPL-3.0-only",
+    "state": "prelaunch",
+    "project_extensions": [],
+    "minimum_os": {"macos": "macOS 11", "windows": "", "linux": ""}
+  },
+  "notes_for_owner": "Added in the family plan's Phase 5. The catalog entry is written from formMCP's README and tauri.conf.json (identifier ai.nodemode.formmcp, owner's Q5). formMCP is a Cargo workspace like formtray, so its bundles are under target/release/bundle at the repository root; build_app and build_app.bat follow formtray's. The installed program is its own MCP launcher (formmcp mcp, no window), but no mcp_launch is set: the command differs per platform inside the bundle, the same open point as every app's (family plan, Q9). formMCP leaves itself out of its own family list. Linux installs libdbus-1-dev, which the core's keyring (secret-service) links and formmcp_oc_install checks for, as formMCP's own CI does. build_app makes the macOS disk image with hdiutil; formcompiler signs and notarizes it after the build (v0.6.0)."
+}

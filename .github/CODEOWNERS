@@ -1,0 +1,8 @@
+# The owner reviews everything; these paths decide what gets built, signed and published.
+# Enforced once a ruleset on main requires code owner review.
+*                       @nodemode-ai
+/.github/               @nodemode-ai
+/apps/                  @nodemode-ai
+/scripts/               @nodemode-ai
+/yanked.json            @nodemode-ai
+/SECURITY.md            @nodemode-ai

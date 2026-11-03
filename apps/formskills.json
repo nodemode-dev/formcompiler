@@ -1,0 +1,60 @@
+{
+  "app": "formskills",
+  "repository": "nodemode-dev/formskills",
+  "title": "formskills",
+  "enabled": true,
+  "release": "draft",
+  "version": {"file": "src-tauri/tauri.conf.json", "pattern": ""},
+  "checks": ["ci.yml"],
+  "platforms": ["macos-arm64", "macos-x64", "linux-x64", "windows-x64"],
+  "toolchain": {
+    "node": "22",
+    "python": "",
+    "rust": true,
+    "rust_targets": "",
+    "rust_cache": ["."],
+    "go": "",
+    "linux_packages": "libwebkit2gtk-4.1-dev libayatana-appindicator3-dev librsvg2-dev libxdo-dev libssl-dev pkg-config build-essential file",
+    "windows_msvc": false
+  },
+  "build": {
+    "mode": "commands",
+    "cli": "formskills",
+    "install": false,
+    "install_args": "",
+    "install_desktop": false,
+    "windows_shell": "cmd",
+    "macos": "./build_app --no-install",
+    "linux": "./build_app --no-install",
+    "windows": "call build_app.bat",
+    "tauri_config": ""
+  },
+  "setup": {"macos": "", "linux": "", "windows": ""},
+  "post_build": {"macos": "", "linux": "", "windows": ""},
+  "artifacts": [
+    "target/release/bundle/dmg/*.dmg",
+    "target/release/bundle/appimage/*.AppImage",
+    "target/release/bundle/deb/*.deb",
+    "target/release/bundle/rpm/*.rpm",
+    "target/release/bundle/msi/*.msi",
+    "target/release/bundle/nsis/*.exe"
+  ],
+  "extras": [],
+  "assets": "",
+  "notes": "",
+  "updater": {"tauri": false, "tag_json": false, "files": []},
+  "signing": {"macos": "apple", "windows": "certificate"},
+  "agents": {"skills": "", "mcp": false},
+  "catalog": {
+    "id": "formskills",
+    "name": "formskills",
+    "kind": "skill",
+    "summary": "The Form apps' released skills: read them, download them, keep your own edits.",
+    "identifier": "ai.nodemode.formskills",
+    "licence": "GPL-3.0-only",
+    "state": "prelaunch",
+    "project_extensions": [],
+    "minimum_os": {"macos": "macOS 11", "windows": "", "linux": ""}
+  },
+  "notes_for_owner": "Added in the family plan's Phase 5. The catalog entry is written from formskills' README and tauri.conf.json (identifier ai.nodemode.formskills, owner's Q5; the old id formskill is retired in FormPortal and FormRanker). formskills is a Cargo workspace like formtray; build_app and build_app.bat follow formtray's, and ./build_app --no-install --bundles deb was run on Linux (formskills_0.4.0_amd64.deb with the binary, LICENSE, NOTICE.md, the desktop file and icons). It ships no skills of its own and no MCP server: it shows the other apps' skills. build_app makes the macOS disk image with hdiutil; formcompiler signs and notarizes it after the build (v0.6.0)."
+}

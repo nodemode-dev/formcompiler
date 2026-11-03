@@ -1,0 +1,552 @@
+name: Desktop build
+
+on:
+  workflow_call:
+    inputs:
+      app-name:
+        description: "Registry name of the app, e.g. formvis. Names the artifacts."
+        type: string
+        required: true
+      repository:
+        description: "The app repository to build, e.g. nodemode-dev/formvis"
+        type: string
+        required: true
+      ref:
+        description: "The commit of the app to build (the compile branch's head)"
+        type: string
+        required: true
+      tag-prefix:
+        description: "Release tag prefix, <app>-v"
+        type: string
+        required: true
+      expect-version:
+        description: "The version the compile branch names; the version file must agree"
+        type: string
+        default: ""
+      platform-env:
+        description: "JSON object: platform name to environment variables for that platform's build and post-build"
+        type: string
+        default: "{}"
+      post-build-macos:
+        description: "Bash run on macOS after the build, before the files are collected"
+        type: string
+        default: ""
+      post-build-linux:
+        description: "Bash run on Linux after the build"
+        type: string
+        default: ""
+      post-build-windows:
+        description: "Bash (Git Bash) run on Windows after the build"
+        type: string
+        default: ""
+      go-version:
+        description: "Go version, or go.mod to read it from the app"
+        type: string
+        default: ""
+      macos-signing:
+        description: "apple (formcompiler's Apple identity when set, ad hoc until then), adhoc, or none"
+        type: string
+        default: "apple"
+      windows-signing:
+        description: "certificate (formcompiler's Windows certificate when set) or none"
+        type: string
+        default: "certificate"
+      app-title:
+        description: "Display name for the release title and updater notes (default: app-name)"
+        type: string
+        default: ""
+      cli:
+        description: "The app's root launcher, run as ./<cli> or <cli>.bat (default: app-name; formdesign uses formdes)"
+        type: string
+        default: ""
+      version:
+        description: "Version override for a test run, e.g. 0.2.0-rc.1 (default: read from version-file)"
+        type: string
+        default: ""
+      version-file:
+        description: "File the version is read from: a JSON or Cargo.toml version, or any file with version-pattern"
+        type: string
+        default: "src-tauri/tauri.conf.json"
+      version-pattern:
+        description: "Regex whose first group is the version, for files that are not JSON or TOML"
+        type: string
+        default: ""
+      platforms:
+        description: "Comma list of macos-arm64, macos-x64, linux-x64, linux-arm64, windows-x64, windows-arm64; name=runner overrides a runner"
+        type: string
+        default: "macos-arm64,linux-x64,windows-x64"
+      install:
+        description: "Run <cli> install before building"
+        type: boolean
+        default: true
+      install-args:
+        description: "Arguments for <cli> install, e.g. --lite"
+        type: string
+        default: ""
+      install-desktop:
+        description: "Run <cli> install-desktop before building"
+        type: boolean
+        default: true
+      windows-shell:
+        description: "cmd runs <cli>.bat; bash runs ./<cli> in Git Bash"
+        type: string
+        default: "cmd"
+      build-macos:
+        description: "Commands that replace install and desktop build on macOS (bash, one per line)"
+        type: string
+        default: ""
+      build-linux:
+        description: "Commands that replace install and desktop build on Linux (bash, one per line)"
+        type: string
+        default: ""
+      build-windows:
+        description: "Commands that replace install and desktop build on Windows (windows-shell, one per line)"
+        type: string
+        default: ""
+      tauri-config:
+        description: "Extra Tauri config merged into --config: inline JSON or a path in the app repo"
+        type: string
+        default: ""
+      macos-adhoc:
+        description: "Sign the macOS app ad hoc when no Apple certificate is set, so a download is not reported damaged"
+        type: boolean
+        default: true
+      artifacts:
+        description: "Globs of files to release, one per line (default: the Tauri bundles and their .sig files)"
+        type: string
+        default: ""
+      setup-macos:
+        description: "Bash run on macOS before the build, e.g. brew install"
+        type: string
+        default: ""
+      setup-linux:
+        description: "Bash run on Linux before the build, after linux-packages"
+        type: string
+        default: ""
+      setup-windows:
+        description: "Bash run on Windows before the build"
+        type: string
+        default: ""
+      linux-packages:
+        description: "apt packages for the Tauri webview build on Linux"
+        type: string
+        default: "libwebkit2gtk-4.1-dev libayatana-appindicator3-dev librsvg2-dev libxdo-dev patchelf"
+      node-version:
+        description: "Node.js version"
+        type: string
+        default: "22"
+      python-version:
+        description: "Python version"
+        type: string
+        default: "3.12"
+      rust-cache-workspaces:
+        description: "Cargo workspaces to cache, one per line"
+        type: string
+        default: "src-tauri"
+      rust-targets:
+        description: "Extra Rust targets to install beside the host's, comma separated, e.g. wasm32-unknown-unknown"
+        type: string
+        default: ""
+      windows-msvc:
+        description: "Put the MSVC developer environment (cl, nmake, link) on PATH for the Windows build"
+        type: boolean
+        default: false
+      pip-cache-macos:
+        description: "Keep pip's locally built wheels between macOS builds (opencv built from source), keyed on the set-up, Python and the app's Python requirement files"
+        type: boolean
+        default: false
+      updater-tauri:
+        description: "The app uses Tauri's updater plugin: with the updater key set, its updater settings and updater files are added"
+        type: boolean
+        default: true
+      file-names:
+        description: "formcompiler names the release files <app>-<version>-<platform>[-setup].<ext>; app keeps the build's own names"
+        type: string
+        default: "formcompiler"
+      formcompiler-ref:
+        description: "Ref of nodemode-dev/formcompiler whose scripts run; match the ref this workflow is called at"
+        type: string
+        default: "main"
+    secrets:
+      APPLE_CERTIFICATE:
+        required: false
+      APPLE_CERTIFICATE_PASSWORD:
+        required: false
+      APPLE_SIGNING_IDENTITY:
+        required: false
+      APPLE_ID:
+        required: false
+      APPLE_PASSWORD:
+        required: false
+      APPLE_TEAM_ID:
+        required: false
+      TAURI_SIGNING_PRIVATE_KEY:
+        required: false
+      TAURI_SIGNING_PRIVATE_KEY_PASSWORD:
+        required: false
+      WINDOWS_CERTIFICATE:
+        required: false
+      WINDOWS_CERTIFICATE_PASSWORD:
+        required: false
+      AZURE_CLIENT_ID:
+        required: false
+      AZURE_CLIENT_SECRET:
+        required: false
+      AZURE_TENANT_ID:
+        required: false
+      FORMCOMPILER_APP_TOKEN:
+        required: false
+    outputs:
+      version:
+        description: "The version that was built"
+        value: ${{ jobs.plan.outputs.version }}
+
+permissions:
+  contents: read
+
+jobs:
+  plan:
+    name: plan
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    outputs:
+      version: ${{ steps.plan.outputs.version }}
+      tag: ${{ steps.plan.outputs.tag }}
+      prerelease: ${{ steps.plan.outputs.prerelease }}
+      matrix: ${{ steps.plan.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: ${{ inputs.repository }}
+          ref: ${{ inputs.ref }}
+          token: ${{ secrets.FORMCOMPILER_APP_TOKEN || github.token }}
+          persist-credentials: false
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: nodemode-dev/formcompiler
+          ref: ${{ inputs.formcompiler-ref }}
+          path: .formcompiler
+          persist-credentials: false
+      - id: plan
+        env:
+          VERSION: ${{ inputs.version }}
+          VERSION_FILE: ${{ inputs.version-file }}
+          VERSION_PATTERN: ${{ inputs.version-pattern }}
+          PLATFORMS: ${{ inputs.platforms }}
+          TAG_PREFIX: ${{ inputs.tag-prefix }}
+          EXPECT_VERSION: ${{ inputs.expect-version }}
+          PLATFORM_ENV: ${{ inputs.platform-env }}
+          RUST_TARGETS: ${{ inputs.rust-targets }}
+        run: >-
+          python3 -I .formcompiler/scripts/plan.py
+          --version="$VERSION" --version-file="$VERSION_FILE"
+          --version-pattern="$VERSION_PATTERN" --platforms="$PLATFORMS"
+          --tag-prefix="$TAG_PREFIX" --expect-version="$EXPECT_VERSION"
+          --platform-env="$PLATFORM_ENV" --rust-targets="$RUST_TARGETS" --ref=""
+
+  build:
+    name: ${{ matrix.platform }}
+    needs: plan
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 49
+    continue-on-error: ${{ matrix.experimental }}
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.plan.outputs.matrix) }}
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Mask the signing names
+        env:
+          APPLE_SIGNING_IDENTITY: ${{ secrets.APPLE_SIGNING_IDENTITY }}
+        run: |
+          if [ -z "$APPLE_SIGNING_IDENTITY" ]; then echo "no Apple identity to mask"; exit 0; fi
+          name="${APPLE_SIGNING_IDENTITY#*: }"
+          team="${name##*(}"
+          team="${team%)}"
+          name="${name% (*}"
+          if [ -n "$name" ]; then echo "::add-mask::$name"; fi
+          if [ -n "$team" ]; then echo "::add-mask::$team"; fi
+          echo "signing names masked"
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: ${{ inputs.repository }}
+          ref: ${{ inputs.ref }}
+          token: ${{ secrets.FORMCOMPILER_APP_TOKEN || github.token }}
+          persist-credentials: false
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: nodemode-dev/formcompiler
+          ref: ${{ inputs.formcompiler-ref }}
+          path: .formcompiler
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: ${{ inputs.node-version }}
+          cache: ${{ hashFiles('frontend/package-lock.json') != '' && 'npm' || '' }}
+          cache-dependency-path: frontend/package-lock.json
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: ${{ inputs.python-version }}
+          architecture: ${{ matrix.pyarch }}
+      - uses: dtolnay/rust-toolchain@683b588c487a69d01f6c6ddf40f036ff682cc2c8 # v1
+        with:
+          toolchain: stable
+          targets: ${{ matrix.targets }}
+      - name: Go
+        if: inputs.go-version != ''
+        uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version: ${{ inputs.go-version != 'go.mod' && inputs.go-version || '' }}
+          go-version-file: ${{ inputs.go-version == 'go.mod' && 'go.mod' || '' }}
+      - uses: Swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0 # v2.9.3
+        with:
+          workspaces: ${{ inputs.rust-cache-workspaces }}
+          key: formcompiler-${{ inputs.app-name }}-${{ matrix.platform }}
+          cache-on-failure: true
+      - name: Linux packages
+        if: runner.os == 'Linux' && inputs.linux-packages != ''
+        env:
+          PACKAGES: ${{ inputs.linux-packages }}
+        run: |
+          case "$PACKAGES" in *[!a-z0-9.+:\ -]*) echo "::error::linux-packages may hold only package names"; exit 1 ;; esac
+          sudo apt-get update
+          read -r -a list <<< "$PACKAGES"
+          sudo apt-get install -y --no-install-recommends "${list[@]}"
+      - name: App set-up
+        env:
+          SETUP_MACOS: ${{ inputs.setup-macos }}
+          SETUP_LINUX: ${{ inputs.setup-linux }}
+          SETUP_WINDOWS: ${{ inputs.setup-windows }}
+          RUNNER_KIND: ${{ matrix.os }}
+        run: |
+          case "$RUNNER_KIND" in macos) script="$SETUP_MACOS" ;; linux) script="$SETUP_LINUX" ;; *) script="$SETUP_WINDOWS" ;; esac
+          if [ -n "$script" ]; then bash -eo pipefail -c "$script"; else echo "no set-up for $RUNNER_KIND"; fi
+      - name: pip wheel cache key
+        id: pipkey
+        if: runner.os == 'macOS' && inputs.pip-cache-macos
+        env:
+          SETUP_MACOS: ${{ inputs.setup-macos }}
+          APP: ${{ inputs.app-name }}
+          PLATFORM: ${{ matrix.platform }}
+          PYTHON_VERSION: ${{ inputs.python-version }}
+        run: |
+          echo "PIP_CACHE_DIR=$RUNNER_TEMP/formcompiler-pip" >> "$GITHUB_ENV"
+          setup="$(printf '%s' "$SETUP_MACOS" | shasum -a 256 | cut -c1-16)"
+          echo "prefix=formcompiler-pip-$APP-$PLATFORM-py$PYTHON_VERSION-$setup-" >> "$GITHUB_OUTPUT"
+      - name: pip wheel cache
+        id: pipcache
+        if: runner.os == 'macOS' && inputs.pip-cache-macos
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ${{ runner.temp }}/formcompiler-pip/wheels
+          key: ${{ steps.pipkey.outputs.prefix }}${{ hashFiles('**/requirements*.txt', '**/pyproject.toml', '**/constraints*.txt', '!.formcompiler/**', '!**/node_modules/**') }}
+          restore-keys: ${{ steps.pipkey.outputs.prefix }}
+      - name: Windows signing certificate
+        if: runner.os == 'Windows' && inputs.windows-signing == 'certificate' && vars.ARTIFACT_SIGNING_ACCOUNT == ''
+        shell: pwsh
+        env:
+          WINDOWS_CERTIFICATE: ${{ secrets.WINDOWS_CERTIFICATE }}
+          WINDOWS_CERTIFICATE_PASSWORD: ${{ secrets.WINDOWS_CERTIFICATE_PASSWORD }}
+        run: |
+          if (-not $env:WINDOWS_CERTIFICATE) { Write-Output "no WINDOWS_CERTIFICATE secret: the Windows build is unsigned"; exit 0 }
+          $pfx = Join-Path $env:RUNNER_TEMP 'formcompiler-signing.pfx'
+          [IO.File]::WriteAllBytes($pfx, [Convert]::FromBase64String($env:WINDOWS_CERTIFICATE))
+          $password = ConvertTo-SecureString $env:WINDOWS_CERTIFICATE_PASSWORD -AsPlainText -Force
+          $cert = Import-PfxCertificate -FilePath $pfx -CertStoreLocation Cert:\CurrentUser\My -Password $password
+          Remove-Item $pfx
+          "WINDOWS_CERT_THUMBPRINT=$($cert.Thumbprint)" | Out-File -FilePath $env:GITHUB_ENV -Append
+      - name: Windows Artifact Signing
+        if: runner.os == 'Windows' && inputs.windows-signing == 'certificate' && vars.ARTIFACT_SIGNING_ACCOUNT != ''
+        env:
+          ARTIFACT_SIGNING_ENDPOINT: ${{ vars.ARTIFACT_SIGNING_ENDPOINT }}
+          ARTIFACT_SIGNING_ACCOUNT: ${{ vars.ARTIFACT_SIGNING_ACCOUNT }}
+          ARTIFACT_SIGNING_PROFILE: ${{ vars.ARTIFACT_SIGNING_PROFILE }}
+          AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+          AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+          AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+        run: python -I .formcompiler/scripts/windows_signing.py prepare --app-dir . --tools "$RUNNER_TEMP/formcompiler-sign"
+      - name: Apple signing keychain
+        if: runner.os == 'macOS' && inputs.macos-signing == 'apple'
+        env:
+          APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
+          APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
+          APPLE_SIGNING_IDENTITY: ${{ secrets.APPLE_SIGNING_IDENTITY }}
+        run: |
+          if [ -z "$APPLE_CERTIFICATE" ] || [ -z "$APPLE_SIGNING_IDENTITY" ]; then echo "no Apple certificate: the macOS build is signed ad hoc"; exit 0; fi
+          keychain="$RUNNER_TEMP/formcompiler-signing.keychain-db"
+          password="$(openssl rand -hex 24)"
+          echo "::add-mask::$password"
+          p12="$RUNNER_TEMP/formcompiler-signing.p12"
+          printf '%s' "$APPLE_CERTIFICATE" | base64 --decode > "$p12"
+          security create-keychain -p "$password" "$keychain"
+          security set-keychain-settings -lut 21600 "$keychain"
+          security unlock-keychain -p "$password" "$keychain"
+          security import "$p12" -k "$keychain" -P "$APPLE_CERTIFICATE_PASSWORD" -T /usr/bin/codesign -T /usr/bin/security -T /usr/bin/productbuild
+          rm -f "$p12"
+          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "$password" "$keychain" >/dev/null
+          read -r -a existing <<< "$(security list-keychains -d user | tr -d '"' | tr '\n' ' ')"
+          security list-keychains -d user -s "$keychain" "${existing[@]}"
+          if ! security find-identity -v -p codesigning "$keychain" | grep -qF "$APPLE_SIGNING_IDENTITY"; then echo "::error::the Apple certificate does not hold the identity APPLE_SIGNING_IDENTITY names"; exit 1; fi
+          echo "FORMCOMPILER_KEYCHAIN=$keychain" >> "$GITHUB_ENV"
+          echo "Apple identity ready in the build keychain"
+      - name: MSVC environment
+        if: runner.os == 'Windows' && inputs.windows-msvc
+        uses: ilammy/msvc-dev-cmd@0b201ec74fa43914dc39ae48a89fd1d8cb592756 # v1.13.0
+        with:
+          arch: ${{ matrix.arch == 'aarch64' && 'arm64' || 'x64' }}
+      - name: Build
+        timeout-minutes: 40
+        env:
+          APPLE_CERTIFICATE: ${{ inputs.macos-signing == 'apple' && env.FORMCOMPILER_KEYCHAIN == '' && secrets.APPLE_CERTIFICATE || '' }}
+          APPLE_CERTIFICATE_PASSWORD: ${{ inputs.macos-signing == 'apple' && env.FORMCOMPILER_KEYCHAIN == '' && secrets.APPLE_CERTIFICATE_PASSWORD || '' }}
+          APPLE_SIGNING_IDENTITY: ${{ inputs.macos-signing == 'apple' && secrets.APPLE_CERTIFICATE != '' && secrets.APPLE_SIGNING_IDENTITY || '' }}
+          APPLE_ID: ${{ inputs.macos-signing == 'apple' && secrets.APPLE_ID || '' }}
+          APPLE_PASSWORD: ${{ inputs.macos-signing == 'apple' && secrets.APPLE_PASSWORD || '' }}
+          APPLE_TEAM_ID: ${{ inputs.macos-signing == 'apple' && secrets.APPLE_TEAM_ID || '' }}
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+          TAURI_UPDATER_PUBKEY: ${{ vars.TAURI_UPDATER_PUBKEY }}
+          AZURE_CLIENT_ID: ${{ runner.os == 'Windows' && inputs.windows-signing == 'certificate' && secrets.AZURE_CLIENT_ID || '' }}
+          AZURE_CLIENT_SECRET: ${{ runner.os == 'Windows' && inputs.windows-signing == 'certificate' && secrets.AZURE_CLIENT_SECRET || '' }}
+          AZURE_TENANT_ID: ${{ runner.os == 'Windows' && inputs.windows-signing == 'certificate' && secrets.AZURE_TENANT_ID || '' }}
+          # With the download store set, the app's updater reads <store>/<app>/updates/latest.json (scripts/tauri_config.py).
+          FORMCOMPILER_PUBLIC_BASE: ${{ vars.FORMCOMPILER_PUBLIC_BASE }}
+          FORMCOMPILER_APP: ${{ inputs.app-name }}
+          FORMCOMPILER_UPDATER_TAURI: ${{ inputs.updater-tauri }}
+          FORMCOMPILER_PLATFORM_ENV: ${{ matrix.env }}
+          FORMCOMPILER_TARGET_ARGS: ${{ matrix.target_args }}
+          FORMCOMPILER_RELEASE_DIR: ${{ matrix.release_dir }}
+          FORMCOMPILER_VERSION: ${{ needs.plan.outputs.version }}
+          FORMCOMPILER_PLATFORM: ${{ matrix.platform }}
+          FORMCOMPILER_OS: ${{ matrix.os }}
+          FORMCOMPILER_ARCH: ${{ matrix.arch }}
+          FORMCOMPILER_TRIPLE: ${{ matrix.triple }}
+          RUNNER_KIND: ${{ matrix.os }}
+          CLI: ${{ inputs.cli || inputs.app-name }}
+          INSTALL: ${{ inputs.install }}
+          INSTALL_ARGS: ${{ inputs.install-args }}
+          INSTALL_DESKTOP: ${{ inputs.install-desktop }}
+          WINDOWS_SHELL: ${{ inputs.windows-shell }}
+          BUILD_MACOS: ${{ inputs.build-macos }}
+          BUILD_LINUX: ${{ inputs.build-linux }}
+          BUILD_WINDOWS: ${{ inputs.build-windows }}
+          FORMCOMPILER_EXTRA_CONFIG: ${{ inputs.tauri-config }}
+          MACOS_ADHOC: ${{ inputs.macos-signing != 'none' && inputs.macos-adhoc }}
+          APPIMAGE_EXTRACT_AND_RUN: "1"
+        run: |
+          case "$RUNNER_KIND" in macos) command="$BUILD_MACOS" ;; linux) command="$BUILD_LINUX" ;; *) command="$BUILD_WINDOWS" ;; esac
+          python -I .formcompiler/scripts/run_build.py --os="$RUNNER_KIND" --cli="$CLI" \
+            --install="$INSTALL" --install-args="$INSTALL_ARGS" --install-desktop="$INSTALL_DESKTOP" \
+            --windows-shell="$WINDOWS_SHELL" --command="$command" --extra-config="$FORMCOMPILER_EXTRA_CONFIG" \
+            --adhoc-macos="$MACOS_ADHOC"
+      - name: Save the pip wheel cache
+        if: always() && runner.os == 'macOS' && inputs.pip-cache-macos && steps.pipcache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ${{ runner.temp }}/formcompiler-pip/wheels
+          key: ${{ steps.pipcache.outputs.cache-primary-key }}
+      - name: Post-build
+        env:
+          APPLE_SIGNING_IDENTITY: ${{ inputs.macos-signing == 'apple' && env.FORMCOMPILER_KEYCHAIN != '' && secrets.APPLE_SIGNING_IDENTITY || '' }}
+          APPLE_ID: ${{ inputs.macos-signing == 'apple' && secrets.APPLE_ID || '' }}
+          APPLE_PASSWORD: ${{ inputs.macos-signing == 'apple' && secrets.APPLE_PASSWORD || '' }}
+          APPLE_TEAM_ID: ${{ inputs.macos-signing == 'apple' && secrets.APPLE_TEAM_ID || '' }}
+          MSIX_IDENTITY_NAME: ${{ vars.MSIX_IDENTITY_NAME }}
+          MSIX_PUBLISHER: ${{ vars.MSIX_PUBLISHER }}
+          MSIX_PUBLISHER_DISPLAY_NAME: ${{ vars.MSIX_PUBLISHER_DISPLAY_NAME }}
+          FORMCOMPILER_PLATFORM_ENV: ${{ matrix.env }}
+          FORMCOMPILER_TARGET_ARGS: ${{ matrix.target_args }}
+          FORMCOMPILER_RELEASE_DIR: ${{ matrix.release_dir }}
+          FORMCOMPILER_VERSION: ${{ needs.plan.outputs.version }}
+          FORMCOMPILER_PLATFORM: ${{ matrix.platform }}
+          FORMCOMPILER_OS: ${{ matrix.os }}
+          FORMCOMPILER_ARCH: ${{ matrix.arch }}
+          FORMCOMPILER_TRIPLE: ${{ matrix.triple }}
+          RUNNER_KIND: ${{ matrix.os }}
+          POST_MACOS: ${{ inputs.post-build-macos }}
+          POST_LINUX: ${{ inputs.post-build-linux }}
+          POST_WINDOWS: ${{ inputs.post-build-windows }}
+        run: |
+          case "$RUNNER_KIND" in macos) command="$POST_MACOS" ;; linux) command="$POST_LINUX" ;; *) command="$POST_WINDOWS" ;; esac
+          python -I .formcompiler/scripts/run_build.py --phase=post-build --os="$RUNNER_KIND" --cli=post-build \
+            --windows-shell=bash --command="$command" --adhoc-macos=false
+      - name: Sign the Windows files
+        if: runner.os == 'Windows' && inputs.windows-signing == 'certificate' && vars.ARTIFACT_SIGNING_ACCOUNT != ''
+        env:
+          ARTIFACT_SIGNING_ENDPOINT: ${{ vars.ARTIFACT_SIGNING_ENDPOINT }}
+          ARTIFACT_SIGNING_ACCOUNT: ${{ vars.ARTIFACT_SIGNING_ACCOUNT }}
+          ARTIFACT_SIGNING_PROFILE: ${{ vars.ARTIFACT_SIGNING_PROFILE }}
+          AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+          AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+          AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+          ARTIFACTS: ${{ inputs.artifacts }}
+        run: python -I .formcompiler/scripts/windows_signing.py sign --artifacts="$ARTIFACTS"
+      - name: Notarize the macOS disk images
+        if: runner.os == 'macOS' && inputs.macos-signing == 'apple'
+        env:
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          APPLE_SIGNING_IDENTITY: ${{ secrets.APPLE_SIGNING_IDENTITY }}
+          ARTIFACTS: ${{ inputs.artifacts }}
+        run: |
+          if [ -z "$APPLE_ID" ] || [ -z "$APPLE_PASSWORD" ] || [ -z "$APPLE_TEAM_ID" ] || [ -z "$FORMCOMPILER_KEYCHAIN" ]; then
+            echo "Apple identity not set: the disk images stay unsigned and are not notarized"; exit 0
+          fi
+          submitted="$RUNNER_TEMP/formcompiler-notarize.tsv"
+          : > "$submitted"
+          seen="|"
+          while IFS= read -r -d '' dmg <&3; do
+            real="$(cd "$(dirname "$dmg")" && pwd -P)/$(basename "$dmg")"
+            case "$seen" in *"|$real|"*) continue ;; esac
+            seen="$seen$real|"
+            if xcrun stapler validate "$dmg" >/dev/null 2>&1; then echo "already stapled: $dmg"; continue; fi
+            if ! codesign --verify "$dmg" >/dev/null 2>&1; then
+              codesign --force --timestamp --sign "$APPLE_SIGNING_IDENTITY" "$dmg"
+              echo "signed: $dmg"
+            fi
+            id="$(xcrun notarytool submit "$dmg" --apple-id "$APPLE_ID" --password "$APPLE_PASSWORD" --team-id "$APPLE_TEAM_ID" --output-format json | python3 -I -c 'import json, sys; print(json.load(sys.stdin)["id"])')"
+            printf '%s\t%s\n' "$id" "$dmg" >> "$submitted"
+            echo "submitted $dmg for notarization as $id"
+          done 3< <(find src-tauri/target target src-tauri/target.nosync -name '*.dmg' -path '*/bundle/*' -type f -print0 2>/dev/null || true; find src-tauri/target.nosync -name '*.dmg' -type f -print0 2>/dev/null || true; python3 -I -c 'import glob, sys; [sys.stdout.write(f + "\0") for p in sys.argv[1].splitlines() if p.strip() for f in sorted(glob.glob(p.strip(), recursive=True)) if f.endswith(".dmg")]' "$ARTIFACTS")
+          while IFS=$'\t' read -r id dmg <&4; do
+            xcrun notarytool wait "$id" --apple-id "$APPLE_ID" --password "$APPLE_PASSWORD" --team-id "$APPLE_TEAM_ID" || true
+            status="$(xcrun notarytool info "$id" --apple-id "$APPLE_ID" --password "$APPLE_PASSWORD" --team-id "$APPLE_TEAM_ID" --output-format json | python3 -I -c 'import json, sys; print(json.load(sys.stdin).get("status", ""))')"
+            if [ "$status" != "Accepted" ]; then
+              xcrun notarytool log "$id" --apple-id "$APPLE_ID" --password "$APPLE_PASSWORD" --team-id "$APPLE_TEAM_ID" || true
+              echo "::error::notarization of $dmg ended $status"; exit 1
+            fi
+            for attempt in 1 2 3 4 5; do
+              if xcrun stapler staple "$dmg" && xcrun stapler validate "$dmg"; then break; fi
+              if [ "$attempt" = 5 ]; then echo "::error::stapling $dmg failed five times"; exit 1; fi
+              echo "stapling $dmg failed (attempt $attempt); trying again in $((attempt * 20))s"
+              sleep $((attempt * 20))
+            done
+          done 4< "$submitted"
+      - name: Stage
+        env:
+          ARTIFACTS: ${{ inputs.artifacts }}
+          PLATFORM: ${{ matrix.platform }}
+          RUNNER_KIND: ${{ matrix.os }}
+          ARCH: ${{ matrix.arch }}
+          UPDATER_KEY: ${{ matrix.updater }}
+          NAMES: ${{ inputs.file-names }}
+          APP: ${{ inputs.app-name }}
+          VERSION: ${{ needs.plan.outputs.version }}
+        run: >-
+          python -I .formcompiler/scripts/stage.py --platform="$PLATFORM" --os="$RUNNER_KIND"
+          --arch="$ARCH" --updater-key="$UPDATER_KEY" --artifacts="$ARTIFACTS" --out=formcompiler-out
+          --names="$NAMES" --app="$APP" --version="$VERSION"
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: formcompiler-${{ inputs.app-name }}-${{ matrix.platform }}
+          path: formcompiler-out/*
+          if-no-files-found: error
+      - name: Remove the Apple signing keychain
+        if: always() && runner.os == 'macOS'
+        run: |
+          if [ -n "${FORMCOMPILER_KEYCHAIN:-}" ] && [ -f "$FORMCOMPILER_KEYCHAIN" ]; then security delete-keychain "$FORMCOMPILER_KEYCHAIN"; echo "build keychain removed"; else echo "no build keychain"; fi

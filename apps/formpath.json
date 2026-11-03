@@ -1,0 +1,53 @@
+{
+  "app": "formpath",
+  "repository": "nodemode-dev/formpath",
+  "title": "formpath",
+  "enabled": true,
+  "release": "draft",
+  "version": {"file": "src-tauri/tauri.conf.json", "pattern": ""},
+  "checks": ["ci.yml"],
+  "platforms": ["macos-arm64", "macos-x64", "linux-x64", "windows-x64"],
+  "toolchain": {
+    "node": "22",
+    "python": "3.12",
+    "rust": true,
+    "rust_targets": "",
+    "rust_cache": ["src-tauri"],
+    "go": "",
+    "linux_packages": "libwebkit2gtk-4.1-dev libayatana-appindicator3-dev librsvg2-dev patchelf",
+    "windows_msvc": false
+  },
+  "build": {
+    "mode": "contract",
+    "cli": "formpath",
+    "install": true,
+    "install_args": "",
+    "install_desktop": true,
+    "windows_shell": "bash",
+    "macos": "",
+    "linux": "",
+    "windows": "",
+    "tauri_config": ""
+  },
+  "setup": {"macos": "", "linux": "", "windows": ""},
+  "post_build": {"macos": "", "linux": "", "windows": ""},
+  "artifacts": [],
+  "extras": [],
+  "assets": "",
+  "notes": "",
+  "updater": {"tauri": true, "tag_json": false, "files": []},
+  "signing": {"macos": "apple", "windows": "certificate"},
+  "agents": {"skills": ".claude/skills", "mcp": true},
+  "catalog": {
+    "id": "formpath",
+    "name": "FormPath",
+    "kind": "vector",
+    "summary": "Vector illustration: paths, shapes, type and artboards.",
+    "identifier": "ai.nodemode.formpath",
+    "licence": "Apache-2.0",
+    "state": "live",
+    "project_extensions": [".fpth"],
+    "minimum_os": {"macos": "macOS 12", "windows": "", "linux": ""}
+  },
+  "notes_for_owner": "The updater public key in src-tauri/tauri.conf.json is still empty, so the app skips update checks until a key pair is made and TAURI_SIGNING_PRIVATE_KEY is set in formcompiler."
+}

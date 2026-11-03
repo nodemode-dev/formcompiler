@@ -1,0 +1,72 @@
+{
+  "app": "formNET",
+  "repository": "nodemode-dev/formNET",
+  "title": "formNET",
+  "enabled": true,
+  "release": "draft",
+  "version": {"file": "Makefile", "pattern": "^VERSION := v(\\S+)"},
+  "checks": ["ci.yml"],
+  "platforms": ["macos-arm64", "macos-x64", "linux-x64", "linux-arm64", "windows-x64"],
+  "toolchain": {
+    "node": "22.22.0",
+    "python": "",
+    "rust": true,
+    "rust_targets": "",
+    "rust_cache": ["src-tauri"],
+    "go": "go.mod",
+    "linux_packages": "libwebkit2gtk-4.1-dev libayatana-appindicator3-dev librsvg2-dev libxdo-dev libssl-dev patchelf rpm",
+    "windows_msvc": false
+  },
+  "build": {
+    "mode": "commands",
+    "cli": "formnet",
+    "install": false,
+    "install_args": "",
+    "install_desktop": false,
+    "windows_shell": "cmd",
+    "macos": "./build_app --yes $FORMCOMPILER_CONFIG_ARG",
+    "linux": "./build_app --yes $FORMCOMPILER_CONFIG_ARG",
+    "windows": "call build_app.bat %FORMCOMPILER_CONFIG_ARG%",
+    "tauri_config": ""
+  },
+  "setup": {
+    "macos": "cd web && npm ci --no-audit --no-fund",
+    "linux": "cd web && npm ci --no-audit --no-fund",
+    "windows": "cd web && npm ci --no-audit --no-fund"
+  },
+  "post_build": {"macos": "", "linux": "", "windows": ""},
+  "artifacts": [],
+  "extras": [
+    {
+      "name": "server",
+      "runner": "ubuntu-24.04",
+      "experimental": false,
+      "node": "22.22.0",
+      "python": "",
+      "java": "",
+      "go": "1.26",
+      "android": false,
+      "rust_targets": "",
+      "rust": false,
+      "linux_packages": "",
+      "run": "cd web && npm ci --no-audit --no-fund && cd ..\nmake check\nmake release",
+      "artifacts": ["release/*"]
+    }
+  ],
+  "assets": "",
+  "notes": "",
+  "updater": {"tauri": false, "tag_json": true, "files": []},
+  "signing": {"macos": "apple", "windows": "certificate"},
+  "catalog": {
+    "id": "formnet",
+    "name": "FormNET",
+    "kind": "network",
+    "summary": "The network tab for the whole computer: what websites, apps and the machine actually send.",
+    "identifier": "ai.nodemode.formnet",
+    "licence": "Apache-2.0",
+    "state": "prelaunch",
+    "project_extensions": [],
+    "minimum_os": {"macos": "macOS 12", "windows": "", "linux": ""}
+  },
+  "notes_for_owner": "The app is formNET (NET in capitals, like formMCP and formDAM): repository, registry app, title, tag prefix (formNET-v) and store path. Its CLI binary and its catalogue id stay formnet in lower case, as formMCP keeps formmcp. formnet is one Go binary (web client embedded) wrapped in a Tauri 2 window, built by ./build_app and build_app.bat exactly as form.md is; the desktop build copies bin/formnet in as the formnet-server sidecar and the window waits for the line `formnet desktop ready http://127.0.0.1:PORT/`. The server release (five static binaries plus SHA256SUMS from `make release`) is the extra named server; its go value is a version because the extras field takes a version rather than go.mod. No Docker image, no updater key: `tag_json` writes formnet-updates/latest.json as {\"tag_name\": \"vX.Y.Z\"} for the app's own update check once it has one. First run: formnet makes a private root certificate in ~/formnet and never installs it; HTTPS is only counted (host and bytes) until the person runs `formnet ca trust` or installs the root from the client, so the first screenshot of a fresh install shows tunnels, not opened requests. Both listeners (127.0.0.1:8760 client and API, 127.0.0.1:8761 proxy) are loopback-only and the binary refuses any other address. Apple signing and notarising switch on with the APPLE_* secrets; without them macOS blocks the first launch (Open Anyway). The src-tauri shell was ported from form.md on a machine without Rust and has not been compiled yet: the first formcompiler build is its first compile."
+}

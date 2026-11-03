@@ -1,0 +1,59 @@
+{
+  "app": "formDAM",
+  "repository": "nodemode-dev/formDAM",
+  "title": "formDAM",
+  "enabled": true,
+  "release": "draft",
+  "version": {"file": "frontend/package.json", "pattern": ""},
+  "checks": ["ci.yml"],
+  "platforms": ["macos-arm64", "linux-x64", "windows-x64"],
+  "toolchain": {
+    "node": "22",
+    "python": "3.12",
+    "rust": true,
+    "rust_targets": "",
+    "rust_cache": ["src-tauri"],
+    "go": "",
+    "linux_packages": "build-essential pkg-config libwebkit2gtk-4.1-dev libgtk-3-dev librsvg2-dev libayatana-appindicator3-dev libxdo-dev libssl-dev patchelf file",
+    "windows_msvc": false,
+    "pip_cache_macos": true
+  },
+  "build": {
+    "mode": "commands",
+    "cli": "formDAM",
+    "install": false,
+    "install_args": "",
+    "install_desktop": false,
+    "windows_shell": "cmd",
+    "macos": "./build_app --no-install",
+    "linux": "./build_app",
+    "windows": "call build_app.bat",
+    "tauri_config": ""
+  },
+  "setup": {"macos": "echo \"PIP_NO_BINARY=opencv-python,opencv-python-headless\" >> \"$GITHUB_ENV\"\necho \"CMAKE_ARGS=-DWITH_FFMPEG=OFF -DWITH_GSTREAMER=OFF\" >> \"$GITHUB_ENV\"", "linux": "", "windows": ""},
+  "post_build": {"macos": "", "linux": "", "windows": ""},
+  "artifacts": [
+    "src-tauri/target.nosync/release/bundle/*.dmg",
+    "src-tauri/target/release/bundle/deb/*.deb",
+    "src-tauri/target/release/bundle/nsis/*.exe",
+    "src-tauri/target/release/bundle/msi/*.msi"
+  ],
+  "extras": [],
+  "assets": "",
+  "notes": "",
+  "updater": {"tauri": false, "tag_json": false, "files": []},
+  "signing": {"macos": "apple", "windows": "certificate"},
+  "agents": {"skills": "", "mcp": false},
+  "catalog": {
+    "id": "formdam",
+    "name": "FormDAM",
+    "kind": "library",
+    "summary": "A library for every photo, video and asset you keep.",
+    "identifier": "ai.nodemode.dam",
+    "licence": "Apache-2.0",
+    "state": "live",
+    "project_extensions": [],
+    "minimum_os": {"macos": "macOS 12", "windows": "", "linux": ""}
+  },
+  "notes_for_owner": "UNTESTED: formDAM had no build workflow, so no earlier run backs this entry. './formDAM desktop build' only execs ./build_app (which takes no --config), and the launcher has no install or install-desktop, so this entry runs build_app directly (macOS and Linux) and build_app.bat (Windows); they call setup/build_macos_app, setup/build_linux_app and setup/build_windows_app.bat. Version: tauri.conf.json's version is the path '../frontend/package.json' (Tauri reads the version from there), so the registry reads frontend/package.json (src-tauri/Cargo.toml carries the same version, and release commits bump those two, not tauri.conf.json). Bundles land in src-tauri/target on Linux and Windows but in src-tauri/target.nosync on macOS (setup/build_macos_app hardcodes CARGO_TARGET_DIR), where setup/package_dmg writes formDAM_v<version>.dmg straight into release/bundle; the artifact globs name those paths. Linux builds the deb only (setup/build_linux_app reads BUNDLES, default deb), Windows nsis and msi. The build downloads about a dozen ONNX models from github.com and huggingface.co with sha256 checks, and on macOS runs 'cargo install tauri-cli' if cargo-tauri is missing (slow). macOS signing (formDAM 1.28.3): the identity comes from APPLE_SIGNING_IDENTITY (formcompiler's build keychain holds it), else the keychain; setup/build_macos_app signs every Mach-O in the engine with it, hardened runtime, a timestamp and src-tauri/Entitlements.plist, and setup/package_dmg keeps Tauri's Developer ID signature instead of re-signing, re-signing w/o --deep only if its icon repair changed the bundle. formcompiler then signs and notarizes the dmg in src-tauri/target.nosync. formcompiler's --config is not passed (no updater). Catalog: identifier is ai.nodemode.dam (tauri.conf.json); products.json says dev.formai.formdam. products.json and the repo's LICENSE say GPL-3.0-only."
+}

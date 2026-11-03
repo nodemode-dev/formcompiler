@@ -1,0 +1,60 @@
+{
+  "app": "formtray",
+  "repository": "nodemode-dev/formtray",
+  "title": "formtray",
+  "enabled": true,
+  "release": "draft",
+  "version": {"file": "src-tauri/tauri.conf.json", "pattern": ""},
+  "checks": ["ci.yml"],
+  "platforms": ["macos-arm64", "macos-x64", "linux-x64", "windows-x64"],
+  "toolchain": {
+    "node": "22",
+    "python": "",
+    "rust": true,
+    "rust_targets": "",
+    "rust_cache": ["."],
+    "go": "",
+    "linux_packages": "libwebkit2gtk-4.1-dev libayatana-appindicator3-dev librsvg2-dev libxdo-dev libssl-dev pkg-config build-essential file",
+    "windows_msvc": false
+  },
+  "build": {
+    "mode": "commands",
+    "cli": "formtray",
+    "install": false,
+    "install_args": "",
+    "install_desktop": false,
+    "windows_shell": "cmd",
+    "macos": "./build_app --no-install",
+    "linux": "./build_app --no-install",
+    "windows": "call build_app.bat",
+    "tauri_config": ""
+  },
+  "setup": {"macos": "", "linux": "", "windows": ""},
+  "post_build": {"macos": "", "linux": "", "windows": ""},
+  "artifacts": [
+    "target/release/bundle/dmg/*.dmg",
+    "target/release/bundle/appimage/*.AppImage",
+    "target/release/bundle/deb/*.deb",
+    "target/release/bundle/rpm/*.rpm",
+    "target/release/bundle/msi/*.msi",
+    "target/release/bundle/nsis/*.exe"
+  ],
+  "extras": [],
+  "assets": "",
+  "notes": "",
+  "updater": {"tauri": false, "tag_json": false, "files": []},
+  "signing": {"macos": "apple", "windows": "certificate"},
+  "agents": {"skills": "", "mcp": false},
+  "catalog": {
+    "id": "formtray",
+    "name": "FormTray",
+    "kind": "launcher",
+    "summary": "One dock icon for every Form app: switch, launch and arrange the family.",
+    "identifier": "ai.nodemode.formtray",
+    "licence": "Apache-2.0",
+    "state": "prelaunch",
+    "project_extensions": [],
+    "minimum_os": {"macos": "macOS 11", "windows": "", "linux": ""}
+  },
+  "notes_for_owner": "Not in formportal's products.json: the catalog entry is written from the README and tauri.conf.json. formtray is a Cargo workspace, so its bundles are under target/release/bundle at the repository root, not src-tauri/target; the artifact globs name those paths. No Tauri updater (no plugins.updater), so no latest.json. The old file's macos-x64 row used macos-13, which GitHub is retiring; macos-x64 here runs on macos-15-intel. The old file also uploaded build_app.log from each runner as a workflow artifact; it was never in the release's file list, so it is not released now. 'call build_app.bat' replaces the old bare 'build_app.bat' because formcompiler runs cmd lines from one script file and a bare .bat would end it. build_app makes the macOS disk image with hdiutil; formcompiler signs and notarizes it after the build (v0.6.0)."
+}

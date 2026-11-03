@@ -1,0 +1,8 @@
+__pycache__/
+*.pyc
+.venv/
+dist/
+out/
+release-dist/
+.formcompiler/
+.DS_Store

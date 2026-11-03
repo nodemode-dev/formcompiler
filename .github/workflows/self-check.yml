@@ -1,0 +1,91 @@
+name: self-check
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: self-check-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  ACTIONLINT_VERSION: "1.7.12"
+  ACTIONLINT_SHA256: "8aca8db96f1b94770f1b0d72b6dddcb1ebb8123cb3712530b08cc387b349a3d8"
+
+jobs:
+  test:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Test dependencies
+        run: python3 -m pip install --quiet --break-system-packages -r tests/requirements.txt
+      - name: The scripts and the family layers
+        run: python3 -m pytest tests -q -p no:cacheprovider
+
+  lint:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: actionlint
+        run: |
+          url="https://github.com/rhysd/actionlint/releases/download/v${ACTIONLINT_VERSION}/actionlint_${ACTIONLINT_VERSION}_linux_amd64.tar.gz"
+          curl --proto '=https' --proto-redir '=https' -fsSL -o "$RUNNER_TEMP/actionlint.tar.gz" "$url"
+          echo "$ACTIONLINT_SHA256  $RUNNER_TEMP/actionlint.tar.gz" | sha256sum -c -
+          tar -xzf "$RUNNER_TEMP/actionlint.tar.gz" -C "$RUNNER_TEMP" actionlint
+          "$RUNNER_TEMP/actionlint" -color .github/workflows/*.yml
+      - name: Python compiles
+        run: python3 -m py_compile scripts/*.py
+      - name: Registry
+        run: |
+          python3 -I scripts/registry.py check
+          for app in $(python3 -I scripts/registry.py list --enabled | python3 -c "import json, sys; print(' '.join(json.load(sys.stdin)))"); do
+            python3 -I scripts/registry.py config --app "$app" > /dev/null
+          done
+      - name: Plan runs on a sample Tauri config
+        run: |
+          mkdir -p "$RUNNER_TEMP/sample/src-tauri"
+          printf '{"version":"1.2.3","bundle":{"macOS":{"minimumSystemVersion":"12.0"}}}' > "$RUNNER_TEMP/sample/src-tauri/tauri.conf.json"
+          cd "$RUNNER_TEMP/sample" && python3 -I "$GITHUB_WORKSPACE/scripts/plan.py" --ref="" --tag-prefix=sample-v --expect-version=1.2.3 \
+            --platforms "macos-arm64,macos-universal?,linux-x64,windows-x64,windows-x86?" --platform-env '{"windows-x86":{"SAMPLE":"1"}}'
+      - name: App manifest and skills from a sample checkout
+        run: |
+          sample="$RUNNER_TEMP/manifest-app"
+          mkdir -p "$sample/.claude/skills/sample-harness/references"
+          printf -- '---\nname: sample-harness\ndescription: Drives the sample app.\n---\n\n# Sample\n' > "$sample/.claude/skills/sample-harness/SKILL.md"
+          printf '# Tools\n' > "$sample/.claude/skills/sample-harness/references/tools.md"
+          python3 -I scripts/agents.py build --app formvis --app-dir "$sample" --dist "$RUNNER_TEMP/manifest-dist" --version 1.2.3 --commit 0123456789abcdef0123456789abcdef01234567
+          python3 -I scripts/agents.py check --app formvis --dist "$RUNNER_TEMP/manifest-dist"
+      - name: Catalogue builds from no releases
+        run: |
+          echo '[]' > "$RUNNER_TEMP/releases.json"
+          python3 -I scripts/catalog.py build --releases "$RUNNER_TEMP/releases.json" --out "$RUNNER_TEMP/apps.json"
+      - name: No em dash in tracked markdown, no emoji in tracked text
+        run: |
+          python3 - <<'PY'
+          import subprocess, sys
+          bad = []
+          for path in subprocess.check_output(['git', 'ls-files'], text=True).split():
+              try:
+                  text = open(path, encoding='utf-8').read()
+              except (UnicodeDecodeError, IsADirectoryError, FileNotFoundError):
+                  continue
+              markdown = path.endswith('.md')
+              for ch in text:
+                  cp = ord(ch)
+                  if (markdown and cp == 0x2014) or 0x1F000 <= cp <= 0x1FAFF or 0x2600 <= cp <= 0x27BF:
+                      bad.append(f'{path}: U+{cp:04X}')
+                      break
+          print('\n'.join(bad) or 'clean')
+          sys.exit(1 if bad else 0)
+          PY

@@ -1,0 +1,53 @@
+{
+  "app": "formpromo",
+  "repository": "nodemode-dev/formpromo",
+  "title": "FormPromo",
+  "enabled": true,
+  "release": "draft",
+  "version": {"file": "src-tauri/tauri.conf.json", "pattern": ""},
+  "checks": ["checks.yml"],
+  "platforms": ["macos-arm64", "linux-x64", "windows-x64"],
+  "toolchain": {
+    "node": "22",
+    "python": "3.12",
+    "rust": true,
+    "rust_targets": "",
+    "rust_cache": ["src-tauri"],
+    "go": "",
+    "linux_packages": "libwebkit2gtk-4.1-dev build-essential curl wget file libxdo-dev libssl-dev libayatana-appindicator3-dev librsvg2-dev patchelf gstreamer1.0-plugins-base gstreamer1.0-plugins-good",
+    "windows_msvc": false
+  },
+  "build": {
+    "mode": "contract",
+    "cli": "formpromo",
+    "install": true,
+    "install_args": "",
+    "install_desktop": true,
+    "windows_shell": "cmd",
+    "macos": "",
+    "linux": "",
+    "windows": "",
+    "tauri_config": ""
+  },
+  "setup": {"macos": "", "linux": "", "windows": ""},
+  "post_build": {"macos": "", "linux": "", "windows": ""},
+  "artifacts": [],
+  "extras": [],
+  "assets": "python3 setup/build_packages.py --out \"$DIST\"",
+  "notes": "",
+  "updater": {"tauri": false, "tag_json": false, "files": []},
+  "signing": {"macos": "apple", "windows": "certificate"},
+  "agents": {"skills": ".claude/skills", "mcp": true},
+  "catalog": {
+    "id": "formpromo",
+    "name": "FormPromo",
+    "kind": "promo",
+    "summary": "Promo films from your own media, style and sourced claims.",
+    "identifier": "ai.nodemode.formpromo",
+    "licence": "GPL-3.0-only",
+    "state": "prelaunch",
+    "project_extensions": [".fptemplate"],
+    "minimum_os": {"macos": "macOS 12", "windows": "", "linux": ""}
+  },
+  "notes_for_owner": "Written from formpromo 2.9.1 (main, 2026-10-30). Contract mode: ./formpromo install runs formpromo_oc_install (the engine venv and the frontend), install-desktop adds PyInstaller, numpy and Playwright and checks Rust, and desktop build --config FILE builds the frontend, freezes the engine with PyInstaller and runs tauri build; formpromo.bat does the same under cmd and, since 2.9.1, returns each step's real exit code. On Windows and Linux the engine is a one-file sidecar, src-tauri/binaries/formpromo-engine-<triple> (Tauri externalBin); on macOS it is a PyInstaller one-folder engine copied to src-tauri/engine and shipped as Resources/engine by src-tauri/tauri.macos.conf.json, which Tauri does not sign. With APPLE_SIGNING_IDENTITY set (formcompiler's build keychain holds it), setup/freeze_backend has PyInstaller sign with that identity and src-tauri/entitlements.plist, then signs every remaining Mach-O in the folder with hardened runtime and a secure timestamp, so notarization passes; without it the engine is signed ad hoc. The version is read from src-tauri/tauri.conf.json; VERSION also holds it with a leading v, and the app's F4 test keeps the two equal. The assets step builds the FormVFX panel package (plugins/formvfx-panel) as formpromo-formvfx-panel.formpkg with setup/build_packages.py, as formpromo's README describes; the catalogue does not list .formpkg files, and the signed extensions.json the README mentions is not built by formcompiler yet. No Tauri updater plugin and createUpdaterArtifacts false, so updater.tauri is false. Python 3.12 matches checks.yml. Linux packages are the list setup/install_desktop asks for. Catalogue: id, name and kind follow formai.tools' catalog/products.json, whose formpromo entry still says 39 templates; the licence here is GPL-3.0-only as the app's tauri.conf.json and repository state. .fptemplate is the one file type tauri.conf.json associates. State prelaunch, like the other registered apps with no release yet. Its first release needs a compile_v2.9.1 (or later) branch, or a v tag once tag_trigger is set."
+}

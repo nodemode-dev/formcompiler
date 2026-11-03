@@ -1,0 +1,59 @@
+{
+  "app": "formbench",
+  "repository": "nodemode-dev/formbench",
+  "title": "FormBench",
+  "enabled": true,
+  "release": "draft",
+  "version": {"file": "src-tauri/tauri.conf.json", "pattern": ""},
+  "checks": ["ci.yml"],
+  "platforms": ["macos-arm64", "macos-x64", "linux-x64", "windows-x64"],
+  "toolchain": {
+    "node": "22",
+    "python": "3.13",
+    "rust": true,
+    "rust_targets": "",
+    "rust_cache": ["src-tauri"],
+    "go": "",
+    "linux_packages": "libwebkit2gtk-4.1-dev libayatana-appindicator3-dev librsvg2-dev libxdo-dev libssl-dev pkg-config build-essential file",
+    "windows_msvc": false
+  },
+  "build": {
+    "mode": "commands",
+    "cli": "formranker",
+    "install": false,
+    "install_args": "",
+    "install_desktop": false,
+    "windows_shell": "cmd",
+    "macos": "./build_app --no-install $FORMCOMPILER_CONFIG_ARG",
+    "linux": "./build_app --no-install $FORMCOMPILER_CONFIG_ARG",
+    "windows": "call build_app.bat %FORMCOMPILER_CONFIG_ARG%",
+    "tauri_config": ""
+  },
+  "setup": {"macos": "", "linux": "", "windows": ""},
+  "post_build": {"macos": "", "linux": "", "windows": ""},
+  "artifacts": [
+    "src-tauri/target/release/bundle/dmg/*.dmg",
+    "src-tauri/target/release/bundle/appimage/*.AppImage",
+    "src-tauri/target/release/bundle/deb/*.deb",
+    "src-tauri/target/release/bundle/msi/*.msi",
+    "src-tauri/target/release/bundle/nsis/*.exe"
+  ],
+  "extras": [],
+  "assets": "",
+  "notes": "",
+  "updater": {"tauri": false, "tag_json": false, "files": []},
+  "signing": {"macos": "apple", "windows": "certificate"},
+  "agents": {"skills": "", "mcp": true},
+  "catalog": {
+    "id": "formbench",
+    "name": "FormBench",
+    "kind": "parity",
+    "summary": "Parity, testing and feedback for the Form apps, kept on this computer.",
+    "identifier": "ai.nodemode.formranker",
+    "licence": "Apache-2.0",
+    "state": "prelaunch",
+    "project_extensions": [],
+    "minimum_os": {"macos": "macOS 12", "windows": "", "linux": ""}
+  },
+  "notes_for_owner": "Added in the family plan's Phase 3 (FormRanker v0.7.0, the desktop app). FormRanker's Tauri crate is its own project in src-tauri, not a workspace at the root, so its bundles are under src-tauri/target/release/bundle and the Rust cache is src-tauri. build_app freezes the engine with PyInstaller (Python 3.13, the version it was built and run with) and bundles it as the app's sidecar; build_app.bat does the same on Windows. agents.mcp is true from FormRanker v0.8.0: the installed program answers `formranker mcp` on stdio with no window, as formMCP's does, and a checkout answers `./formranker mcp`; no mcp_launch is set, the family's open point (Q9). Its first release needs a compile_v0.7.0 (or later) branch pushed after the repository's first push."
+}

@@ -1,0 +1,79 @@
+{
+  "app": "formdesign",
+  "repository": "nodemode-dev/formdesign",
+  "title": "formdesign",
+  "enabled": true,
+  "release": "draft",
+  "version": {"file": "src-tauri/tauri.conf.json", "pattern": ""},
+  "checks": ["ci.yml"],
+  "platforms": ["macos-arm64", "linux-x64", "windows-x64"],
+  "toolchain": {
+    "node": "22",
+    "python": "3.12",
+    "rust": true,
+    "rust_targets": "",
+    "rust_cache": ["native", "src-tauri"],
+    "go": "",
+    "linux_packages": "libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf",
+    "windows_msvc": false
+  },
+  "build": {
+    "mode": "contract",
+    "cli": "formdesign",
+    "install": true,
+    "install_args": "",
+    "install_desktop": true,
+    "windows_shell": "cmd",
+    "macos": "",
+    "linux": "",
+    "windows": "",
+    "tauri_config": ""
+  },
+  "setup": {"macos": "", "linux": "", "windows": ""},
+  "post_build": {"macos": "", "linux": "", "windows": ""},
+  "artifacts": [
+    "src-tauri/target/**/bundle/dmg/*.dmg",
+    "src-tauri/target/**/bundle/macos/*.app.tar.gz",
+    "src-tauri/target/**/bundle/appimage/*.AppImage",
+    "src-tauri/target/**/bundle/deb/*.deb",
+    "src-tauri/target/**/bundle/rpm/*.rpm",
+    "src-tauri/target/**/bundle/msi/*.msi",
+    "src-tauri/target/**/bundle/nsis/*.exe",
+    "src-tauri/target/**/bundle/*/*.sig",
+    "src-tauri/binaries/formdesign-core-*"
+  ],
+  "extras": [
+    {
+      "name": "core-macos-x64",
+      "runner": "macos-latest",
+      "experimental": false,
+      "node": "",
+      "python": "",
+      "java": "",
+      "go": "",
+      "android": false,
+      "rust_targets": "x86_64-apple-darwin",
+      "rust": true,
+      "linux_packages": "",
+      "run": "cd native\ncargo build --release -p formdesign-core --target x86_64-apple-darwin\nmkdir -p ../out\ncp target/x86_64-apple-darwin/release/formdesign-core ../out/formdesign-core-x86_64-apple-darwin",
+      "artifacts": ["out/formdesign-core-x86_64-apple-darwin"]
+    }
+  ],
+  "assets": "",
+  "notes": "",
+  "updater": {"tauri": true, "tag_json": false, "files": []},
+  "signing": {"macos": "apple", "windows": "certificate"},
+  "agents": {"skills": ".claude/skills", "mcp": true},
+  "catalog": {
+    "id": "formdesign",
+    "name": "FormDesign",
+    "kind": "layout",
+    "summary": "Page layout and PDF work in one app: lay out, publish, read, sign and edit.",
+    "identifier": "ai.nodemode.formdesign",
+    "licence": "Apache-2.0",
+    "state": "live",
+    "project_extensions": [".fdes"],
+    "minimum_os": {"macos": "macOS 12", "windows": "", "linux": ""}
+  },
+  "notes_for_owner": "setup/install_core downloads formdesign-core-<triple> from the formdesign-v<version> release on formcompiler: those files come from the desktop artifacts glob src-tauri/binaries/formdesign-core-* (aarch64-apple-darwin, x86_64-unknown-linux-gnu, x86_64-pc-windows-msvc.exe) and the core-macos-x64 extra (x86_64-apple-darwin). No aarch64-unknown-linux-gnu core is built because no linux-arm64 platform is listed, although install_core accepts that triple. build.tauri_config is empty on purpose: src-tauri/tauri.updater.conf.json only sets createUpdaterArtifacts, which formcompiler adds itself when TAURI_SIGNING_PRIVATE_KEY is set, and merging it into an unsigned build would make tauri build ask for a key it does not have. The updater public key in src-tauri/tauri.conf.json is still empty, so the app skips update checks until a key pair is made and TAURI_SIGNING_PRIVATE_KEY is set in formcompiler."
+}

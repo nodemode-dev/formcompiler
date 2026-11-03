@@ -1,0 +1,20 @@
+formcompiler
+Copyright 2026 NodeAgentc, Inc.
+https://github.com/nodemode-dev/formcompiler
+
+This product is licensed under the GNU General Public License v3.0 (SPDX GPL-3.0-only, see LICENSE).
+
+The release pipeline is an original work of nodemode-ai: a watch over the app
+repositories, one release workflow driven by a registry of the apps, draft
+releases with SHA256SUMS, and the family catalogue FormPortal reads.
+
+The workflows call third-party GitHub Actions under their own licences, run on
+CI runners only and never distributed with any app: actions/checkout,
+actions/setup-node, actions/setup-python, actions/setup-go, actions/setup-java,
+actions/upload-artifact and actions/download-artifact (MIT),
+dtolnay/rust-toolchain (MIT OR Apache-2.0), Swatinem/rust-cache (LGPL-3.0),
+ilammy/msvc-dev-cmd (MIT), android-actions/setup-android (MIT),
+docker/setup-qemu-action, docker/setup-buildx-action, docker/login-action and
+docker/build-push-action (Apache-2.0), and rhysd/actionlint in the
+self-check (MIT). scripts/catalog.py uses the Python cryptography package
+(Apache-2.0 OR BSD-3-Clause), installed on a runner, to sign the catalogue.

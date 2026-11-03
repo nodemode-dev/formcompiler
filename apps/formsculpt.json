@@ -1,0 +1,53 @@
+{
+  "app": "formsculpt",
+  "repository": "nodemode-dev/formsculpt",
+  "title": "formsculpt",
+  "enabled": true,
+  "release": "draft",
+  "version": {"file": "src-tauri/tauri.conf.json", "pattern": ""},
+  "checks": ["ci.yml"],
+  "platforms": ["macos-arm64", "linux-x64", "windows-x64"],
+  "toolchain": {
+    "node": "22",
+    "python": "3.12",
+    "rust": true,
+    "rust_targets": "",
+    "rust_cache": ["src-tauri", "native"],
+    "go": "",
+    "linux_packages": "libwebkit2gtk-4.1-dev libayatana-appindicator3-dev librsvg2-dev patchelf libxdo-dev",
+    "windows_msvc": false
+  },
+  "build": {
+    "mode": "contract",
+    "cli": "formsculpt",
+    "install": true,
+    "install_args": "",
+    "install_desktop": true,
+    "windows_shell": "bash",
+    "macos": "",
+    "linux": "",
+    "windows": "",
+    "tauri_config": ""
+  },
+  "setup": {"macos": "", "linux": "", "windows": ""},
+  "post_build": {"macos": "", "linux": "", "windows": ""},
+  "artifacts": [],
+  "extras": [],
+  "assets": "",
+  "notes": "",
+  "updater": {"tauri": true, "tag_json": false, "files": []},
+  "signing": {"macos": "apple", "windows": "certificate"},
+  "agents": {"skills": ".claude/skills", "mcp": true},
+  "catalog": {
+    "id": "formsculpt",
+    "name": "FormSculpt",
+    "kind": "sculpt",
+    "summary": "3D sculpting and modeling, with a Rust engine and a command set agents can drive.",
+    "identifier": "ai.nodemode.formsculpt",
+    "licence": "Apache-2.0",
+    "state": "prelaunch",
+    "project_extensions": [".fsc"],
+    "minimum_os": {"macos": "macOS 12", "windows": "", "linux": ""}
+  },
+  "notes_for_owner": "Renamed from formsculptor: the old desktop.yml called ./formsculptor, this entry uses ./formsculpt. Not in formportal's products.json (under either name): the catalog entry is written from the README and tauri.conf.json (project file .fsc from the file association). formsculpt.bat has no install-desktop or desktop command, so Windows runs ./formsculpt from Git Bash (windows_shell bash), exactly as the old workflow did. plugins.updater.pubkey is empty, so the app skips update checks until a key pair is made."
+}

@@ -1,0 +1,81 @@
+{
+  "app": "form.md",
+  "repository": "nodemode-dev/form.md",
+  "title": "form.md",
+  "enabled": true,
+  "release": "draft",
+  "version": {"file": "Makefile", "pattern": "^VERSION := v(\\S+)"},
+  "checks": ["ci.yml"],
+  "platforms": ["macos-arm64", "macos-x64", "linux-x64", "linux-arm64", "windows-x64"],
+  "toolchain": {
+    "node": "22.22.0",
+    "python": "",
+    "rust": true,
+    "rust_targets": "",
+    "rust_cache": ["src-tauri"],
+    "go": "go.mod",
+    "linux_packages": "libwebkit2gtk-4.1-dev libayatana-appindicator3-dev librsvg2-dev libxdo-dev libssl-dev patchelf rpm gstreamer1.0-plugins-base gstreamer1.0-plugins-good",
+    "windows_msvc": false
+  },
+  "build": {
+    "mode": "commands",
+    "cli": "form-md",
+    "install": false,
+    "install_args": "",
+    "install_desktop": false,
+    "windows_shell": "cmd",
+    "macos": "./build_app --yes $FORMCOMPILER_CONFIG_ARG",
+    "linux": "./build_app --yes $FORMCOMPILER_CONFIG_ARG",
+    "windows": "call build_app.bat %FORMCOMPILER_CONFIG_ARG%",
+    "tauri_config": ""
+  },
+  "setup": {
+    "macos": "cd web && npm ci --no-audit --no-fund",
+    "linux": "cd web && npm ci --no-audit --no-fund",
+    "windows": "cd web && npm ci --no-audit --no-fund"
+  },
+  "post_build": {"macos": "", "linux": "", "windows": ""},
+  "artifacts": [],
+  "extras": [
+    {
+      "name": "server",
+      "runner": "ubuntu-24.04",
+      "experimental": false,
+      "node": "22.22.0",
+      "python": "",
+      "java": "",
+      "go": "1.26.9",
+      "android": false,
+      "rust_targets": "",
+      "rust": false,
+      "linux_packages": "",
+      "run": "cd web && npm ci --no-audit --no-fund && cd ..\nmake check\nmake release\ncp install.sh deploy/form-md.service release/",
+      "artifacts": ["release/*"]
+    }
+  ],
+  "image": {
+    "name": "ghcr.io/nodemode-dev/form.md",
+    "context": ".",
+    "file": "Dockerfile",
+    "platforms": "linux/amd64,linux/arm64",
+    "build_args": {"VERSION": "{tag}"},
+    "tags": ["{tag}", "latest"]
+  },
+  "assets": "",
+  "notes": "",
+  "updater": {"tauri": false, "tag_json": true, "files": ["install.sh"]},
+  "signing": {"macos": "apple", "windows": "certificate"},
+  "agents": {"skills": ".claude/skills", "mcp": true},
+  "catalog": {
+    "id": "formmd",
+    "name": "Form.md",
+    "kind": "notes",
+    "summary": "Notes, docs and databases built on plain Markdown files.",
+    "identifier": "ai.nodemode.formmd",
+    "licence": "Apache-2.0",
+    "state": "live",
+    "project_extensions": [],
+    "minimum_os": {"macos": "macOS 12", "windows": "", "linux": ""}
+  },
+  "notes_for_owner": "The server release (five binaries, SHA256SUMS, install.sh, form-md.service) is the extra named server, whose artifacts are release/*; install.sh reads SHA256SUMS from the release, so that file (written by make release) must stay in the release beside formcompiler's SHA256SUMS.txt. The extra's go value is 1.26.9, copied from go.mod, because the extras field takes a version rather than go.mod. The desktop build runs `npm ci` in web/ in setup because build_app only installs when web/node_modules is missing. build_app and build_app.bat accept --config, so $FORMCOMPILER_CONFIG_ARG is passed (the old workflow passed none); build_app.bat has no --yes option and the Windows row does not use one. The old publish job waited for the server release and uploaded the desktop bundles to it; they are now in the same formcompiler release. The update check and install.sh read form.md-updates/latest.json as {\"tag_name\":\"vX.Y.Z\"} and install.sh, both written by formcompiler (tag_json, files). The Docker image is built after the release assets exist in the old order (binaries before image); formcompiler decides that order. Apple signing and notarising switch on with the APPLE_* secrets; without them macOS blocks the first launch (Open Anyway)."
+}

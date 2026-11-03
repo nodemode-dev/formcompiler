@@ -1,0 +1,58 @@
+{
+  "app": "formportal",
+  "repository": "nodemode-dev/formportal",
+  "title": "FormPortal",
+  "enabled": true,
+  "release": "draft",
+  "file_names": "app",
+  "version": {"file": "src-tauri/tauri.conf.json", "pattern": ""},
+  "checks": ["ci.yml"],
+  "platforms": ["macos-arm64", "macos-x64", "linux-x64", "linux-arm64", "windows-x64", "windows-arm64"],
+  "toolchain": {
+    "node": "22",
+    "python": "3.12",
+    "rust": true,
+    "rust_targets": "",
+    "rust_cache": [],
+    "go": "",
+    "linux_packages": "libwebkit2gtk-4.1-dev librsvg2-dev libssl-dev libdbus-1-dev pkg-config build-essential patchelf",
+    "windows_msvc": false
+  },
+  "build": {
+    "mode": "commands",
+    "cli": "formportal",
+    "install": false,
+    "install_args": "",
+    "install_desktop": false,
+    "windows_shell": "cmd",
+    "macos": "./setup/build_macos_app $FORMCOMPILER_CONFIG_ARG",
+    "linux": "./setup/build_linux_app $FORMCOMPILER_CONFIG_ARG",
+    "windows": "call setup\\build_windows_app.bat %FORMCOMPILER_CONFIG_ARG%",
+    "tauri_config": ""
+  },
+  "setup": {"macos": "", "linux": "", "windows": ""},
+  "post_build": {
+    "macos": "case \"$FORMCOMPILER_PLATFORM\" in\n  macos-x64) arch=x86_64 ;;\n  *) arch=arm64 ;;\nesac\npython3 setup/package_release.py --platform macos --arch \"$arch\"",
+    "linux": "case \"$FORMCOMPILER_PLATFORM\" in\n  linux-arm64) arch=arm64 ;;\n  *) arch=x86_64 ;;\nesac\npython3 setup/package_release.py --platform linux --arch \"$arch\"",
+    "windows": "case \"$FORMCOMPILER_PLATFORM\" in\n  windows-arm64) arch=arm64 ;;\n  *) arch=x86_64 ;;\nesac\npython setup/package_release.py --platform windows --arch \"$arch\""
+  },
+  "artifacts": ["release-dist/*"],
+  "extras": [],
+  "assets": "python3 setup/package_release.py --finish --out \"$DIST\"",
+  "notes": "",
+  "updater": {"tauri": true, "tag_json": false, "files": []},
+  "signing": {"macos": "apple", "windows": "certificate"},
+  "agents": {"skills": ".claude/skills", "mcp": true},
+  "catalog": {
+    "id": "formai",
+    "name": "FormPortal",
+    "kind": "portal",
+    "summary": "One place to install, open and update every Form app.",
+    "identifier": "dev.formai.portal",
+    "licence": "GPL-3.0-only",
+    "state": "public",
+    "project_extensions": [],
+    "minimum_os": {"macos": "macOS 12", "windows": "Windows 10", "linux": ""}
+  },
+  "notes_for_owner": "Since formportal 0.54.0 FormPortal releases its installers as they are, no zips: post_build runs setup/package_release.py per platform, which copies them to release-dist/formportal-<version>-<os>-<arch>.dmg (macOS), .AppImage, .deb and .rpm (Linux) and formportal-<version>-windows-<arch>-setup.exe (Windows), plus manifest-*.json and updater-*.json parts and, on macOS only, a signed formportal-<version>-macos-<arch>-update.app.tar.gz (on Linux and Windows latest.json points at the installer itself, which is the updater bundle). The notarize step also notarizes and staples the dmg the artifacts glob matches in release-dist, since post-build copies it before notarization, and --finish recomputes each manifest size and SHA-256 from the staged files; before 0.54.0 every platform was a formportal-<version>-<os>-<arch>.zip. The assets step (`--finish --out \"$DIST\"`) merges the parts into manifest.json, SHA256SUMS and latest.json and deletes the parts, so the artifacts glob must be release-dist/* (all of it). Overlap: formcompiler also writes SHA256SUMS.txt (both kept); formcompiler's own latest.json is only written when a .sig is staged beside an updater bundle, and release-dist holds none, so FormPortal's own latest.json from --finish is the one released and copied to formportal-updates and to formportal/updates/latest.json in the download store. stage.py appends _<arch> only to a *.app.tar.gz whose stem has no hyphen or underscore, so formportal-<v>-macos-arm64-update.app.tar.gz keeps its name and latest.json's macOS URLs match. Since formportal 0.53.4 the Windows build makes only the NSIS setup it ships (FORMPORTAL_BUNDLES overrides it for an msi), and the build scripts pin @tauri-apps/cli 2.12.3. Since formportal 0.53.5 the updater endpoint in its tauri.conf.json is https://dl.formai.studio/formportal/updates/latest.json (the download store's feed, which scripts/tauri_config.py also writes when FORMCOMPILER_PUBLIC_BASE is set), and --finish writes each platform URL as https://dl.formai.studio/formportal/<version>/<file>, so feed.py public leaves them unchanged; before 0.53.5 both named this repository's formportal-updates and formportal-v<version> releases. The updater public key comes from the FORMPORTAL_UPDATER_PUBKEY variable in the old workflow; tauri.conf.json has an empty pubkey, so formcompiler must supply the public half when it merges the config. The old release step also created the draft release with a fixed note; formcompiler's notes fall back to CHANGELOG.md. The package script's 'minimum_os' for Linux came from the build host's libc."
+}

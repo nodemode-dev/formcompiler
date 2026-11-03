@@ -1,0 +1,67 @@
+{
+  "app": "formencoder",
+  "repository": "nodemode-dev/formencoder",
+  "title": "formencoder",
+  "enabled": true,
+  "release": "draft",
+  "version": {"file": "src-tauri/tauri.conf.json", "pattern": ""},
+  "checks": ["ci.yml"],
+  "platforms": ["macos-arm64", "macos-x64", "linux-x64", "windows-x64"],
+  "toolchain": {
+    "node": "22",
+    "python": "3.12",
+    "rust": true,
+    "rust_targets": "",
+    "rust_cache": ["native", "src-tauri"],
+    "go": "",
+    "linux_packages": "libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf uuid-dev",
+    "windows_msvc": true
+  },
+  "build": {
+    "mode": "commands",
+    "cli": "formencoder",
+    "install": false,
+    "install_args": "",
+    "install_desktop": false,
+    "windows_shell": "cmd",
+    "macos": "./formencoder install\n./formencoder install-desktop\npython setup/install_tools.py --stage --keep-going\n./formencoder desktop build $FORMCOMPILER_CONFIG_ARG",
+    "linux": "./formencoder install\n./formencoder install-desktop\npython setup/install_tools.py --stage --keep-going\n./formencoder desktop build $FORMCOMPILER_CONFIG_ARG",
+    "windows": "call formencoder.bat install\ncall formencoder.bat install-desktop\npython setup\\install_tools.py --stage --keep-going\ncall formencoder.bat desktop build %FORMCOMPILER_CONFIG_ARG%",
+    "tauri_config": ""
+  },
+  "setup": {"macos": "", "linux": "", "windows": ""},
+  "post_build": {
+    "macos": "ls src-tauri/tools > \"delivery-tools-$FORMCOMPILER_PLATFORM.txt\" 2>/dev/null || true\necho \"delivery tools staged: $(tr '\\n' ' ' < \"delivery-tools-$FORMCOMPILER_PLATFORM.txt\")\"",
+    "linux": "ls src-tauri/tools > \"delivery-tools-$FORMCOMPILER_PLATFORM.txt\" 2>/dev/null || true\necho \"delivery tools staged: $(tr '\\n' ' ' < \"delivery-tools-$FORMCOMPILER_PLATFORM.txt\")\"",
+    "windows": "ls src-tauri/tools > \"delivery-tools-$FORMCOMPILER_PLATFORM.txt\" 2>/dev/null || true\necho \"delivery tools staged: $(tr '\\n' ' ' < \"delivery-tools-$FORMCOMPILER_PLATFORM.txt\")\""
+  },
+  "artifacts": [
+    "src-tauri/target/**/bundle/dmg/*.dmg",
+    "src-tauri/target/**/bundle/macos/*.app.tar.gz",
+    "src-tauri/target/**/bundle/appimage/*.AppImage",
+    "src-tauri/target/**/bundle/deb/*.deb",
+    "src-tauri/target/**/bundle/rpm/*.rpm",
+    "src-tauri/target/**/bundle/msi/*.msi",
+    "src-tauri/target/**/bundle/nsis/*.exe",
+    "src-tauri/target/**/bundle/*/*.sig",
+    "delivery-tools-*.txt"
+  ],
+  "extras": [],
+  "assets": "APP=app\n[ -d \"$APP/src-tauri\" ] || APP=.\npython3 - \"$APP\" \"$DIST\" <<'PY'\nimport hashlib, json, sys, urllib.request\napp, dist = sys.argv[1], sys.argv[2]\nsrc = json.load(open(app + '/src-tauri/binaries/ffmpeg-licence.json'))['source']['ffmpeg']\nname = dist + '/' + src['url'].rsplit('/', 1)[1]\nurllib.request.urlretrieve(src['url'], name)\ndigest = hashlib.sha256(open(name, 'rb').read()).hexdigest()\nassert digest == src['sha256'], (digest, src['sha256'])\nprint('attached', name, digest)\nlame = dist + '/lame-3.100.tar.gz'\nurllib.request.urlretrieve('https://downloads.sourceforge.net/project/lame/lame/3.100/lame-3.100.tar.gz', lame)\ndigest = hashlib.sha256(open(lame, 'rb').read()).hexdigest()\nassert digest == 'ddfe36cab873794038ae2c1210557ad34857a4b6bdc515785d1da9e175b1da1e', digest\nprint('attached', lame, digest)\nPY\ncp \"$APP/src-tauri/binaries/LGPL-2.1.txt\" \"$APP/src-tauri/binaries/THIRD-PARTY-NOTICES.txt\" \"$APP/src-tauri/binaries/ffmpeg-licence.json\" \"$DIST/\"\n",
+  "notes": "",
+  "updater": {"tauri": true, "tag_json": false, "files": []},
+  "signing": {"macos": "apple", "windows": "certificate"},
+  "agents": {"skills": ".claude/skills", "mcp": true},
+  "catalog": {
+    "id": "formencoder",
+    "name": "FormEncoder",
+    "kind": "encoder",
+    "summary": "Convert, compress and export media in batches, with presets.",
+    "identifier": "dev.formai.formencoder",
+    "licence": "Apache-2.0",
+    "state": "public",
+    "project_extensions": [".fequeue"],
+    "minimum_os": {"macos": "macOS 12", "windows": "", "linux": ""}
+  },
+  "notes_for_owner": "The LGPL source offer (the FFmpeg source tarball, checked against its pinned SHA-256, plus LGPL-2.1.txt, THIRD-PARTY-NOTICES.txt and ffmpeg-licence.json) is produced by the assets script, which reads src-tauri/binaries/ffmpeg-licence.json from the app checkout (it looks in app/ and falls back to the working directory). The same script attaches the LAME 3.100 source tarball, checked against its pinned SHA-256, as LAME's LGPL source offer. Check the first release carries all five files. Because install_tools.py runs with --keep-going, a tool that fails to build is left out; each platform's post-build writes delivery-tools-PLATFORM.txt listing what was staged in src-tauri/tools, and the artifacts list (the default bundle globs plus that file) attaches it to the release. Build mode is commands so install_tools.py --stage --keep-going runs after install and after the MSVC environment is on PATH (nmake for LAME), the old order; a setup entry would run before the MSVC step. macOS and Linux pass $FORMCOMPILER_CONFIG_ARG to ./formencoder desktop build. Windows passes %FORMCOMPILER_CONFIG_ARG% to formencoder.bat desktop build (formencoder 0.5.0 and later), so Windows builds make updater artifacts too. On macOS, setup/sign_resources.py signs every Mach-O staged in src-tauri/tools and src-tauri/ffmpeg w/ the Developer ID, hardened runtime and a timestamp before tauri build, because Tauri does not sign resources; on Windows those tools stay unsigned inside the installer. The updater public key in src-tauri/tauri.conf.json is still empty, so the app skips update checks until a key pair is made and TAURI_SIGNING_PRIVATE_KEY is set in formcompiler."
+}
