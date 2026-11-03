@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.9.1 · 2026-11-04
+
+- The unified v3 app icon replaces the old formcompiler icon in `assets/`, with a 256 px copy in `assets/app-icon/`
+- `.github/CODEOWNERS` adds @gbarnai beside @nodemode-ai on every rule
+
 ## v0.9.0 · 2026-11-03
 
 - Every app release is created on the app's own repository, the registry entry's `repository`: a draft tagged `vX.Y.Z` at the gated commit, titled `<title> <version>`, with the same files as before (installers, `SHA256SUMS.txt`, `form-app.json`, the skills archive, `latest.json` for a Tauri-updater app, the extras). The app repository owns its Releases page; formcompiler is the factory and the gate and keeps no app release. A stable release of a `release: draft` app is approved by a maintainer publishing the draft there, which creates the tag
