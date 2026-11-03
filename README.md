@@ -127,6 +127,7 @@ python3 scripts/watch.py --dry-run                         # what the watch woul
 FORMCOMPILER_PUBLIC_BASE=https://dl.formai.studio python3 scripts/catalog.py build --out releases.json   # with store URLs
 python3 scripts/plan.py --platforms macos-arm64,linux-x64  # from an app's root: version, tag vX.Y.Z, matrix
 python3 scripts/catalog.py build --out releases.json       # the catalogue from every app repository's published releases
+python3 scripts/catalog.py build --out releases.json --sums-dir verified   # sums from verified/<app>/<version>/SHA256SUMS.txt, never downloaded; a missing file fails
 python3 scripts/feed.py resolve --app formvis --tag v1.97.2  # the app, repository, title and channel of a release
 python3 scripts/versions.py older-drafts --app formvis --version 1.97.2   # the app repository's drafts below a version
 python3 scripts/catalog.py keygen                          # a catalogue key pair

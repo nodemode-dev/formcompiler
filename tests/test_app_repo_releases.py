@@ -253,6 +253,52 @@ def test_the_catalogue_reads_each_app_repository_own_releases(sums):
     assert stable["notes"] == "https://github.com/nodemode-dev/formvis/releases/tag/v1.2.0"
 
 
+def test_the_catalogue_reads_verified_sums_from_a_folder_and_never_downloads(tmp_path, monkeypatch):
+    monkeypatch.setattr(catalog, "fetch_sums", lambda release: pytest.fail("downloaded SHA256SUMS.txt although --sums-dir was given"))
+    releases = {"nodemode-dev/formvis": [gh_release("1.2.0"), gh_release("1.2.1")]}
+    for version, digest in (("1.2.0", "a" * 64), ("1.2.1", "b" * 64)):
+        folder = tmp_path / "formvis" / version
+        folder.mkdir(parents=True)
+        (folder / "SHA256SUMS.txt").write_text(f"{digest}  formvis-{version}-macos-arm64.dmg\n", encoding="utf-8")
+    document = catalog.build([load("formvis")], releases, sums_dir=str(tmp_path))
+    stable = channels(document, "formvis")["stable"]
+    assert stable["version"] == "1.2.1" and stable["artifacts"][0]["sha256"] == "b" * 64
+    assert stable["history"][0]["artifacts"][0]["sha256"] == "a" * 64
+
+
+def test_a_listed_release_without_verified_sums_stops_the_catalogue(tmp_path, monkeypatch):
+    monkeypatch.setattr(catalog, "fetch_sums", lambda release: pytest.fail("fell back to the download"))
+    releases = {"nodemode-dev/formvis": [gh_release("1.2.0")]}
+    with pytest.raises(SystemExit, match="SHA256SUMS.txt is missing: the catalogue lists formvis 1.2.0"):
+        catalog.build([load("formvis")], releases, sums_dir=str(tmp_path))
+    folder = tmp_path / "formvis" / "1.2.0"
+    folder.mkdir(parents=True)
+    (folder / "SHA256SUMS.txt").write_text("not a sums file\n", encoding="utf-8")
+    with pytest.raises(SystemExit, match="holds no sha256 line"):
+        catalog.build([load("formvis")], releases, sums_dir=str(tmp_path))
+
+
+def test_without_sums_dir_the_sums_are_downloaded(monkeypatch):
+    downloaded = []
+    monkeypatch.setattr(catalog, "fetch_sums", lambda release: downloaded.append(release["tag_name"]) or {"formvis-1.2.0-macos-arm64.dmg": "c" * 64})
+    document = catalog.build([load("formvis")], {"nodemode-dev/formvis": [gh_release("1.2.0")]})
+    assert downloaded == ["v1.2.0"]
+    assert channels(document, "formvis")["stable"]["artifacts"][0]["sha256"] == "c" * 64
+
+
+def test_the_catalogue_cli_takes_sums_dir(tmp_path):
+    releases = tmp_path / "releases.json"
+    releases.write_text(json.dumps({"nodemode-dev/formtray": [gh_release("0.9.8", repo="nodemode-dev/formtray")]}), encoding="utf-8")
+    out = script("catalog.py", "build", "--releases", str(releases), "--sums-dir", str(tmp_path / "verified"), "--out", str(tmp_path / "apps.json"))
+    assert out.returncode == 1 and "formtray/0.9.8/SHA256SUMS.txt is missing" in out.stdout + out.stderr
+    folder = tmp_path / "verified" / "formtray" / "0.9.8"
+    folder.mkdir(parents=True)
+    (folder / "SHA256SUMS.txt").write_text(f"{'d' * 64}  formvis-0.9.8-macos-arm64.dmg\n", encoding="utf-8")
+    out = script("catalog.py", "build", "--releases", str(releases), "--sums-dir", str(tmp_path / "verified"), "--out", str(tmp_path / "apps.json"))
+    assert out.returncode == 0, out.stdout + out.stderr
+    assert channels(json.loads((tmp_path / "apps.json").read_text(encoding="utf-8")), "formtray")["stable"]["artifacts"][0]["sha256"] == "d" * 64
+
+
 def test_the_catalogue_asks_the_api_for_every_enabled_repository_once(monkeypatch):
     asked = []
     monkeypatch.setattr(gh, "releases", lambda repo: asked.append(repo) or [])
