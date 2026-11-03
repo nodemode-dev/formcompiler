@@ -1,6 +1,6 @@
 # Security
 
-formcompiler builds, signs and publishes every form* app. A weakness here reaches every user of every app, so this
+FormCompiler builds, signs and publishes every Form app. A weakness here reaches every user of every app, so this
 file says what it guards, against whom, and how.
 
 ## Reporting a vulnerability
@@ -8,7 +8,7 @@ file says what it guards, against whom, and how.
 Use **Report a vulnerability** on this repository's Security tab (GitHub's private vulnerability reporting). Please do
 not open a public issue. Reports about a single app's code belong in that app's repository, the same way.
 
-## What formcompiler holds
+## What FormCompiler holds
 
 - The signing identities: Apple Developer ID and notarisation, the Windows code-signing certificate, and the Tauri
   updater key that every installed app trusts for its updates.
