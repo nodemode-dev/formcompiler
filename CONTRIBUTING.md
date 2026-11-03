@@ -54,7 +54,7 @@ in any tracked text.
 - Keep each pull request to one change, with tests for what it adds or fixes.
 - Write commit subjects the way the history does, in Conventional Commits:
   `feat(release): ...`, `fix(watch): ...`, `chore(registry): ...`. Leave `VERSION`
-  and the CHANGELOG version alone; the maintainer bumps them.
+  and the CHANGELOG version alone; a maintainer bumps them.
 - Every third-party action is pinned to a full commit SHA with its version as a
   trailing comment.
 - No `${{ }}` expression inside a `run:` script: values reach the shell through
@@ -66,14 +66,24 @@ in any tracked text.
   repository for one.
 - No comments in code; the context lives in `scripts/HASHOUT_LOG.md`.
 
+## Maintainers
+
+FormCompiler is maintained by:
+
+- the [nodemode-dev](https://github.com/nodemode-dev) organisation on GitHub
+- [@nodemode-ai](https://github.com/nodemode-ai)
+- [@gbarnai](https://github.com/gbarnai)
+
+Reach them through issues and pull requests.
+
 ## How changes land
 
-Only the maintainer pushes to `main`. Everyone else forks the repository and opens a pull request into `main`. A pull request merges when both checks pass on an up-to-date branch and the maintainer has approved it after its last push. Changes to the workflows, the registry, the scripts and the yank list also need the owner's review (`.github/CODEOWNERS`).
+Only a maintainer pushes to `main`. Everyone else forks the repository and opens a pull request into `main`. A pull request merges when both checks pass on an up-to-date branch and a maintainer has approved it after its last push. Changes to the workflows, the registry, the scripts and the yank list also need the owner's review (`.github/CODEOWNERS`).
 
 ## Releases
 
 FormCompiler releases the Form apps; a change here takes effect once it is on `main`,
-where the watch, release, feed and yank workflows run from. The maintainer bumps
+where the watch, release, feed and yank workflows run from. A maintainer bumps
 FormCompiler's own `VERSION` and CHANGELOG. An app is released only from a
 maintainer's `compile_vX.Y.Z` branch or `vX.Y.Z` tag on a commit already on that app's
 `main`, with its version file matching, its version above the last published one and
