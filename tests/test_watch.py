@@ -28,7 +28,7 @@ def stubbed(monkeypatch, capsys):
 
     def run(branches, evaluate=None, *args):
         monkeypatch.setattr(gh, "compile_branches", branches)
-        monkeypatch.setattr(readiness, "evaluate", evaluate or (lambda entry, branch, sha, *_: (readiness.READY, "checks passed", "1.0.0")))
+        monkeypatch.setattr(readiness, "evaluate", evaluate or (lambda entry, branch, sha, *_, **__: (readiness.READY, "checks passed", "1.0.0")))
         monkeypatch.setattr(sys, "argv", ["watch.py", *args])
         code = 0
         try:
@@ -73,7 +73,7 @@ def test_readable_apps_still_start_when_one_is_unreadable(stubbed):
 
 
 def test_ordinary_refusals_stay_non_fatal(stubbed):
-    def refuse(entry, branch, sha, *_):
+    def refuse(entry, branch, sha, *_, **__):
         return readiness.REFUSE, "checks did not pass", "1.0.0"
 
     code, out, dispatched = stubbed(lambda repo: [("compile_v1.0.0", "a" * 40)], refuse)

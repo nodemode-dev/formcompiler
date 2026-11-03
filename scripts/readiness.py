@@ -32,7 +32,7 @@ def ref_version(ref):
     return "", ""
 
 
-def evaluate(entry, ref, sha, all_releases, active_titles, check_runs=True):
+def evaluate(entry, ref, sha, all_releases, active_titles, check_runs=True, built=frozenset()):
     version, kind = ref_version(ref)
     if not version:
         return SKIP, f"`{ref}` is not a release ref (a compile_vX.Y.Z branch or a vX.Y.Z tag, with an optional -beta.N)", ""
@@ -62,8 +62,8 @@ def evaluate(entry, ref, sha, all_releases, active_titles, check_runs=True):
         existing = gh.tag_target(entry["repository"], tag)
     except gh.ApiError as error:
         return REFUSE, f"could not read the tag {tag} in {entry['repository']}: {error}", version
-    if existing and existing != sha:
-        return REFUSE, f"the tag {tag} already exists in {entry['repository']} at {existing[:9]}, not at {sha[:9]}; a release at this tag would be made at that commit, so move or delete the tag, or bump the version", version
+    if existing and existing != sha and gh.run_title(app, version, existing) not in built:
+        return REFUSE, f"the tag {tag} already exists in {entry['repository']} at {existing[:9]}, not at {sha[:9]}, and formcompiler did not make it; a release at this tag would be made at that commit, so move or delete the tag, or bump the version", version
     try:
         actual = version_at(entry, sha)
     except gh.ApiError as error:

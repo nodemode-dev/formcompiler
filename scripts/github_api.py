@@ -11,6 +11,7 @@ API = os.environ.get("GITHUB_API_URL", "https://api.github.com")
 COMPILE_BRANCH = re.compile(r"^compile_v((0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(-[0-9A-Za-z-]+(\.[0-9A-Za-z-]+)*)?)$")
 VERSION_TAG = re.compile(r"^v((0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(-[0-9A-Za-z-]+(\.[0-9A-Za-z-]+)*)?)$")
 MAIN = "main"
+RELEASES_ON_APP_REPOS_SINCE = "2026-11-03T22:47:59Z"
 SOURCE_MARK = re.compile(r"formcompiler-source: (\S+)@([0-9a-f]{40})")
 
 
@@ -51,8 +52,8 @@ def request(method, path, body=None, app_side=False, raw=False, token_env=""):
     return (json.loads(payload) if payload else None), link
 
 
-def get(path, app_side=False):
-    return request("GET", path, app_side=app_side)[0]
+def get(path, app_side=False, token_env=""):
+    return request("GET", path, app_side=app_side, token_env=token_env)[0]
 
 
 def paged(path, key=None, app_side=False, token_env=""):
@@ -81,24 +82,24 @@ def version_tags(repo):
     return [(ref["ref"].removeprefix("refs/tags/"), ref["object"]["sha"], ref["object"]["type"]) for ref in refs]
 
 
-def tag_commit(repo, sha, kind):
+def tag_commit(repo, sha, kind, token_env=""):
     seen = 0
     while kind == "tag" and seen < 5:
-        target = get(f"/repos/{repo}/git/tags/{sha}", app_side=True)["object"]
+        target = get(f"/repos/{repo}/git/tags/{sha}", app_side=True, token_env=token_env)["object"]
         sha, kind, seen = target["sha"], target["type"], seen + 1
     if kind != "commit":
         raise ApiError(0, f"tag object {sha[:9]} in {repo} does not point at a commit")
     return sha
 
 
-def tag_target(repo: str, name: str) -> str:
+def tag_target(repo: str, name: str, token_env: str = "") -> str:
     try:
-        ref = get(f"/repos/{repo}/git/ref/tags/{urllib.parse.quote(name)}", app_side=True)
+        ref = get(f"/repos/{repo}/git/ref/tags/{urllib.parse.quote(name)}", app_side=True, token_env=token_env)
     except ApiError as error:
         if error.status == 404:
             return ""
         raise
-    return tag_commit(repo, ref["object"]["sha"], ref["object"]["type"])
+    return tag_commit(repo, ref["object"]["sha"], ref["object"]["type"], token_env)
 
 
 def on_main(repo, sha):

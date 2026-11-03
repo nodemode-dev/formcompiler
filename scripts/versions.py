@@ -98,12 +98,19 @@ def main():
     old.add_argument("--token-env", default="", help="read the release list with this variable's token only (drafts need write access)")
     kind = sub.add_parser("channel")
     kind.add_argument("--version", required=True)
+    target = sub.add_parser("tag-target")
+    target.add_argument("--repo", required=True)
+    target.add_argument("--tag", required=True)
+    target.add_argument("--token-env", default="")
     args = parser.parse_args()
 
     if args.command == "channel":
         print(channel(args.version))
         return
     import github_api as gh
+    if args.command == "tag-target":
+        print(gh.tag_target(args.repo, args.tag, token_env=args.token_env))
+        return
     from registry import load
     repo = args.repo or load(args.app)["repository"]
     for release_id, tag in older_draft_ids(args.app, args.version, gh.releases(repo, token_env=args.token_env)):

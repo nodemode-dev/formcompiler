@@ -55,7 +55,8 @@ def main():
         fail(f"ref {ref!r} must be a compile branch name, a vX.Y.Z tag or a full commit SHA")
 
     active = {t for t in gh.active_release_runs(args.repo) if t != args.run_title}
-    state, reason, version = readiness.evaluate(entry, branch, sha, gh.releases(entry["repository"]), active)
+    built = gh.succeeded_release_runs(args.repo, gh.RELEASES_ON_APP_REPOS_SINCE)
+    state, reason, version = readiness.evaluate(entry, branch, sha, gh.releases(entry["repository"]), active, built=built)
     gh.summary(f"### Gate: {entry['app']} `{branch}` at `{sha[:12]}`\n\n{state}: {reason}\n\n")
     if entry.get("notes_for_owner"):
         gh.summary(f"> {entry['notes_for_owner']}\n\n")

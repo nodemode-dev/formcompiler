@@ -124,7 +124,7 @@ def watched(monkeypatch, capsys):
 
     def run(releases=(), evaluate=None):
         monkeypatch.setattr(gh, "releases", lambda repo: list(releases))
-        monkeypatch.setattr(readiness, "evaluate", evaluate or (lambda entry, ref, sha, *_: (readiness.READY, "ok", readiness.ref_version(ref)[0])))
+        monkeypatch.setattr(readiness, "evaluate", evaluate or (lambda entry, ref, sha, *_, **__: (readiness.READY, "ok", readiness.ref_version(ref)[0])))
         monkeypatch.setattr(sys, "argv", ["watch.py"])
         watch.main()
         return dispatched, deref, tag_calls, capsys.readouterr().out
@@ -177,7 +177,7 @@ def test_gate_dereferences_only_the_tag_it_was_given(monkeypatch):
 
 
 def test_tag_commit_follows_an_annotated_tag(monkeypatch):
-    monkeypatch.setattr(gh, "get", lambda path, app_side=False: {"object": {"sha": SHA, "type": "commit"}})
+    monkeypatch.setattr(gh, "get", lambda path, app_side=False, token_env="": {"object": {"sha": SHA, "type": "commit"}})
     assert gh.tag_commit("nodemode-dev/alpha", TAG_OBJECT, "tag") == SHA
     assert gh.tag_commit("nodemode-dev/alpha", OTHER, "commit") == OTHER
 
@@ -194,7 +194,7 @@ def test_watch_starts_nothing_below_a_version_already_running(monkeypatch, watch
     monkeypatch.setattr(gh, "compile_branches", lambda repo: [("compile_v1.11.0", OTHER)] if repo.endswith("alpha") else [])
     monkeypatch.setattr(gh, "active_release_runs", lambda repo: {gh.run_title("alpha", "1.11.0", OTHER)})
 
-    def running(entry, ref, sha, releases, active):
+    def running(entry, ref, sha, releases, active, built=frozenset()):
         version = readiness.ref_version(ref)[0]
         if gh.run_title(entry["app"], version, sha) in active:
             return readiness.SKIP, "already running", version
@@ -210,7 +210,7 @@ def test_watch_finds_a_stable_fix_behind_a_published_beta(monkeypatch, watched):
     monkeypatch.setattr(gh, "version_tags", lambda repo: tags if repo.endswith("alpha") else [])
     published = [{"tag_name": "v1.5.0", "draft": False}, {"tag_name": "v1.6.0-beta.1", "draft": False, "prerelease": True}]
 
-    def evaluate(entry, ref, sha, releases, active):
+    def evaluate(entry, ref, sha, releases, active, built=frozenset()):
         version = readiness.ref_version(ref)[0]
         if gh.release_by_tag(releases, f"v{version}"):
             return readiness.SKIP, "already published", version

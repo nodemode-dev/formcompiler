@@ -364,7 +364,9 @@ jobs:
         if: vars.FORMCOMPILER_ATTEST != 'off'
         uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
         with:
-          subject-path: release/dist/SHA256SUMS.txt
+          subject-path: |
+            release/dist/SHA256SUMS.txt
+            release/dist/form-app.json
       - name: Create or refresh the draft on the app repository
         working-directory: release/dist
         env:
@@ -378,6 +380,27 @@ jobs:
         run: |
           name="$TITLE $VERSION"
           notes="$GITHUB_WORKSPACE/release/release-notes.md"
+          tag_at() { python3 -I "$GITHUB_WORKSPACE/scripts/versions.py" tag-target --repo "$GH_REPO" --tag "$TAG" --token-env GH_TOKEN; }
+          if ! gh api -X POST "repos/$GH_REPO/git/refs" -f "ref=refs/tags/$TAG" -f "sha=$SHA" > /dev/null 2> "$RUNNER_TEMP/tag-create.txt"; then
+            existing="$(tag_at)"
+            if [ -z "$existing" ]; then
+              cat "$RUNNER_TEMP/tag-create.txt"
+              echo "::error::could not create the tag $TAG in $GH_REPO at $SHA"
+              exit 1
+            fi
+            if [ "$existing" != "$SHA" ]; then
+              if [ "$(gh release view "$TAG" --json isDraft --jq .isDraft 2>/dev/null)" != "true" ]; then
+                echo "::error::the tag $TAG already exists in $GH_REPO at $existing, not at $SHA, and no draft of formcompiler's is at it; move or delete the tag, or bump the version"
+                exit 1
+              fi
+              gh api -X PATCH "repos/$GH_REPO/git/refs/tags/$TAG" -f "sha=$SHA" -F force=true > /dev/null
+              if [ "$(tag_at)" != "$SHA" ]; then
+                echo "::error::the tag $TAG in $GH_REPO could not be moved to $SHA"
+                exit 1
+              fi
+              echo "- moved the tag \`$TAG\` from \`${existing:0:12}\` to \`${SHA:0:12}\`: the draft at it is refreshed from the new commit" >> "$GITHUB_STEP_SUMMARY"
+            fi
+          fi
           still_a_draft() {
             if [ "$(gh release view "$TAG" --json isDraft --jq .isDraft)" != "true" ]; then
               echo "::error::$GH_REPO's release $TAG is published (someone published it while this run was working); nothing was changed, bump the version to release again"
@@ -415,12 +438,20 @@ jobs:
           python3 -I scripts/versions.py older-drafts --app "$APP" --version "$VERSION" --repo "$GH_REPO" --token-env GH_TOKEN > "$RUNNER_TEMP/older-drafts.txt"
           while IFS=$'\t' read -r id old; do
             [ -n "$id" ] || continue
-            if [ "$(gh api "repos/$GH_REPO/releases/$id" --jq .draft)" != "true" ]; then
+            info="$(gh api "repos/$GH_REPO/releases/$id" --jq '[.draft, .target_commitish] | @tsv')"
+            if [ "${info%%$'\t'*}" != "true" ]; then
               echo "::warning::$old (release $id) on $GH_REPO is no longer a draft, so it was left alone"
               continue
             fi
+            target="${info#*$'\t'}"
             gh api -X DELETE "repos/$GH_REPO/releases/$id"
-            echo "- superseded and deleted the draft \`$old\` (release $id) on $GH_REPO" >> "$GITHUB_STEP_SUMMARY"
+            at="$(python3 -I scripts/versions.py tag-target --repo "$GH_REPO" --tag "$old" --token-env GH_TOKEN)"
+            if [ -n "$at" ] && [ "$at" = "$target" ]; then
+              gh api -X DELETE "repos/$GH_REPO/git/refs/tags/$old"
+              echo "- superseded and deleted the draft \`$old\` (release $id) and its tag on $GH_REPO" >> "$GITHUB_STEP_SUMMARY"
+            else
+              echo "- superseded and deleted the draft \`$old\` (release $id) on $GH_REPO; its tag was left, at ${at:-nothing}, not at the draft's $target" >> "$GITHUB_STEP_SUMMARY"
+            fi
           done < "$RUNNER_TEMP/older-drafts.txt"
       - name: Publish (a beta, or registry release is publish)
         if: needs.gate.outputs.prerelease == 'true' || fromJSON(needs.gate.outputs.config).release == 'publish'
@@ -429,9 +460,15 @@ jobs:
           GH_REPO: ${{ fromJSON(needs.gate.outputs.config).repository }}
           APP: ${{ inputs.app }}
           TAG: ${{ needs.gate.outputs.tag }}
+          SHA: ${{ needs.gate.outputs.sha }}
           PRERELEASE: ${{ needs.gate.outputs.prerelease }}
           DISPATCH_TOKEN: ${{ secrets.FORMPIPE_DISPATCH_TOKEN }}
         run: |
+          at="$(python3 -I scripts/versions.py tag-target --repo "$GH_REPO" --tag "$TAG" --token-env GH_TOKEN)"
+          if [ "$at" != "$SHA" ]; then
+            echo "::error::the tag $TAG in $GH_REPO points at ${at:-nothing}, not at $SHA; the draft was left unpublished"
+            exit 1
+          fi
           gh release edit "$TAG" --draft=false --latest=false --prerelease="$PRERELEASE"
           if [ -z "$DISPATCH_TOKEN" ]; then
             echo "::notice::Published $TAG on $GH_REPO. FORMPIPE_DISPATCH_TOKEN is not set, so the publishing pipeline was not told; its hourly run picks the release up"

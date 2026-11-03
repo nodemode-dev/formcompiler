@@ -10,7 +10,7 @@ import versions
 from registry import all_entries, validate
 
 UNREADABLE = (401, 403, 404)
-RELEASES_ON_APP_REPOS_SINCE = "2026-11-03T22:47:59Z"
+RELEASES_ON_APP_REPOS_SINCE = gh.RELEASES_ON_APP_REPOS_SINCE
 
 
 def outage(unreadable):
@@ -76,7 +76,7 @@ def watch_app(entry, refs, state, args):
         if ahead:
             rows.append((entry["app"], ref, readiness.SKIP, f"{ahead} is ahead; one release run per app at a time"))
             continue
-        status, reason, version = readiness.evaluate(entry, ref, sha, state.releases(entry["repository"]), state.active())
+        status, reason, version = readiness.evaluate(entry, ref, sha, state.releases(entry["repository"]), state.active(), built=state.succeeded())
         built = False
         if status == readiness.READY and gh.run_title(entry["app"], version, sha) in state.succeeded():
             status, built = readiness.SKIP, True

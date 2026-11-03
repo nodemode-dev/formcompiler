@@ -32,7 +32,7 @@ Each app is described by one registry file, `apps/<app>.json`: how to read its v
 - **Signing in one place** the Apple Developer ID, notarization and Windows signing through Azure Artifact Signing are formcompiler secrets and variables; until they are set, macOS builds are signed ad hoc and Windows builds are unsigned
 - **One catalogue for the family** `releases.json` on main, mirrored to the `catalog` release as `apps.json` and, with the catalogue key, `apps.json.sig`, in FormPortal's `apps.schema.json` shape
 - **Skills and MCP in every release** each release carries `form-app.json` (what the app offers agents) and `<app>-skills-v<version>.zip` (its `.claude/skills`, byte-reproducible), and the catalogue carries both with their digests, so formskills and formMCP read released skills with no step in any app
-- **Provenance** the publish job attests `SHA256SUMS.txt` with `actions/attest-build-provenance` before the draft is made, so the publishing pipeline can prove a release on an app repository came from this workflow (`gh attestation verify SHA256SUMS.txt --repo nodemode-dev/formcompiler --signer-workflow nodemode-dev/formcompiler/.github/workflows/release.yml`) and then checks every file against the sums
+- **Provenance** the publish job attests `SHA256SUMS.txt` and `form-app.json` with `actions/attest-build-provenance` before the draft is made; `form-app.json` names the app, version, repository, tag and commit, and the sums list every other file, so the publishing pipeline can prove a release on an app repository came from this workflow and is the release it claims to be (`gh attestation verify <file> --repo nodemode-dev/formcompiler --signer-workflow nodemode-dev/formcompiler/.github/workflows/release.yml` on both, app, version and repository read from the manifest, then every file checked against the sums)
 - **Pinned actions** every third-party action is pinned to a full commit SHA; actionlint is checksum-verified in the self-check
 
 ## How a release flows
@@ -55,7 +55,8 @@ app repo                                  formcompiler
                                               release files: SHA256SUMS.txt, form-app.json, latest.json,
                                                 the notes (no credential; the app's own scripts run here)
                                               publish job (release environment, formcompiler's checkout only):
-                                                attest SHA256SUMS.txt (provenance for the pipeline)
+                                                create the tag v1.96.5 at that commit (or move formcompiler's own)
+                                                attest SHA256SUMS.txt and form-app.json (provenance)
                                                 draft v1.96.5 on the app's repository, at that commit
                                                 delete the app's older drafts there
                                               a beta (1.97.0-beta.1): publish it as a prerelease
@@ -99,7 +100,7 @@ or, for an app whose registry entry sets `tag_trigger`, a tag on a commit alread
 git tag -a v1.96.5 -m "formvis 1.96.5" && git push origin v1.96.5
 ```
 
-The next watch run (within the hour, or **Actions, watch, Run workflow** here) starts the build. Review the draft on the app's own Releases page, then publish it: that is the approval, and it creates the `vX.Y.Z` tag at the gated commit (an app with `tag_trigger` already has it; a `vX.Y.Z` tag that already points elsewhere refuses the release). A release asset is at most 2 GB, GitHub's limit; a file above it fails the draft.
+The next watch run (within the hour, or **Actions, watch, Run workflow** here) starts the build. Review the draft on the app's own Releases page, then publish it: that is the approval. The draft already carries the tag `vX.Y.Z` at the gated commit, which formcompiler creates right before the draft (an app with `tag_trigger` already has it), moves when the same version is rebuilt from a newer commit, and deletes with a superseded draft; a `vX.Y.Z` tag formcompiler did not make, pointing elsewhere, refuses the release, and the tag is read again right before a beta is published. A release asset is at most 2 GB, GitHub's limit; a file above it fails the draft.
 
 If a release run fails because of formcompiler or the runner rather than the app, open the run in Actions and use **Re-run failed jobs**, never **Re-run all jobs**: the platforms that already built keep their files, and only the failed ones build again. The watch never restarts a failed run by itself.
 

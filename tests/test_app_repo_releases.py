@@ -56,13 +56,16 @@ def test_the_gate_reads_the_app_repository_and_tags_v_version(monkeypatch):
     monkeypatch.setattr(gate, "write_outputs", lambda values: written.update(values))
     monkeypatch.setattr(gh, "compile_branches", lambda repo: [("compile_v1.2.0", SHA)])
     monkeypatch.setattr(gh, "active_release_runs", lambda repo: set())
+    monkeypatch.setattr(gh, "succeeded_release_runs", lambda repo, since: {"built"})
     monkeypatch.setattr(gh, "releases", lambda repo: read.append(repo) or [])
     monkeypatch.setattr(gh, "summary", lambda text: None)
-    monkeypatch.setattr(readiness, "evaluate", lambda entry, branch, sha, releases, active: (readiness.READY, "ok", "1.2.0"))
+    seen = {}
+    monkeypatch.setattr(readiness, "evaluate", lambda entry, branch, sha, releases, active, built=frozenset(): seen.update(built=built) or (readiness.READY, "ok", "1.2.0"))
     monkeypatch.setattr(sys, "argv", ["gate.py", "--app", "alpha", "--ref", "compile_v1.2.0"])
     gate.main()
     assert read == ["nodemode-dev/alpha"]
     assert written["tag"] == "v1.2.0" and written["sha"] == SHA
+    assert seen["built"] == {"built"}, "the gate passes the successful runs so a refreshed draft's own tag is accepted"
 
 
 def test_readiness_names_the_app_and_its_v_tag(monkeypatch):
@@ -112,8 +115,37 @@ def test_a_tag_that_already_points_elsewhere_refuses_the_release(monkeypatch):
     assert readiness.evaluate(ENTRY, "compile_v1.2.0", SHA, [], set())[0] == readiness.READY
 
 
+def test_a_tag_formcompiler_made_for_that_version_is_moved_not_refused(monkeypatch):
+    """The same version pushed again from a newer commit refreshes the draft; its tag, created at draft time, follows."""
+    monkeypatch.setattr(gh, "on_main", lambda repo, sha: True)
+    monkeypatch.setattr(gh, "file_at", lambda repo, path, sha: "1.2.0\n")
+    monkeypatch.setattr(gh, "checks_state", lambda repo, sha, workflows: {"ci.yml": "success"})
+    monkeypatch.setattr(gh, "tag_target", lambda repo, name: OTHER)
+    built = {gh.run_title("alpha", "1.2.0", OTHER)}
+    assert readiness.evaluate(ENTRY, "compile_v1.2.0", SHA, [], set(), built=built)[0] == readiness.READY
+    assert readiness.evaluate(ENTRY, "compile_v1.2.0", SHA, [], set(), built={gh.run_title("alpha", "1.1.0", OTHER)})[0] == readiness.REFUSE
+
+
+def test_tag_target_cli_reads_with_the_named_token(monkeypatch, capsys):
+    seen = []
+    monkeypatch.setattr(gh, "tag_target", lambda repo, name, token_env="": seen.append((repo, name, token_env)) or SHA)
+    monkeypatch.setattr(sys, "argv", ["versions.py", "tag-target", "--repo", "nodemode-dev/alpha", "--tag", "v1.2.0", "--token-env", "GH_TOKEN"])
+    versions.main()
+    assert capsys.readouterr().out == SHA + "\n"
+    assert seen == [("nodemode-dev/alpha", "v1.2.0", "GH_TOKEN")]
+
+
+def test_tag_target_reads_both_refs_with_the_named_token(monkeypatch):
+    monkeypatch.setenv("FORMCOMPILER_APP_TOKEN", "read-only")
+    monkeypatch.setenv("GH_TOKEN", "write")
+    calls = []
+    monkeypatch.setattr(gh, "get", lambda path, app_side=False, token_env="": calls.append(token_env) or ({"object": {"sha": "c" * 40, "type": "tag"}} if "/ref/" in path else {"object": {"sha": SHA, "type": "commit"}}))
+    assert gh.tag_target("nodemode-dev/alpha", "v1.2.0", token_env="GH_TOKEN") == SHA
+    assert calls == ["GH_TOKEN", "GH_TOKEN"]
+
+
 def test_tag_target_follows_the_tag_and_answers_empty_for_none(monkeypatch):
-    def get(path, app_side=False):
+    def get(path, app_side=False, token_env=""):
         if path.endswith("/git/ref/tags/v9.9.9"):
             raise gh.ApiError(404, "Not Found")
         if path.endswith("/git/ref/tags/v1.2.0"):
@@ -137,7 +169,7 @@ def watching(monkeypatch, capsys):
     monkeypatch.setattr(gh, "stopped_release_runs", lambda repo: set())
     monkeypatch.setattr(gh, "succeeded_release_runs", lambda repo, since: calls["succeeded"])
     monkeypatch.setattr(gh, "dispatch", lambda repo, ref, inputs: calls["dispatched"].append((inputs["app"], inputs["version"])))
-    monkeypatch.setattr(readiness, "evaluate", lambda entry, ref, sha, releases, active: (readiness.READY, "ok", readiness.ref_version(ref)[0]))
+    monkeypatch.setattr(readiness, "evaluate", lambda entry, ref, sha, releases, active, built=frozenset(): (readiness.READY, "ok", readiness.ref_version(ref)[0]))
     monkeypatch.setattr(sys, "argv", ["watch.py"])
     monkeypatch.delenv("GITHUB_STEP_SUMMARY", raising=False)
 
@@ -390,12 +422,50 @@ def test_the_publish_job_attests_sha256sums_before_the_draft():
     attest = step(job, "Attest the provenance of SHA256SUMS.txt")
     assert re.search(r"uses: actions/attest-build-provenance@[0-9a-f]{40} # v\d+\.\d+\.\d+", attest)
     assert "if: vars.FORMCOMPILER_ATTEST != 'off'" in attest
-    assert "subject-path: release/dist/SHA256SUMS.txt" in attest
     assert job.index("- name: Attest the provenance of SHA256SUMS.txt") > job.index("uses: actions/download-artifact@")
     assert job.index("- name: Attest the provenance of SHA256SUMS.txt") < job.index("- name: Create or refresh the draft on the app repository")
+    assert attest.endswith("subject-path: |\n            release/dist/SHA256SUMS.txt\n            release/dist/form-app.json")
     for name, other in jobs(RELEASE).items():
         if name != "publish":
             assert "attest" not in other and "id-token" not in other, name
+    assemble = jobs(RELEASE)["assemble"]
+    assert assemble.index("scripts/agents.py build") < assemble.index("scripts/release_assets.py"), "form-app.json must be written before the sums are computed"
+
+
+def test_the_manifest_names_its_release(tmp_path):
+    out = script("agents.py", "build", "--app", "formtray", "--app-dir", str(tmp_path), "--dist", str(tmp_path / "dist"), "--version", "0.9.8", "--commit", SHA)
+    assert out.returncode == 0, out.stdout + out.stderr
+    manifest = json.loads((tmp_path / "dist" / "form-app.json").read_text(encoding="utf-8"))
+    assert {k: manifest[k] for k in ("app", "version", "repository", "tag", "commit")} == {
+        "app": "formtray", "version": "0.9.8", "repository": "nodemode-dev/formtray", "tag": "v0.9.8", "commit": SHA}
+    assert script("agents.py", "check", "--app", "formtray", "--dist", str(tmp_path / "dist")).returncode == 0
+    for key, value in (("repository", "someone/formtray"), ("tag", "formtray-v0.9.8"), ("repository", None), ("tag", None)):
+        broken = {k: v for k, v in manifest.items() if v is not None and k != key} if value is None else {**manifest, key: value}
+        (tmp_path / "dist" / "form-app.json").write_text(json.dumps(broken), encoding="utf-8")
+        out = script("agents.py", "check", "--app", "formtray", "--dist", str(tmp_path / "dist"))
+        assert out.returncode != 0 and key in out.stdout + out.stderr, (key, value)
+
+
+def test_the_tag_is_formcompilers_before_the_draft_and_still_at_the_commit_when_published():
+    job = publish()
+    draft = step(job, "Create or refresh the draft on the app repository")
+    assert 'tag_at() { python3 -I "$GITHUB_WORKSPACE/scripts/versions.py" tag-target --repo "$GH_REPO" --tag "$TAG" --token-env GH_TOKEN; }' in draft
+    assert 'gh api -X POST "repos/$GH_REPO/git/refs" -f "ref=refs/tags/$TAG" -f "sha=$SHA"' in draft
+    create = draft.index('gh api -X POST "repos/$GH_REPO/git/refs"')
+    assert create < draft.index('if draft="$(gh release view "$TAG"'), "the tag before any release call"
+    assert create > draft.index("tag_at() {")
+    move = draft.index('gh api -X PATCH "repos/$GH_REPO/git/refs/tags/$TAG" -f "sha=$SHA" -F force=true')
+    guard = draft.index('if [ "$(gh release view "$TAG" --json isDraft --jq .isDraft 2>/dev/null)" != "true" ]; then')
+    assert guard < move < draft.index("still_a_draft() {"), "a tag is moved only when a draft is at it"
+    assert "and no draft of formcompiler's is at it; move or delete the tag, or bump the version" in draft
+    assert 'if [ "$(tag_at)" != "$SHA" ]; then' in draft
+    release = step(job, "Publish (a beta, or registry release is publish)")
+    assert 'at="$(python3 -I scripts/versions.py tag-target --repo "$GH_REPO" --tag "$TAG" --token-env GH_TOKEN)"' in release
+    assert release.index('if [ "$at" != "$SHA" ]; then') < release.index('gh release edit "$TAG" --draft=false')
+    assert "the draft was left unpublished" in release and "SHA: ${{ needs.gate.outputs.sha }}" in release
+    supersede = step(job, "Supersede older drafts")
+    assert supersede.index('gh api -X DELETE "repos/$GH_REPO/releases/$id"') < supersede.index('gh api -X DELETE "repos/$GH_REPO/git/refs/tags/$old"')
+    assert 'if [ -n "$at" ] && [ "$at" = "$target" ]; then' in supersede
 
 
 def test_a_draft_is_only_changed_while_it_is_still_a_draft():
@@ -412,9 +482,9 @@ def test_older_drafts_are_deleted_by_id_after_a_second_look():
     supersede = step(publish(), "Supersede older drafts")
     assert "--token-env GH_TOKEN" in supersede
     assert "IFS=$'\\t' read -r id old" in supersede
-    assert 'gh api "repos/$GH_REPO/releases/$id" --jq .draft' in supersede
+    assert """gh api "repos/$GH_REPO/releases/$id" --jq '[.draft, .target_commitish] | @tsv'""" in supersede
     assert 'gh api -X DELETE "repos/$GH_REPO/releases/$id"' in supersede
-    assert "gh release delete" not in supersede
+    assert "gh release delete" not in supersede and "--cleanup-tag" not in supersede
 
 
 def test_the_github_app_token_is_pinned_and_scoped_to_the_one_app_repository():

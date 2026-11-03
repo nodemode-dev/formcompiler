@@ -13,7 +13,7 @@ A field that is not listed here is refused. Strings that hold commands are bash 
 | `title` | string | yes | The display name in release titles, for example `formvis`. |
 | `enabled` | boolean | yes | `false` keeps the entry but the watch skips it and `release.yml` refuses it. |
 | `disabled_reason` | string | when `enabled` is false | Why, in one sentence. |
-| `release` | `"draft"` or `"publish"` | yes | `draft` leaves a stable release as a draft on the app's repository for a maintainer to publish, which is the approval and creates the tag; `publish` publishes it when every job passed. Every app starts as `draft`. A prerelease version (`X.Y.Z-beta.N`, `-rc.N`, any prerelease part) is the beta channel and is always published when every job passed, as a GitHub prerelease, whatever this says. |
+| `release` | `"draft"` or `"publish"` | yes | `draft` leaves a stable release as a draft on the app's repository, with its `v<version>` tag already at the gated commit, for a maintainer to publish, which is the approval; `publish` publishes it when every job passed. Every app starts as `draft`. A prerelease version (`X.Y.Z-beta.N`, `-rc.N`, any prerelease part) is the beta channel and is always published when every job passed, as a GitHub prerelease, whatever this says. |
 | `tag_trigger` | boolean | no | Default false. True makes a `vX.Y.Z` tag in the app repository (lightweight or annotated) start a release like a `compile_vX.Y.Z` branch. The tagged commit must be on `main` (`main...<sha>` is identical or behind), and only the app's newest version tag is considered. Off by default because every app repository has older `v*` tags that would otherwise all look new. |
 | `version` | object | yes | `{"file": "<path>", "pattern": "<regex>"}`. The file is read at the compile branch's or tag's commit, and must give the version the ref names. That version must be strictly above the app's highest published version in its channel: a stable above the highest stable, a beta above every published version (semver with prereleases; yanked versions still count, and so does any `v<version>` release the app repository published before formcompiler). JSON files use their `version` field, `Cargo.toml` its `[package]` or `[workspace.package]` version, any other file needs `pattern` (first group is the version). A leading `v` is dropped. |
 | `checks` | array of strings | yes | The app's check workflow file names (for example `["ci.yml"]`). Every one must have concluded `success` on the compile branch's commit before a build starts. |
@@ -123,6 +123,8 @@ In the release job, after the app's own `assets` and before `SHA256SUMS.txt`, `s
   "app": "formvis",
   "name": "FormVis",
   "version": "1.97.2",
+  "repository": "nodemode-dev/formvis",
+  "tag": "v1.97.2",
   "commit": "<the compile commit>",
   "agents": {
     "mcp": {"available": true},
@@ -134,4 +136,4 @@ In the release job, after the app's own `assets` and before `SHA256SUMS.txt`, `s
 }
 ```
 
-`agents.mcp` gains `command` and `args` when the registry sets `mcp_launch`; `agents.skills` is left out when `skills` is empty. Version 1 of this file (`agents.mcp.command` required) is still read by FormPortal.
+`agents.mcp` gains `command` and `args` when the registry sets `mcp_launch`; `agents.skills` is left out when `skills` is empty. `repository`, `tag` and `commit` name the release the file belongs to: the publish job attests this file beside `SHA256SUMS.txt`, and the publishing pipeline reads `app`, `version` and `repository` from it and requires them to match the release it is feeding, so an attested manifest cannot be reused under another version. Version 1 of this file (`agents.mcp.command` required) is still read by FormPortal.
