@@ -29,7 +29,7 @@
     "windows": "call .\\format.bat install\ncall .\\format.bat install-desktop\ncall .\\format.bat desktop build %FORMCOMPILER_CONFIG_ARG%",
     "tauri_config": ""
   },
-  "setup": {"macos": "brew install nasm pkg-config", "linux": "", "windows": ""},
+  "setup": {"macos": "HOMEBREW_NO_AUTO_UPDATE=1 HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK=1 brew install nasm pkg-config", "linux": "", "windows": ""},
   "post_build": {"macos": "", "linux": "", "windows": ""},
   "artifacts": [],
   "extras": [],

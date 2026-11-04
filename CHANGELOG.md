@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.9.3 · 2026-11-04
+
+- macOS setup for the apps that build OpenCV from source (FormDAM, FormLit, FormPDF, FormTxt, FormVis) turns off OpenEXR, VTK, Qt, GTK and Eigen, so OpenCV no longer links whatever the runner's Homebrew has (a local build bundled OpenEXR dylibs that need macOS 26), and compiles with four jobs so a cold pip cache stays inside the Build step's 40 minutes
+- macOS `brew install` lines (FormAT, FormWav) skip Homebrew's auto-update and dependent upgrades
+- `tests/test_registry.py` holds every entry to both rules
+
 ## v0.9.2 · 2026-11-04
 
 - The README follows the family template, with a terminal screenshot of the registry check and the catalogue listing in `docs/images/`, and describes v0.9.0's releases on each app's own repository. Nothing in the builds changes
