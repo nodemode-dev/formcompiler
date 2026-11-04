@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.8.2 · 2026-11-03
+
+- The README follows the Form family template, with a terminal screenshot of the registry check and the catalogue listing in `docs/images/`. Nothing in the builds changes
+
 ## v0.8.1 · 2026-11-03
 
 - The unified v3 app icon replaces the old formcompiler icon in `assets/`, with a 256 px copy in `assets/app-icon/` and the family icons in `.github/assets/family/`
