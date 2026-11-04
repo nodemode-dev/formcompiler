@@ -1,7 +1,7 @@
 {
   "format": "formai-catalog",
   "format_version": 1,
-  "generated": "2026-11-03T16:17:58Z",
+  "generated": "2026-11-04T17:21:02Z",
   "origin": "https://github.com/nodemode-dev/formcompiler",
   "products": [
     {
@@ -20,8 +20,9 @@
       "channels": {
         "stable": {
           "version": "0.53.5",
-          "published": "2026-11-03T16:17:44Z",
-          "notes": "https://github.com/nodemode-dev/formcompiler/releases/tag/formportal-v0.53.5",
+          "published": "2026-11-04T17:15:42Z",
+          "notes": "https://github.com/nodemode-dev/formportal/releases/tag/v0.53.5",
+          "origin": "store",
           "artifacts": [
             {
               "platform": "linux",
@@ -134,6 +135,21 @@
       "agents": {
         "mcp": true,
         "skills": true
+      },
+      "channels": {}
+    },
+    {
+      "id": "formbench",
+      "name": "FormBench",
+      "kind": "parity",
+      "summary": "Parity, testing and feedback for the Form apps, kept on this computer.",
+      "identifier": "ai.nodemode.formranker",
+      "repository": "https://github.com/nodemode-dev/formbench",
+      "licence": "Apache-2.0",
+      "state": "prelaunch",
+      "agents": {
+        "mcp": true,
+        "skills": false
       },
       "channels": {}
     },
@@ -273,8 +289,9 @@
       "channels": {
         "stable": {
           "version": "0.47.7",
-          "published": "2026-11-03T13:48:56Z",
-          "notes": "https://github.com/nodemode-dev/formcompiler/releases/tag/form.md-v0.47.7",
+          "published": "2026-11-04T17:05:09Z",
+          "notes": "https://github.com/nodemode-dev/form.md/releases/tag/v0.47.7",
+          "origin": "store",
           "artifacts": [
             {
               "platform": "linux",
@@ -462,21 +479,6 @@
       "channels": {}
     },
     {
-      "id": "formranker",
-      "name": "FormRanker",
-      "kind": "parity",
-      "summary": "Parity, testing and feedback for the Form apps, kept on this computer.",
-      "identifier": "ai.nodemode.formranker",
-      "repository": "https://github.com/nodemode-dev/formranker",
-      "licence": "Apache-2.0",
-      "state": "prelaunch",
-      "agents": {
-        "mcp": true,
-        "skills": false
-      },
-      "channels": {}
-    },
-    {
       "id": "formref",
       "name": "FormRef",
       "kind": "reference",
@@ -573,8 +575,9 @@
       "channels": {
         "stable": {
           "version": "0.9.8",
-          "published": "2026-11-02T16:17:55Z",
-          "notes": "https://github.com/nodemode-dev/formcompiler/releases/tag/formtray-v0.9.8",
+          "published": "2026-11-04T16:38:03Z",
+          "notes": "https://github.com/nodemode-dev/formtray/releases/tag/v0.9.8",
+          "origin": "store",
           "artifacts": [
             {
               "platform": "linux",
