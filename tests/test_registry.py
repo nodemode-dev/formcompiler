@@ -77,3 +77,19 @@ def test_a_duplicate_catalogue_id_fails_the_check(tmp_path, monkeypatch, capsys)
         registry.main()
     assert done.value.code == 1
     assert "is also used by" in capsys.readouterr().out
+
+
+def _macos_setups():
+    return [(e["app"], e.get("setup", {}).get("macos", "")) for e in entries()]
+
+
+@pytest.mark.parametrize(("app", "setup"), [s for s in _macos_setups() if "PIP_NO_BINARY=opencv" in s[1]], ids=lambda v: v if isinstance(v, str) and "\n" not in v else "")
+def test_opencv_built_from_source_on_macos_ignores_homebrew_and_builds_in_parallel(app, setup):
+    for flag in ("-DWITH_OPENEXR=OFF", "-DWITH_VTK=OFF", "-DWITH_QT=OFF", "-DWITH_GTK=OFF", "-DWITH_EIGEN=OFF"):
+        assert flag in setup, f"{app}: {flag} missing, so OpenCV links whatever the runner's Homebrew has"
+    assert "CMAKE_BUILD_PARALLEL_LEVEL=" in setup, f"{app}: OpenCV compiles serially and can pass the Build step's timeout"
+
+
+@pytest.mark.parametrize(("app", "setup"), [s for s in _macos_setups() if "brew install" in s[1]], ids=lambda v: v if isinstance(v, str) and "\n" not in v else "")
+def test_macos_brew_installs_do_not_update_or_upgrade_the_runner(app, setup):
+    assert "HOMEBREW_NO_AUTO_UPDATE=1" in setup and "HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK=1" in setup, app

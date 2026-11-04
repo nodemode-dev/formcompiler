@@ -30,7 +30,7 @@
     "tauri_config": ""
   },
   "setup": {
-    "macos": "brew install pkgconf libsndfile portaudio lilv",
+    "macos": "HOMEBREW_NO_AUTO_UPDATE=1 HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK=1 brew install pkgconf libsndfile portaudio lilv",
     "linux": "",
     "windows": "/c/msys64/usr/bin/bash.exe -lc \"pacman -Sy --noconfirm --needed mingw-w64-ucrt-x86_64-gcc mingw-w64-ucrt-x86_64-pkgconf mingw-w64-ucrt-x86_64-libsndfile mingw-w64-ucrt-x86_64-portaudio mingw-w64-ucrt-x86_64-lilv\""
   },

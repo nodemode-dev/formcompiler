@@ -30,7 +30,7 @@
     "windows": "call formtxt.bat install\ncall formtxt.bat install-desktop\ncall setup\\desktop_build.bat %FORMCOMPILER_CONFIG_ARG%",
     "tauri_config": ""
   },
-  "setup": {"macos": "echo \"PIP_NO_BINARY=opencv-python,opencv-python-headless\" >> \"$GITHUB_ENV\"\necho \"CMAKE_ARGS=-DWITH_FFMPEG=OFF -DWITH_GSTREAMER=OFF\" >> \"$GITHUB_ENV\"", "linux": "", "windows": ""},
+  "setup": {"macos": "echo \"PIP_NO_BINARY=opencv-python,opencv-python-headless\" >> \"$GITHUB_ENV\"\necho \"CMAKE_ARGS=-DWITH_FFMPEG=OFF -DWITH_GSTREAMER=OFF -DWITH_OPENEXR=OFF -DWITH_VTK=OFF -DWITH_QT=OFF -DWITH_GTK=OFF -DWITH_EIGEN=OFF\" >> \"$GITHUB_ENV\"\necho \"CMAKE_BUILD_PARALLEL_LEVEL=4\" >> \"$GITHUB_ENV\"", "linux": "", "windows": ""},
   "post_build": {"macos": "", "linux": "", "windows": ""},
   "artifacts": [],
   "extras": [],
