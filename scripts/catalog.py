@@ -110,19 +110,38 @@ def sums_for(release: dict, entry: dict, version: str, sums_dir: str = "") -> di
     return read_sums(sums_dir, entry["app"], version) if sums_dir else fetch_sums(release)
 
 
-def asset_url(asset, entry, version, base):
-    return public_urls.artifact_url(base, entry["app"], version, asset["name"]) if base else asset["browser_download_url"]
+GITHUB, STORE = "github", "store"
+ORIGINS = (GITHUB, STORE)
 
 
-def agent_assets(release, entry, version, sums, base=""):
+def asset_url(asset, entry, version, base, origin=STORE):
+    if origin == GITHUB or not base:
+        return asset["browser_download_url"]
+    return public_urls.artifact_url(base, entry["app"], version, asset["name"])
+
+
+def agent_assets(release, entry, version, sums, base="", origin=STORE):
     found = {}
     wanted = {"manifest": "form-app.json", "skills": f"{entry['app']}-skills-v{version}.zip"}
     by_name = {asset["name"]: asset for asset in release.get("assets", [])}
     for key, name in wanted.items():
         asset = by_name.get(name)
         if asset and sums.get(name) and asset.get("size", 0) > 0:
-            found[key] = {"file": name, "url": asset_url(asset, entry, version, base), "bytes": asset["size"], "sha256": sums[name]}
+            found[key] = {"file": name, "url": asset_url(asset, entry, version, base, origin), "bytes": asset["size"], "sha256": sums[name]}
     return found
+
+
+def entry_origin(entry: dict, base: str, asset_origin: str, public: dict) -> str:
+    if not base:
+        return GITHUB
+    if asset_origin != GITHUB:
+        return STORE
+    if entry["repository"] not in public:
+        try:
+            public[entry["repository"]] = gh.repository_public(entry["repository"])
+        except gh.ApiError as error:
+            sys.exit(f"::error::could not read whether {entry['repository']} is public: {error}")
+    return GITHUB if public[entry["repository"]] else STORE
 
 
 def download(url):
@@ -135,7 +154,7 @@ def download(url):
         return response.read()
 
 
-def release_entry(release, version, entry, sums, base=""):
+def release_entry(release, version, entry, sums, base="", origin=STORE):
     minimum = entry["catalog"].get("minimum_os", {})
     artifacts = []
     for asset in sorted(release.get("assets", []), key=lambda a: a["name"]):
@@ -145,19 +164,20 @@ def release_entry(release, version, entry, sums, base=""):
         for platform, arch, kind in classify(asset["name"]):
             artifacts.append({
                 "platform": platform, "arch": arch, "kind": kind, "file": asset["name"],
-                "url": asset_url(asset, entry, version, base), "bytes": asset["size"], "sha256": digest,
+                "url": asset_url(asset, entry, version, base, origin), "bytes": asset["size"], "sha256": digest,
                 "minimum_os": minimum.get(platform, "") if platform in ("macos", "windows", "linux") else "",
             })
     body = {
         "version": version,
         "published": release.get("published_at") or release.get("created_at"),
         "notes": release["html_url"],
+        "origin": origin if base else GITHUB,
         "artifacts": artifacts,
     }
     sha = gh.source_of(release)[1]
     if sha:
         body["commit"] = sha
-    agents = agent_assets(release, entry, version, sums, base)
+    agents = agent_assets(release, entry, version, sums, base, origin)
     if agents:
         body["agents"] = agents
     return body
@@ -172,25 +192,28 @@ def app_releases(entry: dict, releases_list: list, yanked: frozenset) -> list:
     return sorted(mine, reverse=True)
 
 
-def build(entries, releases_by_repo, base="", yanked=frozenset(), origin=ORIGIN, sums_dir=""):
-    products = []
+def build(entries, releases_by_repo, base="", yanked=frozenset(), origin=ORIGIN, sums_dir="", asset_origin=STORE):
+    if asset_origin not in ORIGINS:
+        sys.exit(f"::error::--asset-origin must be one of {', '.join(ORIGINS)}")
+    products, public = [], {}
     for entry in sorted(entries, key=lambda e: e["catalog"]["id"]):
         if not entry.get("enabled"):
             continue
         mine = app_releases(entry, releases_by_repo.get(entry["repository"], []), yanked)
+        where = entry_origin(entry, base, asset_origin, public) if mine else STORE
         stable = [m for m in mine if not m[2].get("prerelease") and versions.channel(m[1]) == versions.STABLE]
         beta = [m for m in mine if m[2].get("prerelease") or versions.channel(m[1]) == versions.BETA]
         channels = {}
         if stable:
             _, version, release = stable[0]
-            current = release_entry(release, version, entry, sums_for(release, entry, version, sums_dir), base)
-            history = [release_entry(r, v, entry, sums_for(r, entry, v, sums_dir), base) for _, v, r in kept_history(stable)]
+            current = release_entry(release, version, entry, sums_for(release, entry, version, sums_dir), base, where)
+            history = [release_entry(r, v, entry, sums_for(r, entry, v, sums_dir), base, where) for _, v, r in kept_history(stable)]
             if history:
                 current["history"] = history
             channels["stable"] = current
         if beta and (not stable or beta[0][0] > stable[0][0]):
             _, version, release = beta[0]
-            channels["beta"] = release_entry(release, version, entry, sums_for(release, entry, version, sums_dir), base)
+            channels["beta"] = release_entry(release, version, entry, sums_for(release, entry, version, sums_dir), base, where)
         catalog = entry["catalog"]
         product = {
             "id": catalog["id"], "name": catalog["name"], "kind": catalog["kind"], "summary": catalog["summary"],
@@ -275,6 +298,7 @@ def main():
     make.add_argument("--releases", default="", help="a JSON object of repository to releases instead of the API, for a dry run")
     make.add_argument("--yanked", default=str(yank.YANKED), help="the yanked versions, left out of the catalogue")
     make.add_argument("--sums-dir", default="", help="read <DIR>/<app>/<version>/SHA256SUMS.txt for every listed release instead of downloading it")
+    make.add_argument("--asset-origin", default=STORE, choices=ORIGINS, help="github keeps the release's own download URLs for a public repository; store (the default) points every file at FORMCOMPILER_PUBLIC_BASE")
     signer = sub.add_parser("sign")
     signer.add_argument("--file", default="releases.json")
     signer.add_argument("--out", default="apps.json.sig")
@@ -306,11 +330,12 @@ def main():
         sys.exit(f"::error::{error}")
     entries = all_entries()
     releases_by_repo = read_releases(args.releases) if args.releases else fetch_releases(entries)
-    document = build(entries, releases_by_repo, base, yanked, args.origin, args.sums_dir)
+    document = build(entries, releases_by_repo, base, yanked, args.origin, args.sums_dir, args.asset_origin)
     text = json.dumps(document, indent=2, ensure_ascii=False) + "\n"
     Path(args.out).write_text(text, encoding="utf-8")
     live = sum(1 for p in document["products"] if p["channels"])
-    where = f"artifacts at {base}" if base else "artifacts on GitHub"
+    on_github = sum(1 for p in document["products"] for c in p["channels"].values() if c.get("origin") == GITHUB)
+    where = f"artifacts at {base} ({on_github} channels on GitHub)" if base else "artifacts on GitHub"
     print(f"{args.out}: {len(document['products'])} products, {live} with a release, {len(yanked)} yanked, {where}")
 
 
