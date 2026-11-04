@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.9.4 · 2026-11-04
+
+- FormLit, FormPDF and FormVis bundle their Linux rpm without compression (`build.tauri_config`): with their large PyInstaller engines, Tauri's rpm step ran single-threaded past the Build step's 40 minutes (FormPDF and FormLit timed out on a 16-vCPU VM; FormVis took 25 of its 30 minutes there). Without compression the whole Linux build took 6.4 and 8.5 minutes
+- FormVis installs `zsync` on Linux and moves the `.AppImage.zsync` that linuxdeploy writes outside the bundle folder into `bundle/appimage/`, where the artifact glob and the AppImage's embedded update information expect it
+
 ## v0.9.3 · 2026-11-04
 
 - macOS setup for the apps that build OpenCV from source (FormDAM, FormLit, FormPDF, FormTxt, FormVis) turns off OpenEXR, VTK, Qt, GTK and Eigen, so OpenCV no longer links whatever the runner's Homebrew has (a local build bundled OpenEXR dylibs that need macOS 26), and compiles with four jobs so a cold pip cache stays inside the Build step's 40 minutes

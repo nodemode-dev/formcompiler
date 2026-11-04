@@ -15,7 +15,7 @@
     "rust_targets": "",
     "rust_cache": ["src-tauri"],
     "go": "",
-    "linux_packages": "libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf libxdo-dev libssl-dev",
+    "linux_packages": "libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf libxdo-dev libssl-dev zsync",
     "windows_msvc": false,
     "pip_cache_macos": true
   },
@@ -29,7 +29,7 @@
     "macos": "",
     "linux": "",
     "windows": "",
-    "tauri_config": ""
+    "tauri_config": "{\"bundle\":{\"linux\":{\"rpm\":{\"compression\":{\"type\":\"none\"}}}}}"
   },
   "setup": {
     "macos": "echo \"PIP_NO_BINARY=opencv-python,opencv-python-headless\" >> \"$GITHUB_ENV\"\necho \"CMAKE_ARGS=-DWITH_FFMPEG=OFF -DWITH_GSTREAMER=OFF -DWITH_OPENEXR=OFF -DWITH_VTK=OFF -DWITH_QT=OFF -DWITH_GTK=OFF -DWITH_EIGEN=OFF\" >> \"$GITHUB_ENV\"\necho \"CMAKE_BUILD_PARALLEL_LEVEL=4\" >> \"$GITHUB_ENV\"",
@@ -38,7 +38,7 @@
   },
   "post_build": {
     "macos": "rd=\"$FORMCOMPILER_RELEASE_DIR\"\npython3 setup/package_desktop.py mac-archive --arch \"$FORMCOMPILER_ARCH\" --release-dir \"$rd\"\nif [ -n \"$APPLE_ID\" ] && [ -n \"$APPLE_PASSWORD\" ] && [ -n \"$APPLE_TEAM_ID\" ]; then python3 setup/package_desktop.py notarize --release-dir \"$rd\"; fi\npa=\"$FORMCOMPILER_ARCH\"\nif [ \"$pa\" = x64 ]; then pa=x86_64; fi\npython3 setup/package_desktop.py portable-macos --arch \"$pa\" --release-dir \"$rd\"",
-    "linux": "case \"$FORMCOMPILER_PLATFORM\" in\n  linux-arm64) arch=arm64; debarch=arm64 ;;\n  *) arch=x64; debarch=amd64 ;;\nesac\npython3 setup/package_desktop.py linux-tar --arch \"$arch\" --debarch \"$debarch\"",
+    "linux": "find . -maxdepth 2 -name '*.AppImage.zsync' -not -path './src-tauri/target/*' | while read -r z; do dest=$(dirname \"$(find src-tauri/target -path '*/bundle/appimage/*.AppImage' | head -n 1)\"); mv \"$z\" \"$dest/\"; done\ncase \"$FORMCOMPILER_PLATFORM\" in\n  linux-arm64) arch=arm64; debarch=arm64 ;;\n  *) arch=x64; debarch=amd64 ;;\nesac\npython3 setup/package_desktop.py linux-tar --arch \"$arch\" --debarch \"$debarch\"",
     "windows": "case \"$FORMCOMPILER_PLATFORM\" in\n  windows-x86) arch=x86 ;;\n  windows-arm64) arch=arm64 ;;\n  *) arch=x64 ;;\nesac\npython setup/package_desktop.py portable-windows --arch \"$arch\" --release-dir \"$FORMCOMPILER_RELEASE_DIR\"\nif [ \"$arch\" != x86 ]; then python setup/package_desktop.py msix --arch \"$arch\"; fi"
   },
   "artifacts": [

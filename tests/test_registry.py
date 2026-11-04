@@ -93,3 +93,27 @@ def test_opencv_built_from_source_on_macos_ignores_homebrew_and_builds_in_parall
 @pytest.mark.parametrize(("app", "setup"), [s for s in _macos_setups() if "brew install" in s[1]], ids=lambda v: v if isinstance(v, str) and "\n" not in v else "")
 def test_macos_brew_installs_do_not_update_or_upgrade_the_runner(app, setup):
     assert "HOMEBREW_NO_AUTO_UPDATE=1" in setup and "HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK=1" in setup, app
+
+
+@pytest.mark.parametrize("app", ["formlit", "formpdf", "formvis"])
+def test_apps_with_a_large_python_sidecar_bundle_rpm_without_compression(app):
+    entry = json.loads((REPO / "apps" / f"{app}.json").read_text(encoding="utf-8"))
+    extra = json.loads(entry["build"]["tauri_config"])
+    assert extra["bundle"]["linux"]["rpm"]["compression"] == {"type": "none"}
+
+
+def test_formvis_stages_the_appimage_zsync_where_the_artifact_glob_finds_it(tmp_path):
+    import fnmatch
+    import subprocess
+
+    entry = json.loads((REPO / "apps" / "formvis.json").read_text(encoding="utf-8"))
+    assert "zsync" in entry["toolchain"]["linux_packages"].split()
+    first = entry["post_build"]["linux"].splitlines()[0]
+    appimage = tmp_path / "src-tauri" / "target" / "release" / "bundle" / "appimage"
+    appimage.mkdir(parents=True)
+    (appimage / "FormVis_1.0.0_amd64.AppImage").write_text("x")
+    (tmp_path / "src-tauri" / "FormVis_1.0.0_amd64.AppImage.zsync").write_text("z")
+    subprocess.run(["bash", "-c", first], cwd=tmp_path, check=True)
+    staged = [str(p.relative_to(tmp_path)) for p in tmp_path.rglob("*.zsync")]
+    assert staged == ["src-tauri/target/release/bundle/appimage/FormVis_1.0.0_amd64.AppImage.zsync"]
+    assert any(fnmatch.fnmatch(staged[0], pattern.replace("**/", "*/")) for pattern in entry["artifacts"])
