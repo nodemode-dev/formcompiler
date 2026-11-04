@@ -1,11 +1,11 @@
 import argparse
 import datetime
 import json
-import os
 import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+import versions
 from plan import SEMVER
 from registry import APPS, ROOT
 
@@ -39,12 +39,12 @@ def validate(app, version, reason, releases, rows):
     text = reason.strip()
     if not text or len(text) > REASON_MAX or "\n" in text or "\r" in text:
         raise YankError(f"the reason must be one line of 1 to {REASON_MAX} characters")
-    tag = f"{app}-v{version}"
+    tag = versions.tag_of(version)
     release = next((r for r in releases if r.get("tag_name") == tag), None)
     if not release or release.get("draft"):
-        raise YankError(f"{tag} is not a published release; delete a draft instead of yanking it")
+        raise YankError(f"{app} {tag} is not a published release; delete a draft instead of yanking it")
     if (app, version) in yanked_set(rows):
-        raise YankError(f"{tag} is already yanked")
+        raise YankError(f"{app} {tag} is already yanked")
     return text
 
 
@@ -58,21 +58,23 @@ def main():
     parser.add_argument("--app", required=True)
     parser.add_argument("--version", required=True)
     parser.add_argument("--reason", required=True)
-    parser.add_argument("--repo", default=os.environ.get("GITHUB_REPOSITORY", "nodemode-dev/formcompiler"))
+    parser.add_argument("--repo", default="", help="the app's repository; default: the registry entry's")
     parser.add_argument("--file", default=str(YANKED))
     args = parser.parse_args()
 
     import github_api as gh
-    version = args.version.strip()
+    from registry import load as load_entry
+    app, version = args.app.strip(), args.version.strip()
     try:
         rows = load(args.file)
-        reason = validate(args.app.strip(), version, args.reason, gh.releases(args.repo), rows)
+        repo = args.repo or load_entry(app)["repository"]
+        reason = validate(app, version, args.reason, gh.releases(repo), rows)
     except YankError as error:
         sys.exit(f"::error::{error}")
     today = datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d")
-    document = {"yanked": added(rows, args.app.strip(), version, reason, today)}
+    document = {"yanked": added(rows, app, version, reason, today)}
     Path(args.file).write_text(json.dumps(document, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
-    print(f"yanked {args.app}-v{version}: {reason}")
+    print(f"yanked {app} {versions.tag_of(version)}: {reason}")
 
 
 if __name__ == "__main__":

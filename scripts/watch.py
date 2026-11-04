@@ -10,6 +10,7 @@ import versions
 from registry import all_entries, validate
 
 UNREADABLE = (401, 403, 404)
+RELEASES_ON_APP_REPOS_SINCE = gh.RELEASES_ON_APP_REPOS_SINCE
 
 
 def outage(unreadable):
@@ -22,14 +23,15 @@ def outage(unreadable):
 class Lazy:
     def __init__(self, repo):
         self.repo = repo
-        self._releases = None
+        self._releases = {}
         self._active = None
         self._stopped = None
+        self._succeeded = None
 
-    def releases(self):
-        if self._releases is None:
-            self._releases = gh.releases(self.repo)
-        return self._releases
+    def releases(self, app_repo: str) -> list:
+        if app_repo not in self._releases:
+            self._releases[app_repo] = gh.releases(app_repo)
+        return self._releases[app_repo]
 
     def active(self):
         if self._active is None:
@@ -41,6 +43,11 @@ class Lazy:
             self._stopped = gh.stopped_release_runs(self.repo)
         return self._stopped
 
+    def succeeded(self) -> set:
+        if self._succeeded is None:
+            self._succeeded = gh.succeeded_release_runs(self.repo, RELEASES_ON_APP_REPOS_SINCE)
+        return self._succeeded
+
 
 def newest_tags(entry, state):
     tags = [(name, sha, kind) for name, sha, kind in gh.version_tags(entry["repository"]) if gh.VERSION_TAG.match(name)]
@@ -50,7 +57,7 @@ def newest_tags(entry, state):
         if not mine:
             continue
         name, sha, kind = max(mine, key=lambda t: versions.semver_key(t[0][1:]))
-        above, _ = versions.above_published(entry["app"], name[1:], state.releases())
+        above, _ = versions.above_published(entry["app"], name[1:], state.releases(entry["repository"]))
         if above:
             found.append((name, gh.tag_commit(entry["repository"], sha, kind)))
     return found
@@ -69,8 +76,13 @@ def watch_app(entry, refs, state, args):
         if ahead:
             rows.append((entry["app"], ref, readiness.SKIP, f"{ahead} is ahead; one release run per app at a time"))
             continue
-        status, reason, version = readiness.evaluate(entry, ref, sha, state.releases(), state.active())
-        if status == readiness.READY and gh.run_title(entry["app"], version, sha) in state.stopped():
+        status, reason, version = readiness.evaluate(entry, ref, sha, state.releases(entry["repository"]), state.active(), built=state.succeeded())
+        built = False
+        if status == readiness.READY and gh.run_title(entry["app"], version, sha) in state.succeeded():
+            status, built = readiness.SKIP, True
+            reason = (f"the release run for {entry['app']} {version} at {sha[:9]} succeeded; its release is on "
+                      f"{entry['repository']}, or was deleted there; to build this commit again, start release.yml by hand")
+        elif status == readiness.READY and gh.run_title(entry["app"], version, sha) in state.stopped():
             status = readiness.SKIP
             reason = (f"the release run for {entry['app']} {version} at {sha[:9]} failed or was cancelled; "
                       "open it in Actions and use Re-run failed jobs, or fix the app and release a new version")
@@ -82,7 +94,7 @@ def watch_app(entry, refs, state, args):
                 reason += "; release started"
                 started += 1
         running = bool(version) and gh.run_title(entry["app"], version, sha) in state.active()
-        if status in (readiness.READY, readiness.WAIT) or running:
+        if status in (readiness.READY, readiness.WAIT) or running or built:
             ahead = ref
         rows.append((entry["app"], ref, status, reason))
     return rows, started

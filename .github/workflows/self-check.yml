@@ -56,7 +56,7 @@ jobs:
         run: |
           mkdir -p "$RUNNER_TEMP/sample/src-tauri"
           printf '{"version":"1.2.3","bundle":{"macOS":{"minimumSystemVersion":"12.0"}}}' > "$RUNNER_TEMP/sample/src-tauri/tauri.conf.json"
-          cd "$RUNNER_TEMP/sample" && python3 -I "$GITHUB_WORKSPACE/scripts/plan.py" --ref="" --tag-prefix=sample-v --expect-version=1.2.3 \
+          cd "$RUNNER_TEMP/sample" && python3 -I "$GITHUB_WORKSPACE/scripts/plan.py" --ref="" --expect-version=1.2.3 \
             --platforms "macos-arm64,macos-universal?,linux-x64,windows-x64,windows-x86?" --platform-env '{"windows-x86":{"SAMPLE":"1"}}'
       - name: App manifest and skills from a sample checkout
         run: |
@@ -68,7 +68,7 @@ jobs:
           python3 -I scripts/agents.py check --app formvis --dist "$RUNNER_TEMP/manifest-dist"
       - name: Catalogue builds from no releases
         run: |
-          echo '[]' > "$RUNNER_TEMP/releases.json"
+          echo '{}' > "$RUNNER_TEMP/releases.json"
           python3 -I scripts/catalog.py build --releases "$RUNNER_TEMP/releases.json" --out "$RUNNER_TEMP/apps.json"
       - name: No em dash in tracked markdown, no emoji in tracked text
         run: |

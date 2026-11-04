@@ -41,44 +41,47 @@ def test_latest_json_points_at_the_versioned_store_path_only_for_its_own_tag():
     feed = {
         "version": "1.2.3", "notes": "n", "pub_date": "2026-10-28T00:00:00Z",
         "platforms": {
-            "darwin-aarch64": {"signature": "sig-a", "url": "https://github.com/nodemode-dev/formcompiler/releases/download/formvis-v1.2.3/FormVis_aarch64.app.tar.gz"},
-            "windows-x86_64": {"signature": "sig-w", "url": "https://github.com/nodemode-dev/formcompiler/releases/download/formvis-v1.2.3/FormVis_1.2.3_x64-setup.exe"},
+            "darwin-aarch64": {"signature": "sig-a", "url": "https://github.com/nodemode-dev/formvis/releases/download/v1.2.3/FormVis_aarch64.app.tar.gz"},
+            "windows-x86_64": {"signature": "sig-w", "url": "https://github.com/nodemode-dev/formvis/releases/download/v1.2.3/FormVis_1.2.3_x64-setup.exe"},
             "linux-x86_64": {"signature": "sig-l", "url": "https://example.com/elsewhere/FormVis.AppImage"},
-            "linux-aarch64": {"signature": "sig-o", "url": "https://github.com/nodemode-dev/formcompiler/releases/download/formvis-v1.2.2/old.AppImage"},
+            "linux-aarch64": {"signature": "sig-o", "url": "https://github.com/nodemode-dev/formvis/releases/download/v1.2.2/old.AppImage"},
         },
     }
-    moved = public_urls.rewrite_feed(feed, BASE, "formvis", "1.2.3", "formvis-v1.2.3")
+    moved = public_urls.rewrite_feed(feed, BASE, "formvis", "1.2.3", "v1.2.3")
     assert moved["platforms"]["darwin-aarch64"] == {"signature": "sig-a", "url": f"{BASE}/formvis/1.2.3/FormVis_aarch64.app.tar.gz"}
     assert moved["platforms"]["windows-x86_64"]["url"] == f"{BASE}/formvis/1.2.3/FormVis_1.2.3_x64-setup.exe"
     assert moved["platforms"]["linux-x86_64"] == feed["platforms"]["linux-x86_64"]
     assert moved["platforms"]["linux-aarch64"] == feed["platforms"]["linux-aarch64"]
     assert feed["platforms"]["darwin-aarch64"]["url"].startswith("https://github.com/")
     assert {k: v for k, v in moved.items() if k != "platforms"} == {k: v for k, v in feed.items() if k != "platforms"}
-    assert public_urls.rewrite_feed(feed, "", "formvis", "1.2.3", "formvis-v1.2.3") is feed
-    assert public_urls.rewrite_feed({"tag_name": "v1.2.3"}, BASE, "form.md", "1.2.3", "form.md-v1.2.3") == {"tag_name": "v1.2.3"}
+    assert public_urls.rewrite_feed(feed, "", "formvis", "1.2.3", "v1.2.3") is feed
+    assert public_urls.rewrite_feed({"tag_name": "v1.2.3"}, BASE, "form.md", "1.2.3", "v1.2.3") == {"tag_name": "v1.2.3"}
 
 
 def test_feed_cli_rewrites_latest_json(tmp_path):
     path = tmp_path / "latest.json"
     path.write_text(json.dumps({"version": "1.2.3", "platforms": {"darwin-aarch64": {
-        "signature": "s", "url": "https://github.com/nodemode-dev/formcompiler/releases/download/formvis-v1.2.3/a.app.tar.gz"}}}), encoding="utf-8")
-    out = script("feed.py", "public", "--tag", "formvis-v1.2.3", "--file", str(path), "--base", BASE + "/")
+        "signature": "s", "url": "https://github.com/nodemode-dev/formvis/releases/download/v1.2.3/a.app.tar.gz"}}}), encoding="utf-8")
+    out = script("feed.py", "public", "--app", "formvis", "--tag", "v1.2.3", "--file", str(path), "--base", BASE + "/")
     assert out.returncode == 0, out.stdout + out.stderr
     assert json.loads(path.read_text(encoding="utf-8"))["platforms"]["darwin-aarch64"]["url"] == f"{BASE}/formvis/1.2.3/a.app.tar.gz"
-    assert script("feed.py", "public", "--tag", "formvis-v1.2.3", "--file", str(path), "--base", "http://x").returncode != 0
+    assert script("feed.py", "public", "--app", "formvis", "--tag", "v1.2.3", "--file", str(path), "--base", "http://x").returncode != 0
 
 
-def asset(tag, name, size=100):
+FORMVIS = "nodemode-dev/formvis"
+
+
+def asset(tag, name, size=100, repo=FORMVIS):
     return {"name": name, "size": size, "url": f"https://api.github.com/assets/{name}",
-            "browser_download_url": f"https://github.com/nodemode-dev/formcompiler/releases/download/{tag}/{name}"}
+            "browser_download_url": f"https://github.com/{repo}/releases/download/{tag}/{name}"}
 
 
-def gh_release(version, prerelease=False, draft=False):
-    tag = f"formvis-v{version}"
-    names = [f"FormVis_{version}_aarch64.dmg", f"FormVis_{version}_x64-setup.exe", "form-app.json", f"formvis-skills-v{version}.zip", "SHA256SUMS.txt"]
+def gh_release(version, prerelease=False, draft=False, app="formvis", repo=FORMVIS):
+    tag = f"v{version}"
+    names = [f"FormVis_{version}_aarch64.dmg", f"FormVis_{version}_x64-setup.exe", "form-app.json", f"{app}-skills-v{version}.zip", "SHA256SUMS.txt"]
     return {"tag_name": tag, "draft": draft, "prerelease": prerelease, "published_at": "2026-10-28T00:00:00Z",
-            "html_url": f"https://github.com/nodemode-dev/formcompiler/releases/tag/{tag}", "body": "",
-            "assets": [asset(tag, name, 100 + i) for i, name in enumerate(names)]}
+            "html_url": f"https://github.com/{repo}/releases/tag/{tag}", "body": "",
+            "assets": [asset(tag, name, 100 + i, repo) for i, name in enumerate(names)]}
 
 
 @pytest.fixture
@@ -86,7 +89,7 @@ def sums(monkeypatch):
     monkeypatch.setattr(catalog, "fetch_sums", lambda release: {a["name"]: DIGEST for a in release["assets"] if a["name"] != "SHA256SUMS.txt"})
 
 
-RELEASES = [gh_release("1.2.0"), gh_release("1.2.1"), gh_release("1.3.0-beta.1", prerelease=True), gh_release("1.4.0", draft=True)]
+RELEASES = {FORMVIS: [gh_release("1.2.0"), gh_release("1.2.1"), gh_release("1.3.0-beta.1", prerelease=True), gh_release("1.4.0", draft=True)]}
 
 
 def product(document):
@@ -94,14 +97,14 @@ def product(document):
 
 
 def test_the_catalogue_keeps_github_urls_without_a_public_base(sums):
-    stable = product(catalog.build("nodemode-dev/formcompiler", [load("formvis")], RELEASES))["channels"]["stable"]
+    stable = product(catalog.build([load("formvis")], RELEASES))["channels"]["stable"]
     assert stable["version"] == "1.2.1"
-    assert all(a["url"].startswith("https://github.com/nodemode-dev/formcompiler/releases/download/formvis-v1.2.1/") for a in stable["artifacts"])
+    assert all(a["url"].startswith(f"https://github.com/{FORMVIS}/releases/download/v1.2.1/") for a in stable["artifacts"])
 
 
 def test_the_catalogue_points_at_the_store_with_the_same_sizes_and_digests(sums):
-    plain = product(catalog.build("nodemode-dev/formcompiler", [load("formvis")], RELEASES))["channels"]
-    moved = product(catalog.build("nodemode-dev/formcompiler", [load("formvis")], RELEASES, BASE))["channels"]
+    plain = product(catalog.build([load("formvis")], RELEASES))["channels"]
+    moved = product(catalog.build([load("formvis")], RELEASES, BASE))["channels"]
     for channel in ("stable", "beta"):
         version = moved[channel]["version"]
         assert moved[channel]["artifacts"], channel
@@ -114,25 +117,25 @@ def test_the_catalogue_points_at_the_store_with_the_same_sizes_and_digests(sums)
 
 def test_yanked_versions_leave_the_catalogue(sums):
     yanked = frozenset({("formvis", "1.2.1"), ("formvis", "1.3.0-beta.1")})
-    channels = product(catalog.build("nodemode-dev/formcompiler", [load("formvis")], RELEASES, "", yanked))["channels"]
+    channels = product(catalog.build([load("formvis")], RELEASES, "", yanked))["channels"]
     assert channels["stable"]["version"] == "1.2.0"
     assert "history" not in channels["stable"]
     assert "beta" not in channels
 
 
 def test_a_yanked_older_version_leaves_the_history_only(sums):
-    channels = product(catalog.build("nodemode-dev/formcompiler", [load("formvis")], RELEASES, "", frozenset({("formvis", "1.2.0")})))["channels"]
+    channels = product(catalog.build([load("formvis")], RELEASES, "", frozenset({("formvis", "1.2.0")})))["channels"]
     assert channels["stable"]["version"] == "1.2.1"
     assert "history" not in channels["stable"]
     assert channels["beta"]["version"] == "1.3.0-beta.1"
 
 
 def test_a_new_beta_above_stable_is_the_beta_channel(sums):
-    channels = product(catalog.build("nodemode-dev/formcompiler", [load("formvis")], [*RELEASES, gh_release("1.3.0-beta.10", prerelease=True)]))["channels"]
+    channels = product(catalog.build([load("formvis")], {FORMVIS: [*RELEASES[FORMVIS], gh_release("1.3.0-beta.10", prerelease=True)]}))["channels"]
     assert channels["beta"]["version"] == "1.3.0-beta.10"
 
 
-PUBLISHED = [{"tag_name": "formvis-v1.2.1", "draft": False}, {"tag_name": "formvis-v1.4.0", "draft": True}]
+PUBLISHED = [{"tag_name": "v1.2.1", "draft": False}, {"tag_name": "v1.4.0", "draft": True}]
 
 
 def test_yank_adds_a_published_version_with_its_reason():
@@ -168,7 +171,7 @@ def test_yanked_json_must_have_its_shape(tmp_path):
 
 def test_the_catalogue_cli_reads_yanked_json_and_the_public_base(tmp_path):
     releases = tmp_path / "releases.json"
-    releases.write_text("[]", encoding="utf-8")
+    releases.write_text("{}", encoding="utf-8")
     listed = tmp_path / "yanked.json"
     listed.write_text('{"yanked": [{"app": "formvis", "version": "1.2.1", "reason": "r", "date": "2026-10-28"}]}', encoding="utf-8")
     env = {**os.environ, "FORMCOMPILER_PUBLIC_BASE": BASE}
@@ -183,12 +186,12 @@ def test_the_catalogue_cli_reads_yanked_json_and_the_public_base(tmp_path):
 
 
 def test_listed_releases_names_every_release_the_catalogue_points_at(sums):
-    document = catalog.build("nodemode-dev/formcompiler", [load("formvis"), load("form.md")], RELEASES, BASE)
+    document = catalog.build([load("formvis"), load("form.md")], RELEASES, BASE)
     assert catalog.listed_releases(document, [load("formvis"), load("form.md")]) == [("formvis", "1.2.0"), ("formvis", "1.2.1"), ("formvis", "1.3.0-beta.1")]
 
 
 def test_the_listed_cli_prints_app_and_version(tmp_path, sums):
-    document = catalog.build("nodemode-dev/formcompiler", [load("formvis")], RELEASES, BASE)
+    document = catalog.build([load("formvis")], RELEASES, BASE)
     path = tmp_path / "releases.json"
     path.write_text(json.dumps(document), encoding="utf-8")
     out = script("catalog.py", "listed", "--file", str(path))
@@ -197,23 +200,23 @@ def test_the_listed_cli_prints_app_and_version(tmp_path, sums):
 
 
 @pytest.mark.parametrize("tag, updates", [
-    ("formvis-v1.3.0", "true"),
-    ("formvis-v1.2.0", "false"),
-    ("formvis-v1.4.0-beta.1", "false"),
+    ("v1.3.0", "true"),
+    ("v1.2.0", "false"),
+    ("v1.4.0-beta.1", "false"),
 ])
 def test_the_update_feed_is_refreshed_only_for_the_newest_stable(monkeypatch, capsys, tag, updates):
     """A manual feed run with an older tag must not roll every installed app back to it."""
     import feed
     import github_api
 
-    published = [{"tag_name": t, "draft": False} for t in ("formvis-v1.2.0", "formvis-v1.3.0", "formvis-v1.4.0-beta.1")]
+    published = [{"tag_name": t, "draft": False} for t in ("v1.2.0", "v1.3.0", "v1.4.0-beta.1")]
     monkeypatch.setattr(github_api, "releases", lambda repo: published)
     written = {}
     monkeypatch.setattr(feed, "write_outputs", lambda values: written.update(values))
-    monkeypatch.setattr(sys, "argv", ["feed.py", "resolve", "--tag", tag, "--prerelease", "false"])
+    monkeypatch.setattr(sys, "argv", ["feed.py", "resolve", "--app", "formvis", "--tag", tag, "--prerelease", "false"])
     feed.main()
     assert written["updates"] == updates
-    assert written["version"] == tag.split("-v", 1)[1]
+    assert written["version"] == tag.removeprefix("v")
 
 
 def test_with_portal_skips_when_the_catalogue_is_not_there_yet(monkeypatch, capsys, tmp_path):

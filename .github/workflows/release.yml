@@ -75,7 +75,6 @@ jobs:
       app-name: ${{ inputs.app }}
       repository: ${{ fromJSON(needs.gate.outputs.config).repository }}
       ref: ${{ needs.gate.outputs.sha }}
-      tag-prefix: ${{ inputs.app }}-v
       expect-version: ${{ needs.gate.outputs.version }}
       app-title: ${{ fromJSON(needs.gate.outputs.config).title }}
       cli: ${{ fromJSON(needs.gate.outputs.config).cli }}
@@ -245,7 +244,7 @@ jobs:
           push: true
 
   assemble:
-    name: draft release
+    name: release files
     needs: [gate, desktop, extras, image]
     if: >-
       always() && needs.gate.result == 'success'
@@ -255,7 +254,7 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     permissions:
-      contents: write
+      contents: read
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -282,6 +281,7 @@ jobs:
           ASSETS: ${{ needs.gate.outputs.assets }}
           FORMCOMPILER_VERSION: ${{ needs.gate.outputs.version }}
           FORMCOMPILER_TAG: ${{ needs.gate.outputs.tag }}
+          FORMCOMPILER_REPOSITORY: ${{ fromJSON(needs.gate.outputs.config).repository }}
         run: DIST="$GITHUB_WORKSPACE/dist" bash -eo pipefail -c "$ASSETS"
       - name: App manifest and skills
         env:
@@ -302,7 +302,7 @@ jobs:
           VERSION: ${{ needs.gate.outputs.version }}
           TAG: ${{ needs.gate.outputs.tag }}
           TITLE: ${{ fromJSON(needs.gate.outputs.config).title }}
-          REPO: ${{ github.repository }}
+          REPO: ${{ fromJSON(needs.gate.outputs.config).repository }}
         run: >-
           python3 -I scripts/release_assets.py --dir=dist --version="$VERSION"
           --tag="$TAG" --repo="$REPO" --title="$TITLE"
@@ -315,67 +315,170 @@ jobs:
           NOTES: ${{ needs.gate.outputs.notes }}
         run: >-
           python3 -I scripts/notes.py --app-dir=app --version="$VERSION" --repo="$SOURCE"
-          --sha="$SHA" --branch="$BRANCH" --command="$NOTES" --out="$RUNNER_TEMP/release-notes.md"
-      - name: Create or refresh the draft
-        working-directory: dist
+          --sha="$SHA" --branch="$BRANCH" --command="$NOTES" --out=release-notes.md
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: formcompiler-release-${{ inputs.app }}
+          path: |
+            dist/*
+            release-notes.md
+          if-no-files-found: error
+          overwrite: true
+
+  publish:
+    name: draft release
+    needs: [gate, assemble]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    environment: release
+    permissions:
+      contents: read
+      id-token: write
+      attestations: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Release credential
+        id: credential
         env:
-          GH_TOKEN: ${{ github.token }}
-          GH_REPO: ${{ github.repository }}
+          REPOSITORY: ${{ fromJSON(needs.gate.outputs.config).repository }}
+          HAS_APP: ${{ secrets.FORMCOMPILER_APP_ID != '' && secrets.FORMCOMPILER_APP_PRIVATE_KEY != '' }}
+          HAS_TOKEN: ${{ secrets.FORMCOMPILER_WRITE_TOKEN != '' }}
+        run: bash scripts/release_credential.sh
+      - name: App token for the app repository
+        id: app-token
+        if: steps.credential.outputs.shape == 'app'
+        uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
+        with:
+          client-id: ${{ secrets.FORMCOMPILER_APP_ID }}
+          private-key: ${{ secrets.FORMCOMPILER_APP_PRIVATE_KEY }}
+          owner: nodemode-dev
+          repositories: ${{ steps.credential.outputs.name }}
+          permission-contents: write
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: formcompiler-release-${{ inputs.app }}
+          path: release
+      - name: Attest the provenance of SHA256SUMS.txt
+        if: vars.FORMCOMPILER_ATTEST != 'off'
+        uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
+        with:
+          subject-path: |
+            release/dist/SHA256SUMS.txt
+            release/dist/form-app.json
+      - name: Create or refresh the draft on the app repository
+        working-directory: release/dist
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token || secrets.FORMCOMPILER_WRITE_TOKEN }}
+          GH_REPO: ${{ fromJSON(needs.gate.outputs.config).repository }}
           TAG: ${{ needs.gate.outputs.tag }}
+          SHA: ${{ needs.gate.outputs.sha }}
           VERSION: ${{ needs.gate.outputs.version }}
           TITLE: ${{ fromJSON(needs.gate.outputs.config).title }}
           PRERELEASE: ${{ needs.gate.outputs.prerelease }}
         run: |
           name="$TITLE $VERSION"
-          notes="$RUNNER_TEMP/release-notes.md"
-          if draft="$(gh release view "$TAG" --json isDraft --jq .isDraft 2>/dev/null)"; then
-            if [ "$draft" != "true" ]; then
-              echo "::error::$TAG is already published; bump the version to release again"
+          notes="$GITHUB_WORKSPACE/release/release-notes.md"
+          tag_at() { python3 -I "$GITHUB_WORKSPACE/scripts/versions.py" tag-target --repo "$GH_REPO" --tag "$TAG" --token-env GH_TOKEN; }
+          if ! gh api -X POST "repos/$GH_REPO/git/refs" -f "ref=refs/tags/$TAG" -f "sha=$SHA" > /dev/null 2> "$RUNNER_TEMP/tag-create.txt"; then
+            existing="$(tag_at)"
+            if [ -z "$existing" ]; then
+              cat "$RUNNER_TEMP/tag-create.txt"
+              echo "::error::could not create the tag $TAG in $GH_REPO at $SHA"
               exit 1
             fi
-            gh release view "$TAG" --json assets --jq '.assets[].name' | while read -r asset; do
+            if [ "$existing" != "$SHA" ]; then
+              if [ "$(gh release view "$TAG" --json isDraft --jq .isDraft 2>/dev/null)" != "true" ]; then
+                echo "::error::the tag $TAG already exists in $GH_REPO at $existing, not at $SHA, and no draft of formcompiler's is at it; move or delete the tag, or bump the version"
+                exit 1
+              fi
+              gh api -X PATCH "repos/$GH_REPO/git/refs/tags/$TAG" -f "sha=$SHA" -F force=true > /dev/null
+              if [ "$(tag_at)" != "$SHA" ]; then
+                echo "::error::the tag $TAG in $GH_REPO could not be moved to $SHA"
+                exit 1
+              fi
+              echo "- moved the tag \`$TAG\` from \`${existing:0:12}\` to \`${SHA:0:12}\`: the draft at it is refreshed from the new commit" >> "$GITHUB_STEP_SUMMARY"
+            fi
+          fi
+          still_a_draft() {
+            if [ "$(gh release view "$TAG" --json isDraft --jq .isDraft)" != "true" ]; then
+              echo "::error::$GH_REPO's release $TAG is published (someone published it while this run was working); nothing was changed, bump the version to release again"
+              exit 1
+            fi
+          }
+          if draft="$(gh release view "$TAG" --json isDraft --jq .isDraft 2>/dev/null)"; then
+            if [ "$draft" != "true" ]; then
+              echo "::error::$GH_REPO already has a published release $TAG; bump the version to release again"
+              exit 1
+            fi
+            gh release view "$TAG" --json assets --jq '.assets[].name' > "$RUNNER_TEMP/old-assets.txt"
+            while IFS= read -r asset; do
+              [ -n "$asset" ] || continue
+              still_a_draft
               gh release delete-asset "$TAG" "$asset" --yes
-            done
-            gh release edit "$TAG" --draft --title "$name" --target main --prerelease="$PRERELEASE" --notes-file "$notes"
+            done < "$RUNNER_TEMP/old-assets.txt"
+            still_a_draft
+            gh release edit "$TAG" --draft --title "$name" --target "$SHA" --prerelease="$PRERELEASE" --notes-file "$notes"
+            still_a_draft
             gh release upload "$TAG" --clobber -- *
           else
             pre=()
             if [ "$PRERELEASE" = "true" ]; then pre=(--prerelease); fi
-            gh release create "$TAG" --draft --title "$name" --target main --notes-file "$notes" --latest=false "${pre[@]}" -- *
+            gh release create "$TAG" --draft --title "$name" --target "$SHA" --notes-file "$notes" --latest=false "${pre[@]}" -- *
           fi
-          { echo "Draft **$name** (\`$TAG\`)"; echo; sed 's/^/    /' SHA256SUMS.txt; } >> "$GITHUB_STEP_SUMMARY"
+          { echo "Draft **$name** (\`$TAG\` on $GH_REPO)"; echo; sed 's/^/    /' SHA256SUMS.txt; } >> "$GITHUB_STEP_SUMMARY"
       - name: Supersede older drafts
         env:
-          GH_TOKEN: ${{ github.token }}
-          GH_REPO: ${{ github.repository }}
+          GH_TOKEN: ${{ steps.app-token.outputs.token || secrets.FORMCOMPILER_WRITE_TOKEN }}
+          GH_REPO: ${{ fromJSON(needs.gate.outputs.config).repository }}
           APP: ${{ inputs.app }}
           VERSION: ${{ needs.gate.outputs.version }}
         run: |
-          python3 -I scripts/versions.py older-drafts --app "$APP" --version "$VERSION" > "$RUNNER_TEMP/older-drafts.txt"
-          while IFS= read -r old; do
-            [ -n "$old" ] || continue
-            gh release delete "$old" --yes
-            echo "- superseded and deleted the draft \`$old\`" >> "$GITHUB_STEP_SUMMARY"
+          python3 -I scripts/versions.py older-drafts --app "$APP" --version "$VERSION" --repo "$GH_REPO" --token-env GH_TOKEN > "$RUNNER_TEMP/older-drafts.txt"
+          while IFS=$'\t' read -r id old; do
+            [ -n "$id" ] || continue
+            info="$(gh api "repos/$GH_REPO/releases/$id" --jq '[.draft, .target_commitish] | @tsv')"
+            if [ "${info%%$'\t'*}" != "true" ]; then
+              echo "::warning::$old (release $id) on $GH_REPO is no longer a draft, so it was left alone"
+              continue
+            fi
+            target="${info#*$'\t'}"
+            gh api -X DELETE "repos/$GH_REPO/releases/$id"
+            at="$(python3 -I scripts/versions.py tag-target --repo "$GH_REPO" --tag "$old" --token-env GH_TOKEN)"
+            if [ -n "$at" ] && [ "$at" = "$target" ]; then
+              gh api -X DELETE "repos/$GH_REPO/git/refs/tags/$old"
+              echo "- superseded and deleted the draft \`$old\` (release $id) and its tag on $GH_REPO" >> "$GITHUB_STEP_SUMMARY"
+            else
+              echo "- superseded and deleted the draft \`$old\` (release $id) on $GH_REPO; its tag was left, at ${at:-nothing}, not at the draft's $target" >> "$GITHUB_STEP_SUMMARY"
+            fi
           done < "$RUNNER_TEMP/older-drafts.txt"
       - name: Publish (a beta, or registry release is publish)
         if: needs.gate.outputs.prerelease == 'true' || fromJSON(needs.gate.outputs.config).release == 'publish'
         env:
-          GH_TOKEN: ${{ github.token }}
-          GH_REPO: ${{ github.repository }}
+          GH_TOKEN: ${{ steps.app-token.outputs.token || secrets.FORMCOMPILER_WRITE_TOKEN }}
+          GH_REPO: ${{ fromJSON(needs.gate.outputs.config).repository }}
+          APP: ${{ inputs.app }}
           TAG: ${{ needs.gate.outputs.tag }}
+          SHA: ${{ needs.gate.outputs.sha }}
           PRERELEASE: ${{ needs.gate.outputs.prerelease }}
           DISPATCH_TOKEN: ${{ secrets.FORMPIPE_DISPATCH_TOKEN }}
         run: |
+          at="$(python3 -I scripts/versions.py tag-target --repo "$GH_REPO" --tag "$TAG" --token-env GH_TOKEN)"
+          if [ "$at" != "$SHA" ]; then
+            echo "::error::the tag $TAG in $GH_REPO points at ${at:-nothing}, not at $SHA; the draft was left unpublished"
+            exit 1
+          fi
           gh release edit "$TAG" --draft=false --latest=false --prerelease="$PRERELEASE"
           if [ -z "$DISPATCH_TOKEN" ]; then
-            echo "::notice::Published $TAG. FORMPIPE_DISPATCH_TOKEN is not set, so the publishing pipeline was not told; its hourly run picks the release up"
-            echo "Published \`$TAG\`; the publishing pipeline's hourly run picks it up" >> "$GITHUB_STEP_SUMMARY"
+            echo "::notice::Published $TAG on $GH_REPO. FORMPIPE_DISPATCH_TOKEN is not set, so the publishing pipeline was not told; its hourly run picks the release up"
+            echo "Published \`$TAG\` on $GH_REPO; the publishing pipeline's hourly run picks it up" >> "$GITHUB_STEP_SUMMARY"
             exit 0
           fi
-          if python3 -I -c 'import json, sys; print(json.dumps({"event_type": "formcompiler-published", "client_payload": {"tag": sys.argv[1]}}))' "$TAG" \
+          if python3 -I -c 'import json, sys; print(json.dumps({"event_type": "formcompiler-published", "client_payload": {"app": sys.argv[1], "tag": sys.argv[2], "repository": sys.argv[3]}}))' "$APP" "$TAG" "$GH_REPO" \
             | GH_TOKEN="$DISPATCH_TOKEN" gh api -X POST repos/nodemode-dev/formpipe/dispatches --input -; then
-            echo "Published \`$TAG\` and sent formcompiler-published to the publishing pipeline" >> "$GITHUB_STEP_SUMMARY"
+            echo "Published \`$TAG\` on $GH_REPO and sent formcompiler-published to the publishing pipeline" >> "$GITHUB_STEP_SUMMARY"
           else
-            echo "::warning::Published $TAG, but the dispatch to the publishing pipeline failed (is FORMPIPE_DISPATCH_TOKEN expired?); its hourly run picks the release up"
-            echo "Published \`$TAG\`; the dispatch failed, the publishing pipeline's hourly run picks it up" >> "$GITHUB_STEP_SUMMARY"
+            echo "::warning::Published $TAG on $GH_REPO, but the dispatch to the publishing pipeline failed (is FORMPIPE_DISPATCH_TOKEN expired?); its hourly run picks the release up"
+            echo "Published \`$TAG\` on $GH_REPO; the dispatch failed, the publishing pipeline's hourly run picks it up" >> "$GITHUB_STEP_SUMMARY"
           fi

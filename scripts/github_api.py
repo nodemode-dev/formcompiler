@@ -11,6 +11,7 @@ API = os.environ.get("GITHUB_API_URL", "https://api.github.com")
 COMPILE_BRANCH = re.compile(r"^compile_v((0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(-[0-9A-Za-z-]+(\.[0-9A-Za-z-]+)*)?)$")
 VERSION_TAG = re.compile(r"^v((0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(-[0-9A-Za-z-]+(\.[0-9A-Za-z-]+)*)?)$")
 MAIN = "main"
+RELEASES_ON_APP_REPOS_SINCE = "2026-11-03T22:47:59Z"
 SOURCE_MARK = re.compile(r"formcompiler-source: (\S+)@([0-9a-f]{40})")
 
 
@@ -20,16 +21,18 @@ class ApiError(Exception):
         self.status = status
 
 
-def token(app_side=False):
+def token(app_side=False, token_env=""):
+    if token_env:
+        return os.environ.get(token_env, "").strip()
     if app_side and os.environ.get("FORMCOMPILER_APP_TOKEN", "").strip():
         return os.environ["FORMCOMPILER_APP_TOKEN"].strip()
     return os.environ.get("GH_TOKEN", "").strip() or os.environ.get("GITHUB_TOKEN", "").strip()
 
 
-def request(method, path, body=None, app_side=False, raw=False):
+def request(method, path, body=None, app_side=False, raw=False, token_env=""):
     url = path if path.startswith("http") else f"{API}{path}"
     headers = {"Accept": "application/vnd.github+json", "X-GitHub-Api-Version": "2022-11-28", "User-Agent": "formcompiler"}
-    secret = token(app_side)
+    secret = token(app_side, token_env)
     if secret:
         headers["Authorization"] = f"Bearer {secret}"
     data = None
@@ -49,15 +52,15 @@ def request(method, path, body=None, app_side=False, raw=False):
     return (json.loads(payload) if payload else None), link
 
 
-def get(path, app_side=False):
-    return request("GET", path, app_side=app_side)[0]
+def get(path, app_side=False, token_env=""):
+    return request("GET", path, app_side=app_side, token_env=token_env)[0]
 
 
-def paged(path, key=None, app_side=False):
+def paged(path, key=None, app_side=False, token_env=""):
     url = path + ("&" if "?" in path else "?") + "per_page=100"
     items = []
     while url:
-        data, link = request("GET", url, app_side=app_side)
+        data, link = request("GET", url, app_side=app_side, token_env=token_env)
         items.extend(data[key] if key else data)
         found = re.search(r'<([^>]+)>;\s*rel="next"', link or "")
         url = found.group(1) if found else ""
@@ -79,14 +82,24 @@ def version_tags(repo):
     return [(ref["ref"].removeprefix("refs/tags/"), ref["object"]["sha"], ref["object"]["type"]) for ref in refs]
 
 
-def tag_commit(repo, sha, kind):
+def tag_commit(repo, sha, kind, token_env=""):
     seen = 0
     while kind == "tag" and seen < 5:
-        target = get(f"/repos/{repo}/git/tags/{sha}", app_side=True)["object"]
+        target = get(f"/repos/{repo}/git/tags/{sha}", app_side=True, token_env=token_env)["object"]
         sha, kind, seen = target["sha"], target["type"], seen + 1
     if kind != "commit":
         raise ApiError(0, f"tag object {sha[:9]} in {repo} does not point at a commit")
     return sha
+
+
+def tag_target(repo: str, name: str, token_env: str = "") -> str:
+    try:
+        ref = get(f"/repos/{repo}/git/ref/tags/{urllib.parse.quote(name)}", app_side=True, token_env=token_env)
+    except ApiError as error:
+        if error.status == 404:
+            return ""
+        raise
+    return tag_commit(repo, ref["object"]["sha"], ref["object"]["type"], token_env)
 
 
 def on_main(repo, sha):
@@ -118,8 +131,8 @@ def checks_state(repo, sha, workflows):
     return states
 
 
-def releases(repo):
-    return paged(f"/repos/{repo}/releases")
+def releases(repo: str, token_env: str = "") -> list:
+    return paged(f"/repos/{repo}/releases", app_side=True, token_env=token_env)
 
 
 def release_by_tag(all_releases, tag):
@@ -148,6 +161,17 @@ def stopped_release_runs(repo):
         runs = get(f"/repos/{repo}/actions/workflows/release.yml/runs?status={status}&per_page=100")
         titles.update(run.get("display_title", "") for run in runs.get("workflow_runs", []))
     return titles
+
+
+def succeeded_release_runs(repo: str, since: str) -> set[str]:
+    created = urllib.parse.quote(f">={since}", safe="")
+    runs = get(f"/repos/{repo}/actions/workflows/release.yml/runs?status=success&branch={MAIN}&event=workflow_dispatch&created={created}&per_page=100")
+    return {
+        run.get("display_title", "")
+        for run in runs.get("workflow_runs", [])
+        if run.get("head_branch") == MAIN and run.get("event") == "workflow_dispatch"
+        and run.get("conclusion") == "success" and run.get("created_at", "") >= since
+    }
 
 
 def run_title(app, version, sha):

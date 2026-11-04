@@ -1,7 +1,6 @@
 import argparse
 import fnmatch
 import json
-import os
 import sys
 from pathlib import Path
 
@@ -13,15 +12,13 @@ from plan import SEMVER
 from registry import all_entries, write_outputs
 
 
-def resolve(tag):
-    matches = []
-    for entry in all_entries():
-        prefix = f"{entry['app']}-v"
-        if tag.startswith(prefix) and SEMVER.match(tag[len(prefix):]):
-            matches.append((len(prefix), entry, tag[len(prefix):]))
-    if not matches:
-        return None, ""
-    _, entry, version = max(matches, key=lambda m: m[0])
+def resolve(app: str, tag: str) -> tuple:
+    version = tag.strip().removeprefix(versions.TAG_PREFIX)
+    if not SEMVER.match(version):
+        sys.exit(f"::error::{tag!r} is not a release tag of the shape vX.Y.Z")
+    entry = next((e for e in all_entries() if e.get("app") == app), None)
+    if not entry:
+        sys.exit(f"::error::no registry entry for {app!r}")
     return entry, version
 
 
@@ -32,7 +29,7 @@ def point_at_store(entry, version, args):
         sys.exit(f"::error::{error}")
     path = Path(args.file)
     feed = json.loads(path.read_text(encoding="utf-8"))
-    moved = public_urls.rewrite_feed(feed, base, entry["app"], version, args.tag)
+    moved = public_urls.rewrite_feed(feed, base, entry["app"], version, versions.tag_of(version))
     if moved == feed:
         print(f"{path.name}: no URL changed")
         return
@@ -44,38 +41,36 @@ def main():
     parser = argparse.ArgumentParser()
     sub = parser.add_subparsers(dest="command", required=True)
     one = sub.add_parser("resolve")
-    one.add_argument("--tag", required=True)
+    one.add_argument("--app", required=True)
+    one.add_argument("--tag", required=True, help="vX.Y.Z or X.Y.Z")
     one.add_argument("--prerelease", default="false")
-    one.add_argument("--repo", default=os.environ.get("GITHUB_REPOSITORY", "nodemode-dev/formcompiler"))
     pick = sub.add_parser("files")
+    pick.add_argument("--app", required=True)
     pick.add_argument("--tag", required=True)
     pick.add_argument("--assets", required=True, help="JSON list of the release's asset names")
     point = sub.add_parser("public")
+    point.add_argument("--app", required=True)
     point.add_argument("--tag", required=True)
     point.add_argument("--file", required=True, help="the latest.json copied to the update feed")
     point.add_argument("--base", default="")
     args = parser.parse_args()
 
-    entry, version = resolve(args.tag)
+    entry, version = resolve(args.app, args.tag)
+    tag = versions.tag_of(version)
     if args.command == "resolve":
-        if not entry:
-            print(f"{args.tag} is not an app release tag; only the catalogue is rebuilt")
-            write_outputs({"app": "", "version": "", "updates": "false"})
-            return
         stable = versions.channel(version) == versions.STABLE and args.prerelease != "true"
         updater = entry["updater"]
         wanted = stable and (updater["tauri"] or updater["tag_json"] or bool(updater["files"]))
-        top = versions.highest_stable(entry["app"], gh.releases(args.repo)) if wanted else ""
+        top = versions.highest_stable(entry["app"], gh.releases(entry["repository"])) if wanted else ""
         if top and versions.semver_key(version) < versions.semver_key(top):
-            print(f"::notice::{args.tag} is below {entry['app']}'s newest stable {top}; the update feed is not rolled back to it")
+            print(f"::notice::{entry['app']} {tag} is below its newest stable {top}; the update feed is not rolled back to it")
             wanted = False
-        write_outputs({"app": entry["app"], "title": entry["title"], "version": version,
+        write_outputs({"app": entry["app"], "title": entry["title"], "version": version, "tag": tag,
+                       "repository": entry["repository"], "prerelease": "false" if stable else "true",
                        "channel": versions.STABLE if stable else versions.BETA,
                        "updates": "true" if wanted else "false", "tag_json": "true" if updater["tag_json"] else "false"})
-        print(f"{args.tag}: {entry['app']} {version}, update feed {'refreshed' if wanted else 'not touched'}")
+        print(f"{entry['app']} {tag} on {entry['repository']}: {entry['title']} {version}, update feed {'refreshed' if wanted else 'not touched'}")
         return
-    if not entry:
-        sys.exit(f"::error::{args.tag} is not an app release tag")
     if args.command == "public":
         point_at_store(entry, version, args)
         return

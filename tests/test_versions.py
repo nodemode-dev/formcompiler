@@ -44,21 +44,29 @@ def release(tag, draft=False):
 
 
 RELEASES = [
-    release("formvis-v1.97.2"),
-    release("formvis-v1.97.10"),
-    release("formvis-v1.98.0-beta.1"),
-    release("formvis-v1.99.0", draft=True),
-    release("formvis-v1.98.5", draft=True),
-    release("form.md-v9.0.0"),
+    release("v1.97.2"),
+    release("v1.97.10"),
+    release("v1.98.0-beta.1"),
+    release("v1.99.0", draft=True),
+    release("v1.98.5", draft=True),
+    release("formvis-v9.0.0"),
     release("formvis-updates"),
     release("catalog"),
+    release("nightly"),
 ]
 
 
-def test_highest_published_uses_semver_and_ignores_drafts_and_other_apps():
+def test_highest_published_uses_semver_and_ignores_drafts_and_other_tags():
+    """Releases are the app repository's own, tagged vX.Y.Z; an old formcompiler-shaped tag or any other tag is not a version."""
     assert versions.highest_published("formvis", RELEASES) == "1.98.0-beta.1"
-    assert versions.highest_published("form.md", RELEASES) == "9.0.0"
-    assert versions.highest_published("formcut", RELEASES) == ""
+    assert versions.highest_published("formvis", [release("formvis-v9.0.0"), release("catalog")]) == ""
+    assert versions.highest_published("formvis", []) == ""
+
+
+@pytest.mark.parametrize("tag, version", [("v1.2.3", "1.2.3"), ("v1.2.3-beta.1", "1.2.3-beta.1"), ("1.2.3", ""), ("formvis-v1.2.3", ""), ("vv1.2.3", ""), ("v1.2", "")])
+def test_a_release_tag_is_v_then_the_version(tag, version):
+    assert versions.version_of(tag) == version
+    assert versions.tag_of("1.2.3") == "v1.2.3"
 
 
 @pytest.mark.parametrize("version, ok, named", [
@@ -80,11 +88,11 @@ def test_version_must_go_up_within_its_channel(version, ok, named):
 def test_drafts_newer_and_older():
     assert versions.newer_draft("formvis", "1.98.5", RELEASES) == "1.99.0"
     assert versions.newer_draft("formvis", "1.99.0", RELEASES) == ""
-    assert versions.older_drafts("formvis", "2.0.0", RELEASES) == ["formvis-v1.99.0", "formvis-v1.98.5"]
+    assert versions.older_drafts("formvis", "2.0.0", RELEASES) == ["v1.99.0", "v1.98.5"]
     assert versions.older_drafts("formvis", "1.98.5", RELEASES) == []
 
 
 def test_a_beta_never_supersedes_a_stable_draft():
-    releases = [release("formvis-v1.2.0", draft=True), release("formvis-v1.3.0-beta.1", draft=True)]
-    assert versions.older_drafts("formvis", "1.3.0-beta.2", releases) == ["formvis-v1.3.0-beta.1"]
-    assert versions.older_drafts("formvis", "1.3.0", releases) == ["formvis-v1.3.0-beta.1", "formvis-v1.2.0"]
+    releases = [release("v1.2.0", draft=True), release("v1.3.0-beta.1", draft=True)]
+    assert versions.older_drafts("formvis", "1.3.0-beta.2", releases) == ["v1.3.0-beta.1"]
+    assert versions.older_drafts("formvis", "1.3.0", releases) == ["v1.3.0-beta.1", "v1.2.0"]

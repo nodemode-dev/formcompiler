@@ -21,13 +21,14 @@ def stubbed(monkeypatch, capsys):
     monkeypatch.setattr(gh, "releases", lambda repo: [])
     monkeypatch.setattr(gh, "active_release_runs", lambda repo: set())
     monkeypatch.setattr(gh, "stopped_release_runs", lambda repo: set())
+    monkeypatch.setattr(gh, "succeeded_release_runs", lambda repo, since: set())
     monkeypatch.setattr(gh, "dispatch", lambda repo, ref, inputs: dispatched.append(inputs["app"]))
     monkeypatch.delenv("GITHUB_STEP_SUMMARY", raising=False)
     monkeypatch.delenv("FORMCOMPILER_APP_TOKEN", raising=False)
 
     def run(branches, evaluate=None, *args):
         monkeypatch.setattr(gh, "compile_branches", branches)
-        monkeypatch.setattr(readiness, "evaluate", evaluate or (lambda entry, branch, sha, *_: (readiness.READY, "checks passed", "1.0.0")))
+        monkeypatch.setattr(readiness, "evaluate", evaluate or (lambda entry, branch, sha, *_, **__: (readiness.READY, "checks passed", "1.0.0")))
         monkeypatch.setattr(sys, "argv", ["watch.py", *args])
         code = 0
         try:
@@ -72,7 +73,7 @@ def test_readable_apps_still_start_when_one_is_unreadable(stubbed):
 
 
 def test_ordinary_refusals_stay_non_fatal(stubbed):
-    def refuse(entry, branch, sha, *_):
+    def refuse(entry, branch, sha, *_, **__):
         return readiness.REFUSE, "checks did not pass", "1.0.0"
 
     code, out, dispatched = stubbed(lambda repo: [("compile_v1.0.0", "a" * 40)], refuse)
@@ -127,6 +128,7 @@ def test_the_watch_starts_nothing_for_an_app_whose_running_releases_cannot_be_li
     monkeypatch.setattr(gh, "compile_branches", lambda repo: [("compile_v1.2.0", "a" * 40)])
     monkeypatch.setattr(gh, "releases", lambda repo: [])
     monkeypatch.setattr(gh, "active_release_runs", failing)
+    monkeypatch.setattr(gh, "succeeded_release_runs", lambda repo, since: set())
     monkeypatch.setattr(gh, "dispatch", lambda *a: dispatched.append(a))
     monkeypatch.setattr(sys, "argv", ["watch.py"])
     monkeypatch.delenv("GITHUB_STEP_SUMMARY", raising=False)

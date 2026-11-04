@@ -5,7 +5,7 @@
 <p align="center"><b>The one place every form* app is built, signed and released: push a compile branch, get a draft release.</b></p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-v0.8.0-f97316" alt="version v0.8.0" />
+  <img src="https://img.shields.io/badge/version-v0.9.0-f97316" alt="version v0.9.0" />
   <img src="https://img.shields.io/badge/GitHub_Actions-watch_%C2%B7_release-2088FF?logo=githubactions&logoColor=white" alt="GitHub Actions" />
   <img src="https://img.shields.io/badge/Python-3.11%2B-3776AB?logo=python&logoColor=white" alt="Python 3.11+" />
   <img src="https://img.shields.io/badge/license-GPL--3.0--only-555555" alt="license GPL-3.0-only" />
@@ -13,7 +13,7 @@
 
 ## What it is
 
-formcompiler builds and releases the form* apps (formvis, formcut, formwav, formdesign, form.md and the rest). The app repositories build nothing: they run their checks, and that is all. When an app is ready to ship, a maintainer pushes a branch named `compile_vX.Y.Z` cut from main's head, or, for an app whose registry entry sets `tag_trigger`, a tag `vX.Y.Z` on a commit already on main. formcompiler notices it, checks it, builds the app on every platform the app lists, signs it with the identities only formcompiler holds, and opens a draft release `<app>-vX.Y.Z` on this repository's release page. Publishing the draft hands the release to a private companion pipeline, which refreshes the app's update feed and the family catalogue FormPortal reads, on GitHub and in the public download store at https://dl.formai.studio. A prerelease (`X.Y.Z-beta.N`) publishes itself to the beta channel.
+formcompiler builds and releases the form* apps (formvis, formcut, formwav, formdesign, form.md and the rest). The app repositories build nothing: they run their checks, and that is all. When an app is ready to ship, a maintainer pushes a branch named `compile_vX.Y.Z` cut from main's head, or, for an app whose registry entry sets `tag_trigger`, a tag `vX.Y.Z` on a commit already on main. formcompiler notices it, checks it, builds the app on every platform the app lists, signs it with the identities only formcompiler holds, and opens a draft release `vX.Y.Z` on the app's own repository, at the gated commit. The app repository owns its Releases page; formcompiler is the factory and the gate, and keeps no app release. Publishing the draft there hands the release to a private companion pipeline, which refreshes the app's update feed and the family catalogue FormPortal reads, on GitHub and in the public download store at https://dl.formai.studio. A prerelease (`X.Y.Z-beta.N`) publishes itself to the beta channel.
 
 Each app is described by one registry file, `apps/<app>.json`: how to read its version, which checks must pass, its platforms, toolchain, build commands, extra jobs (phone apps, a riscv64 tarball, a Flatpak, server binaries, a container image), release assets, update files and its catalogue entry. The contract is [docs/REGISTRY.md](docs/REGISTRY.md).
 
@@ -24,13 +24,15 @@ Each app is described by one registry file, `apps/<app>.json`: how to read its v
 - **No secrets in the apps** formcompiler watches the app repositories itself, so no app holds a token for it
 - **Every hour, or now** `watch.yml` runs on a schedule (`17 * * * *`, UTC) and from the Run workflow button; with nothing new it makes one or two API calls per app
 - **Checked before anything builds** the branch or tag name, the commit is on main, the version is above the app's highest published one in its channel (a stable above the highest stable, a beta above everything), the version file at that commit agrees, and the app's own check workflows concluded `success` on that commit
-- **Drafts, never surprises** every stable release is a draft a person publishes; a published release is never overwritten, a rebuilt draft is refreshed in place, a newer version replaces an older draft, and one release run per app runs at a time
+- **Releases live with the app** every release is on the app's repository, tagged `vX.Y.Z` at the gated commit, with its installers, `SHA256SUMS.txt`, `form-app.json` and, for a Tauri-updater app, `latest.json`; the one credential that writes there belongs to the `release` environment and is held only by the `publish` job, which runs no app code: the files are assembled in a job without it
+- **Drafts, never surprises** every stable release of a `release: draft` app is a draft a maintainer publishes on the app's repository; a published release is never overwritten, a rebuilt draft is refreshed in place, a newer version replaces an older draft, and one release run per app runs at a time
 - **Betas publish themselves** a prerelease version is published as a GitHub prerelease once its builds pass, and lands in the catalogue's beta channel
 - **Public downloads** the files, the update feed and the signed catalogue are copied to the download store at https://dl.formai.studio by a private companion pipeline, and the catalogue points there, with the same sizes and SHA-256
-- **Yank, never delete** a version listed in `yanked.json` is left out of the catalogue; its files stay in place
+- **Yank, never delete** a version listed in `yanked.json` is left out of the catalogue; the release and its files stay on the app's repository
 - **Signing in one place** the Apple Developer ID, notarization and Windows signing through Azure Artifact Signing are formcompiler secrets and variables; until they are set, macOS builds are signed ad hoc and Windows builds are unsigned
 - **One catalogue for the family** `releases.json` on main, mirrored to the `catalog` release as `apps.json` and, with the catalogue key, `apps.json.sig`, in FormPortal's `apps.schema.json` shape
 - **Skills and MCP in every release** each release carries `form-app.json` (what the app offers agents) and `<app>-skills-v<version>.zip` (its `.claude/skills`, byte-reproducible), and the catalogue carries both with their digests, so formskills and formMCP read released skills with no step in any app
+- **Provenance** the publish job attests `SHA256SUMS.txt` and `form-app.json` with `actions/attest-build-provenance` before the draft is made; `form-app.json` names the app, version, repository, tag and commit, and the sums list every other file, so the publishing pipeline can prove a release on an app repository came from this workflow and is the release it claims to be (`gh attestation verify <file> --repo nodemode-dev/formcompiler --signer-workflow nodemode-dev/formcompiler/.github/workflows/release.yml` on both, app, version and repository read from the manifest, then every file checked against the sums)
 - **Pinned actions** every third-party action is pinned to a full commit SHA; actionlint is checksum-verified in the self-check
 
 ## How a release flows
@@ -50,13 +52,18 @@ app repo                                  formcompiler
                                               desktop: every platform (desktop-release.yml)
                                               extras: phone apps, tarballs, Flatpak, servers
                                               image: the container image, when listed
-                                              draft <app>-v1.96.5 with SHA256SUMS.txt
-                                              delete older drafts of the same app
+                                              release files: SHA256SUMS.txt, form-app.json, latest.json,
+                                                the notes (no credential; the app's own scripts run here)
+                                              publish job (release environment, formcompiler's checkout only):
+                                                create the tag v1.96.5 at that commit (or move formcompiler's own)
+                                                attest SHA256SUMS.txt and form-app.json (provenance)
+                                                draft v1.96.5 on the app's repository, at that commit
+                                                delete the app's older drafts there
                                               a beta (1.97.0-beta.1): publish it as a prerelease
-                                                and tell the publishing pipeline
+                                                and tell the publishing pipeline (app, tag, repository)
                                             the publishing pipeline (private; a person publishes,
                                                       a beta, a yank, or its hourly check)
-                                              build the catalogue from this repository's releases
+                                              build the catalogue from every app repository's releases
                                               copy every listed release to the download store,
                                                 checked against SHA256SUMS.txt
                                               <app>-updates: latest.json and update files (stable only)
@@ -93,7 +100,7 @@ or, for an app whose registry entry sets `tag_trigger`, a tag on a commit alread
 git tag -a v1.96.5 -m "formvis 1.96.5" && git push origin v1.96.5
 ```
 
-The next watch run (within the hour, or **Actions, watch, Run workflow** here) starts the build. Review the draft on this repository's release page, then publish it.
+The next watch run (within the hour, or **Actions, watch, Run workflow** here) starts the build. Review the draft on the app's own Releases page, then publish it: that is the approval. The draft already carries the tag `vX.Y.Z` at the gated commit, which formcompiler creates right before the draft (an app with `tag_trigger` already has it), moves when the same version is rebuilt from a newer commit, and deletes with a superseded draft; a `vX.Y.Z` tag formcompiler did not make, pointing elsewhere, refuses the release, and the tag is read again right before a beta is published. A release asset is at most 2 GB, GitHub's limit; a file above it fails the draft.
 
 If a release run fails because of formcompiler or the runner rather than the app, open the run in Actions and use **Re-run failed jobs**, never **Re-run all jobs**: the platforms that already built keep their files, and only the failed ones build again. The watch never restarts a failed run by itself.
 
@@ -101,7 +108,7 @@ A second push to the same branch rebuilds and refreshes the draft. A version tha
 
 ### Yank a release
 
-A version is yanked by adding it to `yanked.json` (app, version, a one-line reason, the date) through a pull request; the private publishing pipeline opens it. Once merged, the catalogue is rebuilt without it, signed and published. The release and its files stay where they are, and the version still counts as published, so the fix ships as a higher version. The update feed is not changed: an app's updater still offers the yanked version until the higher one is published.
+A version is yanked by adding it to `yanked.json` (app, version, a one-line reason, the date) through a pull request; the private publishing pipeline opens it. Once merged, the catalogue is rebuilt without it, signed and published. The release and its files stay on the app's repository, nothing deletes a release, and the version still counts as published, so the fix ships as a higher version. The update feed is not changed: an app's updater still offers the yanked version until the higher one is published.
 
 ### Add an app
 
@@ -118,8 +125,11 @@ python3 scripts/registry.py config --app <app>
 python3 scripts/registry.py check                          # validate every registry file
 python3 scripts/watch.py --dry-run                         # what the watch would start (needs GH_TOKEN)
 FORMCOMPILER_PUBLIC_BASE=https://dl.formai.studio python3 scripts/catalog.py build --out releases.json   # with store URLs
-python3 scripts/plan.py --tag-prefix formvis-v --platforms macos-arm64,linux-x64   # from an app's root
-python3 scripts/catalog.py build --out releases.json       # the catalogue from the published releases
+python3 scripts/plan.py --platforms macos-arm64,linux-x64  # from an app's root: version, tag vX.Y.Z, matrix
+python3 scripts/catalog.py build --out releases.json       # the catalogue from every app repository's published releases
+python3 scripts/catalog.py build --out releases.json --sums-dir verified   # sums from verified/<app>/<version>/SHA256SUMS.txt, never downloaded; a missing file fails
+python3 scripts/feed.py resolve --app formvis --tag v1.97.2  # the app, repository, title and channel of a release
+python3 scripts/versions.py older-drafts --app formvis --version 1.97.2   # the app repository's drafts below a version
 python3 scripts/catalog.py keygen                          # a catalogue key pair
 python3 scripts/agents.py build --app formvis --app-dir ../formvis --dist out --version 1.97.2   # form-app.json and the skills archive
 python3 scripts/agents.py check --app formvis --dist out    # validate them
@@ -127,22 +137,25 @@ python3 scripts/agents.py check --app formvis --dist out    # validate them
 
 ## Configuration
 
-Secrets and variables live in this repository at repository level. All are optional; without them builds are unsigned and published releases wait for the publishing pipeline's hourly check. Publishing to the download store and signing the catalogue happen in a private companion pipeline, which holds its own credentials; nothing about it is configured here.
+Secrets and variables live in this repository at repository level, except the one that writes releases, which lives in the `release` environment (see [docs/ACCOUNTS.md](docs/ACCOUNTS.md)): an environment secret is not passed on by `secrets: inherit`, so the build jobs, which run the app's own scripts, never see it. Everything else is optional; without it builds are unsigned and published releases wait for the publishing pipeline's hourly check. Publishing to the download store and signing the catalogue happen in a private companion pipeline, which holds its own credentials; nothing about it is configured here.
 
 | Secret | Purpose |
 | --- | --- |
-| `FORMCOMPILER_APP_TOKEN` | Read access to the app repositories while they are private (contents and actions, read only) |
+| `FORMCOMPILER_APP_TOKEN` | Read access to the app repositories while they are private (contents and actions, read only): checkouts, branches, tags, checks and the published releases. It lists no draft (GitHub shows drafts only to write access), so the watch and the gate do not see a waiting draft: the watch skips a commit whose release run already succeeded instead, and "superseded by a newer draft" is only applied in the `publish` job, which deletes the app's older drafts |
+| `FORMCOMPILER_APP_ID`, `FORMCOMPILER_APP_PRIVATE_KEY` | In the `release` environment: a GitHub App installed on the nodemode-dev app repositories with Contents read and write. The `publish` job mints a token for the one repository it releases on (`actions/create-github-app-token`), creates or refreshes the draft, deletes older drafts and publishes a beta or a `release: publish` app. The App must be on the bypass list of the organisation ruleset that restricts `v*` tags |
+| `FORMCOMPILER_WRITE_TOKEN` | In the `release` environment: the fallback when the App is not set, a fine-grained token with Contents read and write on the app repositories; its user must be on the same bypass list. With neither set the `publish` job fails and names docs/ACCOUNTS.md |
 | `APPLE_CERTIFICATE`, `APPLE_CERTIFICATE_PASSWORD`, `APPLE_SIGNING_IDENTITY` | Developer ID signing of the macOS apps: the certificate is imported into a temporary build keychain before the build, so app scripts can sign their own engines w/ `APPLE_SIGNING_IDENTITY`, and every disk image is signed and notarized after the build |
 | `APPLE_ID`, `APPLE_PASSWORD`, `APPLE_TEAM_ID` | Notarization of the macOS apps and disk images |
 | `AZURE_CLIENT_ID`, `AZURE_CLIENT_SECRET`, `AZURE_TENANT_ID` | The sign-in formcompiler's Windows builds use for Azure Artifact Signing (role Artifact Signing Certificate Profile Signer on the signing account) |
 | `WINDOWS_CERTIFICATE`, `WINDOWS_CERTIFICATE_PASSWORD` | A Windows code-signing certificate as a base64 .pfx; only certificates issued before June 2023 can be a .pfx, and Artifact Signing replaces it when its variables are set |
 | `TAURI_SIGNING_PRIVATE_KEY`, `TAURI_SIGNING_PRIVATE_KEY_PASSWORD` | Signed updater bundles and `latest.json` |
-| `FORMPIPE_DISPATCH_TOKEN` | Tells the publishing pipeline (`repository_dispatch` `formcompiler-published`) when release.yml publishes a beta or a publish-mode app; without it the pipeline's hourly check picks the release up |
+| `FORMPIPE_DISPATCH_TOKEN` | Tells the publishing pipeline (`repository_dispatch` `formcompiler-published`, payload `app`, `tag` and `repository`) when release.yml publishes a beta or a publish-mode app; without it the pipeline's hourly check picks the release up |
 
 | Variable | Purpose |
 | --- | --- |
 | `TAURI_UPDATER_PUBKEY` | The updater public key, written into each app's build when the private key is set |
 | `FORMCOMPILER_PUBLIC_BASE` | Where the download store is served, `https://dl.formai.studio`; the desktop builds write each app's updater endpoint from it |
+| `FORMCOMPILER_ATTEST` | Unset (the default) attests `SHA256SUMS.txt` in the publish job. `off` skips the attestation, only while this repository is private, since GitHub refuses attestations on a private repository without Enterprise; remove the variable once formcompiler is public, or the publishing pipeline cannot verify any release |
 | `MSIX_IDENTITY_NAME`, `MSIX_PUBLISHER`, `MSIX_PUBLISHER_DISPLAY_NAME` | formvis's Microsoft Store package |
 | `ARTIFACT_SIGNING_ENDPOINT`, `ARTIFACT_SIGNING_ACCOUNT`, `ARTIFACT_SIGNING_PROFILE` | The Azure Artifact Signing account's regional endpoint, account name and certificate profile; with them and the three `AZURE_` secrets set, every app whose registry says `"windows": "certificate"` is signed on Windows |
 
@@ -151,7 +164,7 @@ Secrets and variables live in this repository at repository level. All are optio
 ```
 .github/workflows/
 ├── watch.yml             finds ready compile branches and tags and starts release.yml
-├── release.yml           gate, desktop, extras, image, draft release
+├── release.yml           gate, desktop, extras, image, the release files, the draft on the app's repository
 ├── desktop-release.yml   the per-platform build (called by release.yml)
 └── self-check.yml        actionlint, the registry, the scripts, the text rules
 apps/                     one registry file per app
@@ -160,7 +173,7 @@ scripts/
 ├── github_api.py         the GitHub REST calls (standard library)
 ├── readiness.py          ready, wait, skip or refuse for one branch
 ├── watch.py              the watch over every app
-├── gate.py               the same rules for one release run
+├── gate.py               the same rules for one release run, against the app repository's releases
 ├── plan.py               version, tag, platform matrix
 ├── run_build.py          the app's build contract or its own commands, and post-build
 ├── tauri_config.py       the --config JSON: updater artifacts, keys, signing
@@ -168,14 +181,15 @@ scripts/
 ├── agents.py             form-app.json v2 and the skills archive of a release
 ├── with_portal.py        app-plus-FormPortal downloads (registry with_portal)
 ├── release_assets.py     SHA256SUMS.txt and latest.json
+├── release_credential.sh which credential the publish job writes with
 ├── notes.py              release notes from the app's CHANGELOG
-├── feed.py               which app a tag belongs to, its update files, store URLs in latest.json
-├── versions.py           semver ordering, channels, published and draft versions
+├── feed.py               an app's release by its tag, its update files, store URLs in latest.json
+├── versions.py           semver ordering, channels, vX.Y.Z tags, an app repository's published and draft versions
 ├── public_urls.py        download store URLs
 ├── yank.py               adds a version to yanked.json
 └── catalog.py            FormPortal's catalogue, its signature and key pair
 docs/REGISTRY.md          the registry contract
-docs/ACCOUNTS.md          the family's GitHub app for FormPortal's optional sign-in
+docs/ACCOUNTS.md          the family's GitHub app for FormPortal's sign-in, and the credential that writes the app releases
 SECURITY.md               what formcompiler guards, against whom, and how to report a vulnerability
 .github/CODEOWNERS        the paths the owner reviews
 .github/dependabot.yml    grouped weekly updates, each release at least 7 days old
@@ -184,6 +198,8 @@ yanked.json               versions left out of the catalogue
 ```
 
 ## Status
+
+v0.9.0: every app release is created on the app's own repository, tagged `vX.Y.Z` at the gated commit, by a credential from the `release` environment; the scripts read each app repository's releases, formpipe is told the app, the tag and the repository, and formcompiler keeps no app releases. The releases made here before v0.9.0 (`<app>-vX.Y.Z`) are not read any more: the owner recreates the ones that should stay in the catalogue on their app repositories, or deletes them. Not yet run in Actions.
 
 v0.8.0: publishing to the download store, the catalogue signature, the update feeds and yanks move to a private companion pipeline; release.yml tells it about each release it publishes. This repository builds, signs and drafts releases, and keeps the registry, the scripts, `releases.json` and `yanked.json`.
 

@@ -117,6 +117,8 @@ def build(args):
         "app": entry["app"],
         "name": entry["catalog"]["name"],
         "version": args.version,
+        "repository": entry["repository"],
+        "tag": f"v{args.version}",
     }
     if args.commit:
         manifest["commit"] = args.commit
@@ -166,6 +168,10 @@ def check(args):
         problems.append(f"app is {manifest.get('app')!r}, not {args.app!r}")
     if "commit" in manifest and not re.fullmatch(r"[0-9a-f]{7,40}", str(manifest["commit"])):
         problems.append("commit must be a hex commit")
+    if not re.fullmatch(r"nodemode-dev/[A-Za-z0-9._-]+", str(manifest.get("repository", ""))):
+        problems.append("repository must be the app's nodemode-dev repository")
+    if manifest.get("tag") != f"v{manifest.get('version', '')}":
+        problems.append("tag must be v<version>")
     agents = manifest.get("agents")
     if not isinstance(agents, dict) or not isinstance(agents.get("mcp"), dict) or not isinstance(agents["mcp"].get("available"), bool):
         problems.append("agents.mcp.available must be a boolean")
