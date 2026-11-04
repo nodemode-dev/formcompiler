@@ -28,6 +28,9 @@ def point_at_store(entry, version, args):
     except ValueError as error:
         sys.exit(f"::error::{error}")
     path = Path(args.file)
+    if args.asset_origin == "github":
+        print(f"{path.name}: update URLs stay on {entry['repository']}'s release (asset origin github)")
+        return
     feed = json.loads(path.read_text(encoding="utf-8"))
     moved = public_urls.rewrite_feed(feed, base, entry["app"], version, versions.tag_of(version))
     if moved == feed:
@@ -53,6 +56,7 @@ def main():
     point.add_argument("--tag", required=True)
     point.add_argument("--file", required=True, help="the latest.json copied to the update feed")
     point.add_argument("--base", default="")
+    point.add_argument("--asset-origin", default="store", choices=("github", "store"), help="github leaves the release's download URLs in latest.json")
     args = parser.parse_args()
 
     entry, version = resolve(args.app, args.tag)

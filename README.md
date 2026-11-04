@@ -28,6 +28,7 @@ Each app is described by one registry file, `apps/<app>.json`: how to read its v
 - **Drafts, never surprises** every stable release of a `release: draft` app is a draft a maintainer publishes on the app's repository; a published release is never overwritten, a rebuilt draft is refreshed in place, a newer version replaces an older draft, and one release run per app runs at a time
 - **Betas publish themselves** a prerelease version is published as a GitHub prerelease once its builds pass, and lands in the catalogue's beta channel
 - **Public downloads** the files, the update feed and the signed catalogue are copied to the download store at https://dl.formai.studio by a private companion pipeline, and the catalogue points there, with the same sizes and SHA-256
+- **Binaries from GitHub once public** `catalog.py build --asset-origin github` keeps the release's own download URLs for every app whose repository is public (GitHub's CDN, free) and sends only a private repository's files through the store; each catalogue release says `origin: github` or `store`, and `feed.py public --asset-origin github` leaves the updater's URLs on the release while the feed itself still lives at `<base>/<app>/updates/latest.json`
 - **Yank, never delete** a version listed in `yanked.json` is left out of the catalogue; the release and its files stay on the app's repository
 - **Signing in one place** the Apple Developer ID, notarization and Windows signing through Azure Artifact Signing are formcompiler secrets and variables; until they are set, macOS builds are signed ad hoc and Windows builds are unsigned
 - **One catalogue for the family** `releases.json` on main, mirrored to the `catalog` release as `apps.json` and, with the catalogue key, `apps.json.sig`, in FormPortal's `apps.schema.json` shape
@@ -79,7 +80,7 @@ The download store is laid out as:
 | `<app>/updates/<file>` | latest.json and the registry's `updater.files` (stable releases only) | `public, max-age=60` |
 | `catalog/apps.json`, `catalog/apps.json.sig` | the signed catalogue | `public, max-age=60` |
 
-The catalogue's artifact and skills URLs are `<base>/<app>/<version>/<file>` under `FORMCOMPILER_PUBLIC_BASE`, and the update feed's latest.json points at the same versioned paths. Without a base, everything stays on GitHub.
+The catalogue's artifact and skills URLs are `<base>/<app>/<version>/<file>` under `FORMCOMPILER_PUBLIC_BASE`, and the update feed's latest.json points at the same versioned paths. Without a base, everything stays on GitHub. With `--asset-origin github`, a public repository's files are served from its GitHub release instead (`https://github.com/<repository>/releases/download/v<version>/<file>`, the same name as the store path `<app>/<version>/<file>`, which `public_urls.github_asset_url` maps back), and only a private repository's files go through the store.
 
 Channels follow the version: `X.Y.Z` is stable, anything with a prerelease part (`-beta.N`, `-rc.N`) is beta. A beta is published by formcompiler and never touches `<app>-updates`; a stable release waits as a draft for a person to publish it, and a beta does not replace a stable draft.
 
@@ -128,6 +129,8 @@ FORMCOMPILER_PUBLIC_BASE=https://dl.formai.studio python3 scripts/catalog.py bui
 python3 scripts/plan.py --platforms macos-arm64,linux-x64  # from an app's root: version, tag vX.Y.Z, matrix
 python3 scripts/catalog.py build --out releases.json       # the catalogue from every app repository's published releases
 python3 scripts/catalog.py build --out releases.json --sums-dir verified   # sums from verified/<app>/<version>/SHA256SUMS.txt, never downloaded; a missing file fails
+FORMCOMPILER_PUBLIC_BASE=https://dl.formai.studio python3 scripts/catalog.py build --out releases.json --asset-origin github   # public repositories keep GitHub's URLs, private ones use the store
+python3 scripts/feed.py public --app formvis --tag v1.97.2 --file latest.json --base https://dl.formai.studio --asset-origin github   # leaves the updater's URLs on the release
 python3 scripts/feed.py resolve --app formvis --tag v1.97.2  # the app, repository, title and channel of a release
 python3 scripts/versions.py older-drafts --app formvis --version 1.97.2   # the app repository's drafts below a version
 python3 scripts/catalog.py keygen                          # a catalogue key pair

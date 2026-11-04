@@ -131,6 +131,11 @@ def checks_state(repo, sha, workflows):
     return states
 
 
+def repository_public(repo: str) -> bool:
+    data = get(f"/repos/{repo}", app_side=True)
+    return not data.get("private", True)
+
+
 def releases(repo: str, token_env: str = "") -> list:
     return paged(f"/repos/{repo}/releases", app_side=True, token_env=token_env)
 
