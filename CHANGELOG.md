@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.9.2 · 2026-11-04
+
+- The README follows the family template, with a terminal screenshot of the registry check and the catalogue listing in `docs/images/`, and describes v0.9.0's releases on each app's own repository. Nothing in the builds changes
+
 ## v0.9.1 · 2026-11-04
 
 - The unified v3 app icon replaces the old formcompiler icon in `assets/`, with a 256 px copy in `assets/app-icon/`
