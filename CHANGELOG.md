@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.9.5 · 2026-11-05
+
+- The README's status note no longer counts the apps in the catalogue, the version badge reads `v0.9.5` like the app repositories', and the test count is 364 in 15 files. Nothing in the builds changes
+
 ## v0.9.4 · 2026-11-04
 
 - FormLit, FormPDF and FormVis bundle their Linux rpm without compression (`build.tauri_config`): with their large PyInstaller engines, Tauri's rpm step ran single-threaded past the Build step's 40 minutes (FormPDF and FormLit timed out on a 16-vCPU VM; FormVis took 25 of its 30 minutes there). Without compression the whole Linux build took 6.4 and 8.5 minutes

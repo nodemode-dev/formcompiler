@@ -11,7 +11,7 @@
 </p>
 
 <p align="center">
-  <img alt="version 0.9.4" src="https://img.shields.io/badge/version-0.9.4-eef0f4?style=flat-square">
+  <img alt="version v0.9.5" src="https://img.shields.io/badge/version-v0.9.5-eef0f4?style=flat-square">
   <img alt="GitHub Actions" src="https://img.shields.io/badge/GitHub_Actions-watch_%C2%B7_release-2088FF?style=flat-square&logo=githubactions&logoColor=white">
   <img alt="Python 3.11+" src="https://img.shields.io/badge/Python-3.11%2B-3776AB?style=flat-square&logo=python&logoColor=white">
   <img alt="Builds for macOS, Windows and Linux" src="https://img.shields.io/badge/builds-macOS_%C2%B7_Windows_%C2%B7_Linux-2f7bf5?style=flat-square">
@@ -102,7 +102,7 @@
 - **Flow:** `watch.yml` runs hourly (`17 * * * *` UTC) or on demand, `release.yml` gates and builds, and a draft `vX.Y.Z` opens on the app's own repository.
 - **Channels:** `X.Y.Z` is stable; anything with `-beta.N` or `-rc.N` is beta and never touches `<app>-updates`.
 - **Publishing:** the download store, update feeds, catalogue signature and yanks run in a private companion pipeline.
-- **Tested:** 353 tests in 15 files (registry, versions, watch, triggers, tauri config, signing, app repository releases, GitHub binaries, workflow guards).
+- **Tested:** 364 tests in 15 files (registry, versions, watch, triggers, tauri config, signing, app repository releases, GitHub binaries, workflow guards).
 
 ## Where releases come from
 
@@ -142,7 +142,7 @@ If a release run fails for a runner reason, use **Re-run failed jobs** in Action
 Secrets (`FORMCOMPILER_APP_TOKEN`, `APPLE_*`, `AZURE_*`, `TAURI_SIGNING_PRIVATE_KEY`, `FORMPIPE_DISPATCH_TOKEN`) are all optional; without them macOS builds are signed ad hoc and Windows builds are unsigned.
 
 > [!IMPORTANT]
-> **Status:** in use. Only three apps are in the catalogue so far. See [`CHANGELOG.md`](CHANGELOG.md).
+> **Status:** in use. It builds the 13 launch apps; the catalogue lists each app once its release is published. See [`CHANGELOG.md`](CHANGELOG.md).
 
 **Contributing:** branch from `main`, keep changes to the registry and scripts here, and leave app code to the app repositories. Packaging and releases live in FormCompiler. See [`AGENTS.md`](AGENTS.md).
 
