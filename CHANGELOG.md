@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.9.8 · 2026-11-05
+
+- Windows signing of programs inside a release zip works. `sign_zip` rebuilt the zip in a temporary folder and moved it into place only after that folder was deleted, so every app whose release carries a zip with programs inside (FormVis's portable zip) failed with `FileNotFoundError ... rebuilt.zip` as soon as signing was on. The zip is now moved before the folder goes, with the original closed first so Windows lets it be replaced; `tests/test_sign_zip.py` covers it
+
 ## v0.9.7 · 2026-11-05
 
 - A `windows signing check` workflow, started by hand, signs one small program through Azure Artifact Signing with the same setup as the release builds and prints Azure's answer (signtool `/v /debug`). It needs no app, makes no release and does not need `ARTIFACT_SIGNING_ACCOUNT` set (the account is an input), so it can run while Windows releases stay unsigned. It runs in the `release` environment, so it waits for a reviewer before the Azure secrets open
