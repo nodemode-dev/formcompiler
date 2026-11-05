@@ -328,6 +328,8 @@ jobs:
   publish:
     name: draft release
     needs: [gate, assemble]
+    if: >-
+      !cancelled() && needs.gate.result == 'success' && needs.assemble.result == 'success'
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     environment: release

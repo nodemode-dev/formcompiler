@@ -2,6 +2,7 @@
 
 ## v0.9.6 · 2026-11-05
 
+- The draft release is made for every app again. An app with no extras and no container image (most of them) had its `draft release` job skipped after every build passed, because GitHub skips a job whenever any earlier job in its chain was skipped; the job now runs when the gate and the release files succeed, as the release files job already did. Only form.md, which has both, reached a draft on 2026-11-05
 - Windows signing prints Azure's own answer when it fails. Signing through Azure Artifact Signing failed on every app with only "An unexpected internal error" or "No signature found"; signtool now runs with `/v /debug`, so the build log shows why Azure refused (sign-in, permission, profile) and which file was signed. Nothing else in the builds changes
 
 ## v0.9.5 · 2026-11-05
