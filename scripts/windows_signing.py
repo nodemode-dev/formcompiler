@@ -180,7 +180,8 @@ def sign_zip(args_list, signtool, path):
             with zipfile.ZipFile(rebuilt, "w") as new:
                 for info in infos:
                     new.writestr(info, replaced.get(info.filename, archive.read(info)))
-    shutil.move(str(rebuilt), path)
+            archive.close()
+            shutil.move(str(rebuilt), path)
     print(f"signed {len(unsigned)} file(s) inside {path.name}")
     return True
 
