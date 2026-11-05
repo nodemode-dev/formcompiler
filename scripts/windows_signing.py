@@ -77,7 +77,7 @@ def fetch(name, spec, tools):
 
 def sign_args(tools):
     return [
-        str(tools / "signtool" / "signtool.exe"), "sign", "/fd", "SHA256", "/tr", TIMESTAMP, "/td", "SHA256",
+        str(tools / "signtool" / "signtool.exe"), "sign", "/v", "/debug", "/fd", "SHA256", "/tr", TIMESTAMP, "/td", "SHA256",
         "/dlib", str(tools / "dlib" / "Azure.CodeSigning.Dlib.dll"), "/dmdf", str(tools / "metadata.json"),
     ]
 
