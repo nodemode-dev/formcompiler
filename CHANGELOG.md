@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.9.7 · 2026-11-05
+
+- A `windows signing check` workflow, started by hand, signs one small program through Azure Artifact Signing with the same setup as the release builds and prints Azure's answer (signtool `/v /debug`). It needs no app, makes no release and does not need `ARTIFACT_SIGNING_ACCOUNT` set (the account is an input), so it can run while Windows releases stay unsigned. It runs in the `release` environment, so it waits for a reviewer before the Azure secrets open
+
 ## v0.9.6 · 2026-11-05
 
 - The draft release is made for every app again. An app with no extras and no container image (most of them) had its `draft release` job skipped after every build passed, because GitHub skips a job whenever any earlier job in its chain was skipped; the job now runs when the gate and the release files succeed, as the release files job already did. Only form.md, which has both, reached a draft on 2026-11-05

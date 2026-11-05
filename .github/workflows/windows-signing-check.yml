@@ -1,0 +1,47 @@
+name: windows signing check
+run-name: windows signing check (${{ inputs.account }})
+
+on:
+  workflow_dispatch:
+    inputs:
+      account:
+        description: "Artifact Signing account to sign with (the release builds read it from ARTIFACT_SIGNING_ACCOUNT)"
+        type: string
+        default: formai63ccfd5a
+
+permissions:
+  contents: read
+
+jobs:
+  sign:
+    name: sign a small program
+    if: github.repository == 'nodemode-dev/formcompiler'
+    runs-on: windows-2025
+    environment: release
+    timeout-minutes: 20
+    env:
+      ARTIFACT_SIGNING_ENDPOINT: ${{ vars.ARTIFACT_SIGNING_ENDPOINT }}
+      ARTIFACT_SIGNING_ACCOUNT: ${{ inputs.account }}
+      ARTIFACT_SIGNING_PROFILE: ${{ vars.ARTIFACT_SIGNING_PROFILE }}
+      AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+      AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+      AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: "3.12"
+      - name: A small unsigned program
+        shell: bash
+        run: |
+          printf 'fn main() { println!("formcompiler signing check"); }\n' > "$RUNNER_TEMP/check.rs"
+          rustc -O -o "$RUNNER_TEMP/formcompiler-signing-check.exe" "$RUNNER_TEMP/check.rs"
+          mkdir -p "$RUNNER_TEMP/no-app"
+      - name: Signing tools, as the release builds set them up
+        shell: bash
+        run: python -I scripts/windows_signing.py prepare --app-dir "$RUNNER_TEMP/no-app" --tools "$RUNNER_TEMP/formcompiler-sign"
+      - name: Sign it (signtool /v /debug prints Azure's answer)
+        shell: bash
+        run: python -I scripts/windows_signing.py sign --artifacts="$RUNNER_TEMP/formcompiler-signing-check.exe"
