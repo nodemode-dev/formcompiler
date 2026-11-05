@@ -70,3 +70,20 @@ def test_releases_target_the_branch_not_the_commit_the_run_started_on():
     """The Actions token cannot hold `workflows`, so GitHub refuses a release at a commit whose workflows differ from main's."""
     for workflow in sorted(WORKFLOWS.glob("*.yml")):
         assert "--target \"$GITHUB_SHA\"" not in workflow.read_text(), f"{workflow.name}: target main, not the run's commit"
+
+
+OPTIONAL = {"extras", "image"}
+
+
+def downstream_of(name: str, all_jobs: dict[str, str], targets: set[str]) -> bool:
+    direct = [n for n in needs(all_jobs[name]) if n in all_jobs]
+    return any(n in targets or downstream_of(n, all_jobs, targets) for n in direct)
+
+
+def test_jobs_after_an_optional_job_still_run_when_it_is_skipped():
+    all_jobs = jobs((WORKFLOWS / "release.yml").read_text(encoding="utf-8"))
+    for name, job in all_jobs.items():
+        if name in OPTIONAL or not downstream_of(name, all_jobs, OPTIONAL):
+            continue
+        cond = job_if(job)
+        assert "always()" in cond or "!cancelled()" in cond, f"{name} is skipped whenever an app has no extras or image"
