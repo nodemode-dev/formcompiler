@@ -176,12 +176,12 @@ def sign_zip(args_list, signtool, path):
             if not unsigned:
                 return False
             replaced = dict(unsigned)
-            rebuilt = Path(work) / "rebuilt.zip"
+            rebuilt = path.with_name(path.name + ".rebuilt")
             with zipfile.ZipFile(rebuilt, "w") as new:
                 for info in infos:
                     new.writestr(info, replaced.get(info.filename, archive.read(info)))
             archive.close()
-            shutil.move(str(rebuilt), path)
+            os.replace(rebuilt, path)
     print(f"signed {len(unsigned)} file(s) inside {path.name}")
     return True
 
