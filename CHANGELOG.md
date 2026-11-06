@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.9.9 · 2026-11-05
+
+- Windows file names keep their platform for apps that build with MSVC. The Stage step read `PLATFORM`, but MSVC's environment sets `Platform`, Windows merges the two names, and Git Bash then sees an empty `$PLATFORM`: FormEncoder's installers came out as `formencoder-0.5.5--setup.exe` and `formencoder-0.5.5-.msi`. The step now uses `STAGE_PLATFORM`, and a test keeps `PLATFORM` out of it
+
 ## v0.9.8 · 2026-11-05
 
 - Windows signing of programs inside a release zip works. `sign_zip` rebuilt the zip in a temporary folder and moved it into place only after that folder was deleted, so every app whose release carries a zip with programs inside (FormVis's portable zip) failed with `FileNotFoundError ... rebuilt.zip` as soon as signing was on. The zip is now moved before the folder goes, with the original closed first so Windows lets it be replaced; `tests/test_sign_zip.py` covers it
