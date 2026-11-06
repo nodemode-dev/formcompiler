@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.11.0 · 2026-11-06
+
+- FormCut builds for Intel Macs too. Its registry entry adds `macos-x64`, built natively on GitHub's `macos-15-intel` runner like every other app's Intel build, so FormCut releases carry a `formcut-<version>-macos-x64.zip` beside the Apple Silicon one. FormCut's own `setup/build_release` accepts `x86_64-apple-darwin` from 2.12.2; a test checks FormCut lists both Mac platforms.
+
 ## v0.10.0 · 2026-11-06
 
 - FormCut's Apple Silicon build runs again. Its registry entry asked for the `macos-14` runner image, which GitHub no longer starts: the job was cancelled at once with no runner, twice for 2.11.9, so FormCut never reached a draft. It now uses the default Apple Silicon runner like every other app, and a test refuses any registry entry that pins a retired image (macos-12, macos-13, macos-14)

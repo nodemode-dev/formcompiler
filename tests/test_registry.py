@@ -127,3 +127,8 @@ def test_no_app_pins_a_retired_runner_image():
         for platform in json.loads(path.read_text(encoding="utf-8"))["platforms"]:
             runner = str(platform).rstrip("?").partition("=")[2]
             assert runner not in RETIRED_RUNNERS, f"{path.name}: {platform} asks for a runner GitHub no longer starts"
+
+
+def test_formcut_ships_for_apple_silicon_and_intel_macs():
+    platforms = json.loads((REPO / "apps" / "formcut.json").read_text(encoding="utf-8"))["platforms"]
+    assert {"macos-arm64", "macos-x64"} <= {str(p).rstrip("?").partition("=")[0] for p in platforms}
