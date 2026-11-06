@@ -6,7 +6,7 @@
   "release": "draft",
   "version": {"file": "backend/app/main.py", "pattern": "^APP_VERSION = \"([^\"]+)\""},
   "checks": ["checks.yml"],
-  "platforms": ["macos-arm64=macos-14", "linux-x64", "windows-x64"],
+  "platforms": ["macos-arm64", "linux-x64", "windows-x64"],
   "toolchain": {
     "node": "20",
     "python": "3.12",

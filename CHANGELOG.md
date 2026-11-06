@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.10.0 · 2026-11-06
+
+- FormCut's Apple Silicon build runs again. Its registry entry asked for the `macos-14` runner image, which GitHub no longer starts: the job was cancelled at once with no runner, twice for 2.11.9, so FormCut never reached a draft. It now uses the default Apple Silicon runner like every other app, and a test refuses any registry entry that pins a retired image (macos-12, macos-13, macos-14)
+
 ## v0.9.9 · 2026-11-05
 
 - Windows file names keep their platform for apps that build with MSVC. The Stage step read `PLATFORM`, but MSVC's environment sets `Platform`, Windows merges the two names, and Git Bash then sees an empty `$PLATFORM`: FormEncoder's installers came out as `formencoder-0.5.5--setup.exe` and `formencoder-0.5.5-.msi`. The step now uses `STAGE_PLATFORM`, and a test keeps `PLATFORM` out of it

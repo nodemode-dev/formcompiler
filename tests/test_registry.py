@@ -117,3 +117,13 @@ def test_formvis_stages_the_appimage_zsync_where_the_artifact_glob_finds_it(tmp_
     staged = [str(p.relative_to(tmp_path)) for p in tmp_path.rglob("*.zsync")]
     assert staged == ["src-tauri/target/release/bundle/appimage/FormVis_1.0.0_amd64.AppImage.zsync"]
     assert any(fnmatch.fnmatch(staged[0], pattern.replace("**/", "*/")) for pattern in entry["artifacts"])
+
+
+RETIRED_RUNNERS = {"macos-12", "macos-13", "macos-14"}
+
+
+def test_no_app_pins_a_retired_runner_image():
+    for path in sorted((REPO / "apps").glob("*.json")):
+        for platform in json.loads(path.read_text(encoding="utf-8"))["platforms"]:
+            runner = str(platform).rstrip("?").partition("=")[2]
+            assert runner not in RETIRED_RUNNERS, f"{path.name}: {platform} asks for a runner GitHub no longer starts"
