@@ -87,3 +87,10 @@ def test_jobs_after_an_optional_job_still_run_when_it_is_skipped():
             continue
         cond = job_if(job)
         assert "always()" in cond or "!cancelled()" in cond, f"{name} is skipped whenever an app has no extras or image"
+
+
+def test_no_windows_step_reads_a_variable_msvc_also_sets():
+    text = (WORKFLOWS / "desktop-release.yml").read_text(encoding="utf-8")
+    stage = text.split("      - name: Stage\n", 1)[1].split("\n      - ", 1)[0]
+    assert not re.search(r"(?m)^\s+PLATFORM:", stage), "MSVC's environment sets Platform, and Windows merges PLATFORM into it, so bash reads an empty $PLATFORM"
+    assert "$PLATFORM" not in stage
