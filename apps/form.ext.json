@@ -1,0 +1,88 @@
+{
+  "app": "form.ext",
+  "repository": "nodemode-dev/form.ext",
+  "title": "form.ext",
+  "enabled": true,
+  "release": "draft",
+  "version": {
+    "file": "src-tauri/tauri.conf.json",
+    "pattern": ""
+  },
+  "checks": [
+    "ci.yml"
+  ],
+  "platforms": [
+    "macos-arm64",
+    "macos-x64?",
+    "linux-x64",
+    "linux-arm64?",
+    "windows-x64"
+  ],
+  "toolchain": {
+    "node": "22",
+    "python": "3.12",
+    "rust": true,
+    "rust_targets": "",
+    "rust_cache": [
+      "src-tauri"
+    ],
+    "go": "",
+    "linux_packages": "libwebkit2gtk-4.1-dev libayatana-appindicator3-dev librsvg2-dev libxdo-dev libssl-dev patchelf file",
+    "windows_msvc": false
+  },
+  "build": {
+    "mode": "commands",
+    "cli": "formext",
+    "install": false,
+    "install_args": "",
+    "install_desktop": false,
+    "windows_shell": "cmd",
+    "macos": "FORMEXT_CARGO_TARGET=\"$PWD/src-tauri/target\" ./build_app --no-install",
+    "linux": "FORMEXT_CARGO_TARGET=\"$PWD/src-tauri/target\" FORMEXT_BUNDLES=deb,rpm,appimage ./build_app",
+    "windows": "set \"PATH=C:\\Program Files\\Git\\bin;%PATH%\"\ncall build_app.bat || (type build_app.log & exit /b 1)",
+    "tauri_config": ""
+  },
+  "setup": {
+    "macos": "",
+    "linux": "",
+    "windows": ""
+  },
+  "post_build": {
+    "macos": "",
+    "linux": "",
+    "windows": ""
+  },
+  "artifacts": [],
+  "extras": [],
+  "assets": "",
+  "notes": "",
+  "updater": {
+    "tauri": false,
+    "tag_json": false,
+    "files": []
+  },
+  "signing": {
+    "macos": "apple",
+    "windows": "certificate"
+  },
+  "agents": {
+    "skills": ".claude/skills",
+    "mcp": true
+  },
+  "catalog": {
+    "id": "formext",
+    "name": "form.ext",
+    "kind": "extensions",
+    "summary": "The extension studio: make, preview, check, package and publish extensions for every Form app.",
+    "identifier": "ai.nodemode.formext",
+    "licence": "GPL-3.0-only",
+    "state": "live",
+    "project_extensions": [],
+    "minimum_os": {
+      "macos": "macOS 13",
+      "windows": "",
+      "linux": ""
+    }
+  },
+  "notes_for_owner": "form.ext builds with its own build_app (macOS, Linux) and build_app.bat (Windows) in commands mode: it has no install-desktop command and its build_app takes no --config, so contract mode would stop at once. formcompiler's signing and settings reach it through src-tauri/tauri.<os>.conf.json, which Tauri merges by itself. FORMEXT_CARGO_TARGET points the Rust build at src-tauri/target (build_app's default is a cache folder outside the checkout, where the artifact globs would find nothing); --no-install keeps the macOS build from copying the app into /Applications on the runner; FORMEXT_BUNDLES adds rpm and AppImage to the Linux deb. build_app.bat freezes the engine with a bare bash, so Git Bash goes first on PATH (a bare bash can start the WSL launcher on the runner), and it writes its output only to build_app.log, so a failed Windows build prints that log. The engine is a PyInstaller one-file sidecar (binaries/formext-engine) signed by Tauri with src-tauri/entitlements.plist under the hardened runtime. macos-x64 and linux-arm64 are experimental until a first release shows the engine freezes there."
+}

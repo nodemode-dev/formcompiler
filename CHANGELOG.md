@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.12.0 · 2026-11-08
+
+- form.ext, the extension studio, is built here. `apps/form.ext.json` registers it with its own `build_app` and `build_app.bat` in commands mode, since it has no `install-desktop` and its `build_app` takes no `--config`; signing reaches it through `src-tauri/tauri.<os>.conf.json` as for every app. The Rust build is pointed at `src-tauri/target` (its default is a cache folder outside the checkout), the macOS build no longer copies itself into `/Applications` on the runner, Linux adds rpm and AppImage to the deb, and a failed Windows build prints `build_app.log`. Its catalogue entry is `formext`, GPL-3.0-only, macOS 13 or later. Intel Mac and Linux ARM builds are experimental for its first release.
+
 ## v0.11.0 · 2026-11-06
 
 - FormCut builds for Intel Macs too. Its registry entry adds `macos-x64`, built natively on GitHub's `macos-15-intel` runner like every other app's Intel build, so FormCut releases carry a `formcut-<version>-macos-x64.zip` beside the Apple Silicon one. FormCut's own `setup/build_release` accepts `x86_64-apple-darwin` from 2.12.2; a test checks FormCut lists both Mac platforms.
