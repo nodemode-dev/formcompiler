@@ -33,8 +33,9 @@ VERSION = {"file": (STR, True), "pattern": (STR, False)}
 TOOLCHAIN = {
     "node": (STR, True), "python": (STR, True), "rust": (BOOL, True), "rust_targets": (STR, False),
     "rust_cache": (LIST, False), "go": (STR, False), "linux_packages": (STR, False), "windows_msvc": (BOOL, False),
-    "pip_cache_macos": (BOOL, False),
+    "pip_cache_macos": (BOOL, False), "build_cache": (OBJ, False),
 }
+BUILD_CACHE = {"paths": (LIST, True), "key_files": (LIST, True)}
 BUILD = {
     "mode": (STR, True), "cli": (STR, False), "install": (BOOL, False), "install_args": (STR, False),
     "install_desktop": (BOOL, False), "windows_shell": (STR, True), "macos": (STR, False), "linux": (STR, False),
@@ -75,6 +76,20 @@ def fields(where, data, spec, problems):
             continue
         if not isinstance(data[key], TYPES[kind]):
             problems.append(f"{where}.{key} must be a {dict(str='string', bool='boolean', list='list', obj='object')[kind]}")
+
+
+def build_cache_problems(cache):
+    problems = []
+    fields("toolchain.build_cache", cache, BUILD_CACHE, problems)
+    if problems:
+        return problems
+    for key in ("paths", "key_files"):
+        if not cache[key]:
+            problems.append(f"toolchain.build_cache.{key} must not be empty")
+        for item in cache[key]:
+            if not isinstance(item, str) or not re.fullmatch(r"[A-Za-z0-9._-]+(/[A-Za-z0-9._-]+)*", item) or item == "." or ".." in item.split("/"):
+                problems.append(f"toolchain.build_cache.{key} entry {item!r} must be a plain path inside the app repository")
+    return problems
 
 
 def validate(entry, filename):
@@ -142,6 +157,8 @@ def validate(entry, filename):
         for os_name in wanted:
             if not build.get(os_name, "").strip():
                 problems.append(f"build.{os_name} is empty but a {os_name} platform is listed")
+    if "build_cache" in entry["toolchain"]:
+        problems.extend(build_cache_problems(entry["toolchain"]["build_cache"]))
     packages = entry["toolchain"].get("linux_packages", "")
     if re.search(r"[^a-z0-9.+: -]", packages):
         problems.append("toolchain.linux_packages may hold only package names")
@@ -262,6 +279,8 @@ def config(entry):
         "linux_packages": tool.get("linux_packages", "") or DEFAULT_LINUX_PACKAGES,
         "windows_msvc": bool(tool.get("windows_msvc", False)),
         "pip_cache_macos": bool(tool.get("pip_cache_macos", False)),
+        "build_cache_paths": "\n".join(tool.get("build_cache", {}).get("paths", [])),
+        "build_cache_key_files": "\n".join(tool.get("build_cache", {}).get("key_files", [])),
         "macos_signing": entry["signing"]["macos"],
         "windows_signing": entry["signing"]["windows"],
         "updater_tauri": entry["updater"]["tauri"],
