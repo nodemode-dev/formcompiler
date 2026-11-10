@@ -243,7 +243,7 @@ jobs:
     name: ${{ matrix.platform }}
     needs: plan
     runs-on: ${{ matrix.runner }}
-    timeout-minutes: 49
+    timeout-minutes: ${{ matrix.platform == 'macos-x64' && 79 || 49 }}
     continue-on-error: ${{ matrix.experimental }}
     strategy:
       fail-fast: false
@@ -392,7 +392,7 @@ jobs:
         with:
           arch: ${{ matrix.arch == 'aarch64' && 'arm64' || 'x64' }}
       - name: Build
-        timeout-minutes: 40
+        timeout-minutes: ${{ matrix.platform == 'macos-x64' && 70 || 40 }}
         env:
           APPLE_CERTIFICATE: ${{ inputs.macos-signing == 'apple' && env.FORMCOMPILER_KEYCHAIN == '' && secrets.APPLE_CERTIFICATE || '' }}
           APPLE_CERTIFICATE_PASSWORD: ${{ inputs.macos-signing == 'apple' && env.FORMCOMPILER_KEYCHAIN == '' && secrets.APPLE_CERTIFICATE_PASSWORD || '' }}
