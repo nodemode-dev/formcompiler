@@ -913,3 +913,10 @@ Manifests are deleted after reading so they are not released. `latest.json` foll
 - logged: v0.1.0 · 2026-10-18
 
 Tag push plus manual dispatch is what most form* apps' `desktop.yml` already use. The template pins the workflow and `formcompiler-ref` to the current version's tag (`v0.2.1`), bumped with every release; an app that wants fixes to arrive without edits can use `@main` for both, trading reproducible releases for automatic fixes. `concurrency` never cancels a running release, so two pushes of the same tag queue rather than race. `APP_NAME` is a placeholder the adopter replaces.
+
+### desktop-release.yml · Intel Mac builds get longer
+- refers-to: .github/workflows/desktop-release.yml :: build `timeout-minutes`, Build step `timeout-minutes` · tests/test_build_timeouts.py
+- kind: decision
+- logged: v0.12.1 · 2026-11-09
+
+FormCut 2.15.1's `macos-x64` build (GitHub's `macos-15-intel` runner, LGPL FFmpeg) stopped at the Build step's 40 minutes twice: first cold, then on Re-run failed jobs with its caches saved, so the cache-then-re-run design above did not get it through. Its arm64, Windows and Linux builds finished well inside the limit. Only `macos-x64` now has 70 minutes for the step and 79 for the job (an expression on `matrix.platform`, which comes from plan.py, never from outside input); every other platform keeps the owner's 40 and 49. The 9-minute window after the step, in which the caches save, is unchanged everywhere; tests/test_build_timeouts.py checks the window for every platform and the two pairs of numbers, and fails on the old workflow. For the owner: the 49 is his number; this raises it for one runner only.

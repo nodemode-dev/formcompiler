@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.12.1 · 2026-11-09
+
+- Intel Mac builds get 70 minutes for the Build step and 79 for the job; every other platform keeps 40 and 49. FormCut 2.15.1's `macos-x64` build hit the 40-minute step limit twice, the second time with its caches already saved, while its other platforms built well inside it. The 9 minutes between the step and the job, which let the caches save after a timed-out build, stay the same for every platform, and a test keeps them.
+
 ## v0.12.0 · 2026-11-08
 
 - form.ext, the extension studio, is built here. `apps/form.ext.json` registers it with its own `build_app` and `build_app.bat` in commands mode, since it has no `install-desktop` and its `build_app` takes no `--config`; signing reaches it through `src-tauri/tauri.<os>.conf.json` as for every app. The Rust build is pointed at `src-tauri/target` (its default is a cache folder outside the checkout), the macOS build no longer copies itself into `/Applications` on the runner, Linux adds rpm and AppImage to the deb, and a failed Windows build prints `build_app.log`. Its catalogue entry is `formext`, GPL-3.0-only, macOS 13 or later. Intel Mac and Linux ARM builds are experimental for its first release.
