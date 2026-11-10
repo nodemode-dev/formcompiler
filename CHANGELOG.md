@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.12.2 · 2026-11-09
+
+- A registry entry can cache folders its build makes and reuses: `toolchain.build_cache` names the folders and the files whose contents key them. FormCut and Format cache their LGPL FFmpeg (`backend/.lgpl-ffmpeg`) on every platform, keyed on the app, the platform, the runner and a hash of the scripts that build it, so a new FFmpeg version or configure line builds again. Their scripts skip the FFmpeg build when the folder is there; FormCut 2.15.1's Intel Mac build spent 16 of its minutes on it. The cache restores only on its exact key, saves after a failed or timed-out build too, and no other app has one. FormCut also keeps its macOS pip wheels, which takes effect once its OpenCV and PyAV installs stop passing `--no-cache-dir`; the pip key of an app with a build cache includes the build cache's hash, so a PyAV built against an older FFmpeg is never restored.
+
 ## v0.12.1 · 2026-11-09
 
 - Intel Mac builds get 70 minutes for the Build step and 79 for the job; every other platform keeps 40 and 49. FormCut 2.15.1's `macos-x64` build hit the 40-minute step limit twice, the second time with its caches already saved, while its other platforms built well inside it. The 9 minutes between the step and the job, which let the caches save after a timed-out build, stay the same for every platform, and a test keeps them.

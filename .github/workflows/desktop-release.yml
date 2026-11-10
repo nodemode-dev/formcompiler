@@ -151,6 +151,14 @@ on:
         description: "Keep pip's locally built wheels between macOS builds (opencv built from source), keyed on the set-up, Python and the app's Python requirement files"
         type: boolean
         default: false
+      build-cache-paths:
+        description: "Folders in the app checkout that the build makes and reuses when present (LGPL FFmpeg), one per line; empty caches none"
+        type: string
+        default: ""
+      build-cache-key-files:
+        description: "Files in the app checkout whose contents key build-cache-paths, one per line; any change builds them again"
+        type: string
+        default: ""
       updater-tauri:
         description: "The app uses Tauri's updater plugin: with the updater key set, its updater settings and updater files are added"
         type: boolean
@@ -318,6 +326,22 @@ jobs:
         run: |
           case "$RUNNER_KIND" in macos) script="$SETUP_MACOS" ;; linux) script="$SETUP_LINUX" ;; *) script="$SETUP_WINDOWS" ;; esac
           if [ -n "$script" ]; then bash -eo pipefail -c "$script"; else echo "no set-up for $RUNNER_KIND"; fi
+      - name: build cache key
+        id: buildkey
+        if: inputs.build-cache-paths != ''
+        env:
+          APP: ${{ inputs.app-name }}
+          PLATFORM: ${{ matrix.platform }}
+          RUNNER_LABEL: ${{ matrix.runner }}
+          KEY_FILES: ${{ inputs.build-cache-key-files }}
+        run: python -I .formcompiler/scripts/build_cache.py --app="$APP" --platform="$PLATFORM" --runner="$RUNNER_LABEL" --key-files="$KEY_FILES"
+      - name: build cache
+        id: buildcache
+        if: inputs.build-cache-paths != ''
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ${{ inputs.build-cache-paths }}
+          key: ${{ steps.buildkey.outputs.key }}
       - name: pip wheel cache key
         id: pipkey
         if: runner.os == 'macOS' && inputs.pip-cache-macos
@@ -326,10 +350,11 @@ jobs:
           APP: ${{ inputs.app-name }}
           PLATFORM: ${{ matrix.platform }}
           PYTHON_VERSION: ${{ inputs.python-version }}
+          BUILD_HASH: ${{ steps.buildkey.outputs.hash }}
         run: |
           echo "PIP_CACHE_DIR=$RUNNER_TEMP/formcompiler-pip" >> "$GITHUB_ENV"
           setup="$(printf '%s' "$SETUP_MACOS" | shasum -a 256 | cut -c1-16)"
-          echo "prefix=formcompiler-pip-$APP-$PLATFORM-py$PYTHON_VERSION-$setup-" >> "$GITHUB_OUTPUT"
+          echo "prefix=formcompiler-pip-$APP-$PLATFORM-py$PYTHON_VERSION-$setup${BUILD_HASH:+-$BUILD_HASH}-" >> "$GITHUB_OUTPUT"
       - name: pip wheel cache
         id: pipcache
         if: runner.os == 'macOS' && inputs.pip-cache-macos
@@ -436,6 +461,12 @@ jobs:
             --install="$INSTALL" --install-args="$INSTALL_ARGS" --install-desktop="$INSTALL_DESKTOP" \
             --windows-shell="$WINDOWS_SHELL" --command="$command" --extra-config="$FORMCOMPILER_EXTRA_CONFIG" \
             --adhoc-macos="$MACOS_ADHOC"
+      - name: Save the build cache
+        if: always() && inputs.build-cache-paths != '' && steps.buildkey.outputs.key != '' && steps.buildcache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ${{ inputs.build-cache-paths }}
+          key: ${{ steps.buildkey.outputs.key }}
       - name: Save the pip wheel cache
         if: always() && runner.os == 'macOS' && inputs.pip-cache-macos && steps.pipcache.outputs.cache-hit != 'true'
         uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0

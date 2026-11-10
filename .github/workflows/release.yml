@@ -105,6 +105,8 @@ jobs:
       rust-cache-workspaces: ${{ fromJSON(needs.gate.outputs.config).rust_cache }}
       windows-msvc: ${{ fromJSON(needs.gate.outputs.config).windows_msvc }}
       pip-cache-macos: ${{ fromJSON(needs.gate.outputs.config).pip_cache_macos }}
+      build-cache-paths: ${{ fromJSON(needs.gate.outputs.config).build_cache_paths }}
+      build-cache-key-files: ${{ fromJSON(needs.gate.outputs.config).build_cache_key_files }}
       updater-tauri: ${{ fromJSON(needs.gate.outputs.config).updater_tauri }}
       macos-signing: ${{ fromJSON(needs.gate.outputs.config).macos_signing }}
       windows-signing: ${{ fromJSON(needs.gate.outputs.config).windows_signing }}

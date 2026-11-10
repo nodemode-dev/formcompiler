@@ -15,7 +15,8 @@
     "rust_cache": ["src-tauri"],
     "go": "",
     "linux_packages": "libwebkit2gtk-4.1-dev libayatana-appindicator3-dev librsvg2-dev patchelf libxdo-dev nasm pkg-config gstreamer1.0-plugins-base gstreamer1.0-plugins-good",
-    "windows_msvc": true
+    "windows_msvc": true,
+    "build_cache": {"paths": ["backend/.lgpl-ffmpeg"], "key_files": ["setup/build_lgpl_av", "setup/build_lgpl_av.bat", "setup/build_lgpl_ffmpeg_msys2"]}
   },
   "build": {
     "mode": "commands",
