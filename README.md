@@ -11,7 +11,7 @@
 </p>
 
 <p align="center">
-  <img alt="version v0.12.0" src="https://img.shields.io/badge/version-v0.12.0-eef0f4?style=flat-square">
+  <img alt="version v0.13.0" src="https://img.shields.io/badge/version-v0.13.0-eef0f4?style=flat-square">
   <img alt="GitHub Actions" src="https://img.shields.io/badge/GitHub_Actions-watch_%C2%B7_release-2088FF?style=flat-square&logo=githubactions&logoColor=white">
   <img alt="Python 3.11+" src="https://img.shields.io/badge/Python-3.11%2B-3776AB?style=flat-square&logo=python&logoColor=white">
   <img alt="Builds for macOS, Windows and Linux" src="https://img.shields.io/badge/builds-macOS_%C2%B7_Windows_%C2%B7_Linux-2f7bf5?style=flat-square">
@@ -81,7 +81,7 @@
 <table>
   <tr>
     <td width="33%" valign="top">
-      <h4>26 registered apps</h4>
+      <h4>28 registered apps</h4>
       One <code>apps/&lt;app&gt;.json</code> each: version source · checks · platforms · toolchain · build commands · extra jobs · assets · update files · catalogue entry
     </td>
     <td width="33%" valign="top">

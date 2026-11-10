@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.13.0 · 2026-11-10
+
+- FormRec, the recorder for walkthroughs, podcasts, corporate messages and live feeds, is registered. `apps/formrec.json` follows FormCut's build: commands mode, `setup/build_release --target $FORMCOMPILER_TRIPLE` on every desktop runner, the release zips and the Windows NSIS installer from `release-dist/`, with the Node 22 server as the Tauri sidecar. Its version comes from `package.json` and its check is `ci.yml`. Its catalogue entry is `formrec`, Apache-2.0, in prelaunch, with an MCP server and no skills folder yet. The Intel Mac build is experimental for its first release, and the release summary lists what to confirm against FormRec's desktop build before its first compile branch.
+
 ## v0.12.0 · 2026-11-08
 
 - form.ext, the extension studio, is built here. `apps/form.ext.json` registers it with its own `build_app` and `build_app.bat` in commands mode, since it has no `install-desktop` and its `build_app` takes no `--config`; signing reaches it through `src-tauri/tauri.<os>.conf.json` as for every app. The Rust build is pointed at `src-tauri/target` (its default is a cache folder outside the checkout), the macOS build no longer copies itself into `/Applications` on the runner, Linux adds rpm and AppImage to the deb, and a failed Windows build prints `build_app.log`. Its catalogue entry is `formext`, GPL-3.0-only, macOS 13 or later. Intel Mac and Linux ARM builds are experimental for its first release.
