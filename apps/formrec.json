@@ -4,17 +4,17 @@
   "title": "FormRec",
   "enabled": true,
   "release": "draft",
-  "version": {"file": "package.json", "pattern": ""},
+  "version": {"file": "src-tauri/tauri.conf.json", "pattern": ""},
   "checks": ["ci.yml"],
   "platforms": ["macos-arm64", "macos-x64?", "linux-x64", "windows-x64"],
   "toolchain": {
     "node": "22",
-    "python": "3.12",
+    "python": "",
     "rust": true,
     "rust_targets": "",
     "rust_cache": ["src-tauri"],
     "go": "",
-    "linux_packages": "libwebkit2gtk-4.1-dev libgtk-3-dev libayatana-appindicator3-dev librsvg2-dev libxdo-dev patchelf file",
+    "linux_packages": "libwebkit2gtk-4.1-dev libgtk-3-dev libayatana-appindicator3-dev librsvg2-dev libxdo-dev patchelf file zip",
     "windows_msvc": true
   },
   "build": {
@@ -37,7 +37,7 @@
   "notes": "",
   "updater": {"tauri": false, "tag_json": false, "files": []},
   "signing": {"macos": "apple", "windows": "certificate"},
-  "agents": {"skills": "", "mcp": true},
+  "agents": {"skills": ".claude/skills", "mcp": true},
   "catalog": {
     "id": "formrec",
     "name": "FormRec",
@@ -49,5 +49,5 @@
     "project_extensions": [],
     "minimum_os": {"macos": "macOS 14", "windows": "Windows 10", "linux": "glibc 2.35"}
   },
-  "notes_for_owner": "FormRec is registered before its first desktop build: its src-tauri and setup/build_release are being written after FormCut's, so this entry mirrors apps/formcut.json's build shape and every field below that depends on them must be checked against FormRec's repository before the first compile_v branch. Version: package.json's version field, which must agree with src-tauri/tauri.conf.json. Build: setup/build_release --target $FORMCOMPILER_TRIPLE on every desktop runner (bash, Git Bash on Windows), taking aarch64-apple-darwin, x86_64-apple-darwin, x86_64-pc-windows-msvc and x86_64-unknown-linux-gnu, passing $FORMCOMPILER_CONFIG_ARG to tauri build, and writing release-dist/formrec-<version>-<platform>.zip on every platform plus release-dist/formrec-<version>-windows-x86_64-setup.exe (NSIS) on Windows; a different output path or name needs artifacts changed here. The Node 22 server is the sidecar (src-tauri binaries/formrec-engine-<triple> through externalBin), signed by Tauri with src-tauri/entitlements.plist under the hardened runtime on macOS; python 3.12 is on the runners only because FormCut's packaging step is Python, and can be emptied if build_release needs none. linux_packages are Tauri 2's prerequisites plus libgtk-3-dev; a sidecar that carries Playwright's Chromium needs its system libraries added. macos-x64 is experimental until a first release shows the sidecar builds on the Intel runner. The bundle identifier ai.nodemode.formrec and the minimum OS (macOS 14 as FormCut, Windows 10, glibc 2.35 for the AppImage on ubuntu-22.04) must match src-tauri/tauri.conf.json. Agents: FormRec has an MCP server (formrec mcp) and no .claude/skills folder yet; set agents.skills to .claude/skills once one with a SKILL.md is on main, or the skills archive stays out of the release. No updater, no extras, no assets script; release notes come from the CHANGELOG.md section that names the version."
+  "notes_for_owner": "Matches FormRec 0.3.0's desktop build. Version: src-tauri/tauri.conf.json; setup/stage_desktop refuses to build unless package.json, tauri.conf.json and src-tauri/Cargo.toml agree. Build: setup/build_release --target $FORMCOMPILER_TRIPLE on every desktop runner (bash, Git Bash on Windows), taking only aarch64-apple-darwin, x86_64-apple-darwin, x86_64-pc-windows-msvc and x86_64-unknown-linux-gnu and passing $FORMCOMPILER_CONFIG_ARG to tauri build. It runs setup/stage_desktop, which needs network to nodejs.org (Node 22.23.4, checked against setup/node-runtime.sha256) and the npm registry (production dependencies, no install scripts, no browsers). Outputs: release-dist/formrec-<version>-{macos-arm64,macos-x86_64,windows-x86_64,linux-x86_64}.zip and release-dist/formrec-<version>-windows-x86_64-setup.exe (NSIS); the Linux zip holds the AppImage. macOS: with APPLE_SIGNING_IDENTITY the hardened runtime is on, Tauri signs formrec-desktop and the formrec-node sidecar (the Node runtime, which needs allow-jit from src-tauri/entitlements.plist) and notarizes with APPLE_ID, APPLE_PASSWORD and APPLE_TEAM_ID; the script staples every 30 s up to 10 times and checks the unzipped app (Developer ID, team, runtime, allow-jit on formrec-node, staple, spctl, and that formrec-node runs the app). Without the identity it is ad hoc. Windows: formcompiler signs formrec-desktop.exe, formrec-node.exe and the installer through tauri.windows.conf.json, then anything still unsigned in the portable zip. No Python is needed; zip is in linux_packages for the Linux zip. The headless recorder's Chromium is not bundled: Help > Install the Recorder Browser downloads it on first use. macos-x64 is experimental until a first release shows it builds on the Intel runner. Agents: formrec mcp, and the formrec-harness and formrec-skillset skills in .claude/skills. No updater (FormPortal updates), no extras, no assets script; release notes come from the CHANGELOG.md section that names the version."
 }
