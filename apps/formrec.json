@@ -1,0 +1,53 @@
+{
+  "app": "formrec",
+  "repository": "nodemode-dev/formREC",
+  "title": "FormRec",
+  "enabled": true,
+  "release": "draft",
+  "version": {"file": "package.json", "pattern": ""},
+  "checks": ["ci.yml"],
+  "platforms": ["macos-arm64", "macos-x64?", "linux-x64", "windows-x64"],
+  "toolchain": {
+    "node": "22",
+    "python": "3.12",
+    "rust": true,
+    "rust_targets": "",
+    "rust_cache": ["src-tauri"],
+    "go": "",
+    "linux_packages": "libwebkit2gtk-4.1-dev libgtk-3-dev libayatana-appindicator3-dev librsvg2-dev libxdo-dev patchelf file",
+    "windows_msvc": true
+  },
+  "build": {
+    "mode": "commands",
+    "cli": "formrec",
+    "install": false,
+    "install_args": "",
+    "install_desktop": false,
+    "windows_shell": "bash",
+    "macos": "setup/build_release --target $FORMCOMPILER_TRIPLE",
+    "linux": "setup/build_release --target $FORMCOMPILER_TRIPLE",
+    "windows": "setup/build_release --target $FORMCOMPILER_TRIPLE",
+    "tauri_config": ""
+  },
+  "setup": {"macos": "", "linux": "", "windows": ""},
+  "post_build": {"macos": "", "linux": "", "windows": ""},
+  "artifacts": ["release-dist/*.zip", "release-dist/*-setup.exe"],
+  "extras": [],
+  "assets": "",
+  "notes": "",
+  "updater": {"tauri": false, "tag_json": false, "files": []},
+  "signing": {"macos": "apple", "windows": "certificate"},
+  "agents": {"skills": "", "mcp": true},
+  "catalog": {
+    "id": "formrec",
+    "name": "FormRec",
+    "kind": "recording",
+    "summary": "Recording for walkthroughs, podcasts, corporate messages and live feeds, by a person or by an agent.",
+    "identifier": "ai.nodemode.formrec",
+    "licence": "Apache-2.0",
+    "state": "prelaunch",
+    "project_extensions": [],
+    "minimum_os": {"macos": "macOS 14", "windows": "Windows 10", "linux": "glibc 2.35"}
+  },
+  "notes_for_owner": "FormRec is registered before its first desktop build: its src-tauri and setup/build_release are being written after FormCut's, so this entry mirrors apps/formcut.json's build shape and every field below that depends on them must be checked against FormRec's repository before the first compile_v branch. Version: package.json's version field, which must agree with src-tauri/tauri.conf.json. Build: setup/build_release --target $FORMCOMPILER_TRIPLE on every desktop runner (bash, Git Bash on Windows), taking aarch64-apple-darwin, x86_64-apple-darwin, x86_64-pc-windows-msvc and x86_64-unknown-linux-gnu, passing $FORMCOMPILER_CONFIG_ARG to tauri build, and writing release-dist/formrec-<version>-<platform>.zip on every platform plus release-dist/formrec-<version>-windows-x86_64-setup.exe (NSIS) on Windows; a different output path or name needs artifacts changed here. The Node 22 server is the sidecar (src-tauri binaries/formrec-engine-<triple> through externalBin), signed by Tauri with src-tauri/entitlements.plist under the hardened runtime on macOS; python 3.12 is on the runners only because FormCut's packaging step is Python, and can be emptied if build_release needs none. linux_packages are Tauri 2's prerequisites plus libgtk-3-dev; a sidecar that carries Playwright's Chromium needs its system libraries added. macos-x64 is experimental until a first release shows the sidecar builds on the Intel runner. The bundle identifier ai.nodemode.formrec and the minimum OS (macOS 14 as FormCut, Windows 10, glibc 2.35 for the AppImage on ubuntu-22.04) must match src-tauri/tauri.conf.json. Agents: FormRec has an MCP server (formrec mcp) and no .claude/skills folder yet; set agents.skills to .claude/skills once one with a SKILL.md is on main, or the skills archive stays out of the release. No updater, no extras, no assets script; release notes come from the CHANGELOG.md section that names the version."
+}
