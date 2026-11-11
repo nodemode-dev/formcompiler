@@ -2,7 +2,7 @@
 
 ## v0.13.0 · 2026-11-10
 
-- FormRec, the recorder for walkthroughs, podcasts, corporate messages and live feeds, is registered. `apps/formrec.json` follows FormCut's build: commands mode, `setup/build_release --target $FORMCOMPILER_TRIPLE` on every desktop runner, the release zips and the Windows NSIS installer from `release-dist/`, with the Node 22 server as the Tauri sidecar. Its version comes from `package.json` and its check is `ci.yml`. Its catalogue entry is `formrec`, Apache-2.0, in prelaunch, with an MCP server and no skills folder yet. The Intel Mac build is experimental for its first release, and the release summary lists what to confirm against FormRec's desktop build before its first compile branch.
+- FormRec, the recorder for walkthroughs, podcasts, corporate messages and live feeds, is registered. `apps/formrec.json` follows FormCut's build: commands mode, `setup/build_release --target $FORMCOMPILER_TRIPLE` on every desktop runner, the release zips and the Windows NSIS installer from `release-dist/`, with the Node 22 server as the Tauri sidecar. Its version comes from `src-tauri/tauri.conf.json` and its check is `ci.yml`. No Python is set up; `zip` is installed on Linux for the Linux zip. Its catalogue entry is `formrec`, Apache-2.0, in prelaunch, with an MCP server and the formrec-harness and formrec-skillset skills from `.claude/skills`. The Intel Mac build is experimental for its first release, and its notes for the owner describe FormRec 0.3.0's build outputs, signing and seal check.
 
 ## v0.12.3 · 2026-11-10
 
