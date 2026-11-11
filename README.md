@@ -11,7 +11,7 @@
 </p>
 
 <p align="center">
-  <img alt="version v0.12.3" src="https://img.shields.io/badge/version-v0.12.3-eef0f4?style=flat-square">
+  <img alt="version v0.13.1" src="https://img.shields.io/badge/version-v0.13.1-eef0f4?style=flat-square">
   <img alt="GitHub Actions" src="https://img.shields.io/badge/GitHub_Actions-watch_%C2%B7_release-2088FF?style=flat-square&logo=githubactions&logoColor=white">
   <img alt="Python 3.11+" src="https://img.shields.io/badge/Python-3.11%2B-3776AB?style=flat-square&logo=python&logoColor=white">
   <img alt="Builds for macOS, Windows and Linux" src="https://img.shields.io/badge/builds-macOS_%C2%B7_Windows_%C2%B7_Linux-2f7bf5?style=flat-square">
@@ -30,7 +30,7 @@
 <p align="center">
   <img src="docs/images/formcompiler-hero.png" alt="Terminal running the registry check, the app list and the catalogue listing of FormCompiler" width="100%">
   <br>
-  <sub>The registry check passing for 26 apps, and the three apps the catalogue lists today.</sub>
+  <sub>The registry check passing for every app, and the three apps the catalogue lists today.</sub>
 </p>
 
 <p align="center">
@@ -81,12 +81,12 @@
 <table>
   <tr>
     <td width="33%" valign="top">
-      <h4>26 registered apps</h4>
+      <h4>28 registered apps</h4>
       One <code>apps/&lt;app&gt;.json</code> each: version source · checks · platforms · toolchain · build commands · extra jobs · assets · update files · catalogue entry
     </td>
     <td width="33%" valign="top">
-      <h4>4 workflows</h4>
-      watch · release · desktop-release · self-check
+      <h4>6 workflows</h4>
+      tick · watch · release · desktop-release · self-check · windows signing check
     </td>
     <td width="33%" valign="top">
       <h4>Platforms</h4>
@@ -97,12 +97,12 @@
 
 ## Under the hood
 
-- **Language:** 19 Python scripts on the standard library; `cryptography` only signs the catalogue.
+- **Language:** 21 Python scripts on the standard library; `cryptography` only signs the catalogue.
 - **Contract:** [`docs/REGISTRY.md`](docs/REGISTRY.md) defines the registry file every app writes.
 - **Flow:** `tick.yml` starts `watch.yml` every 15 minutes (the watch's own hourly `17 * * * *` UTC schedule stays as a backup), or on demand, `release.yml` gates and builds, and a draft `vX.Y.Z` opens on the app's own repository.
 - **Channels:** `X.Y.Z` is stable; anything with `-beta.N` or `-rc.N` is beta and never touches `<app>-updates`.
 - **Publishing:** the download store, update feeds, catalogue signature and yanks run in a private companion pipeline.
-- **Tested:** 364 tests in 15 files (registry, versions, watch, triggers, tauri config, signing, app repository releases, GitHub binaries, workflow guards).
+- **Tested:** 432 tests in 19 files (registry, versions, watch, triggers, tauri config, signing, app repository releases, GitHub binaries, workflow guards).
 
 ## Where releases come from
 
@@ -152,7 +152,7 @@ Secrets (`FORMCOMPILER_APP_TOKEN`, `APPLE_*`, `AZURE_*`, `TAURI_SIGNING_PRIVATE_
 |---|---|
 | `apps/` | One registry file per app |
 | `scripts/` | The Python scripts the workflows run |
-| `.github/workflows/` | watch, release, desktop-release, self-check |
+| `.github/workflows/` | tick, watch, release, desktop-release, self-check, windows signing check |
 | `docs/`, `tests/` | Registry contract and accounts notes; the pytest suite |
 | `releases.json`, `yanked.json` | The catalogue and the versions left out of it |
 

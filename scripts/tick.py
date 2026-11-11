@@ -150,12 +150,12 @@ def tick_once(args, now, sleep) -> list:
     try:
         attempt(f"dispatch of {WATCH}", lambda: gh.request("POST", f"/repos/{args.repo}/actions/workflows/{WATCH}/dispatches", {"ref": args.ref}), sleep)
         lines.append("watch: started")
-    except Unreachable as error:
+    except Exception as error:
         print(f"::warning::{error}")
         lines.append(f"watch: not started ({error})")
     try:
         lines.append(check_feed(args, now, sleep))
-    except Unreachable as error:
+    except Exception as error:
         print(f"::warning::{error}")
         lines.append(f"feed: not checked ({error})")
     return lines
