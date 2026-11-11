@@ -167,6 +167,9 @@ def still_owner(args, sleep) -> bool:
     except Unreachable as error:
         print(f"::warning::{error}; this tick keeps the clock")
         return True
+    except Exception as error:
+        print(f"::warning::tick runs: {type(error).__name__}: {error}; this tick keeps the clock")
+        return True
 
 
 def output(name: str, value: str):
