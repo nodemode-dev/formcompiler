@@ -5,6 +5,7 @@
 - A tick that cannot make sense of the list of tick runs (a listing that is not an object, a run that is not one, or a run without an id) now reports it as a warning and keeps its 15-minute clock, as it does when GitHub cannot be reached. Before, the error ended the loop on its second pass without saying whether it yielded, so its successor started at once.
 - The tick's survival on bad data has regression tests: a feed state that is not a string, a registry that is not an object, an unexpected error from the watch dispatch, and the malformed run listings above.
 - FormRec's notes for the owner say the entry matches FormRec 0.9.0's desktop build; it was checked against 0.9.0 and is unchanged.
+- Intel Macs get a build of FormDAM, FormDesign, FormCel, FormTxt, FormRef and FormWeb: each lists `macos-x64`, built natively on `macos-15-intel` like FormPath and Format. FormDesign's `core-macos-x64` extra is gone, because its Intel build now makes the `x86_64-apple-darwin` layout core itself; two copies would collide in the release files.
 - The README counts 441 tests in 20 files.
 
 ## v0.13.2 · 2026-11-11
