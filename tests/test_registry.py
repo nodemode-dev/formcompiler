@@ -132,3 +132,25 @@ def test_no_app_pins_a_retired_runner_image():
 def test_formcut_ships_for_apple_silicon_and_intel_macs():
     platforms = json.loads((REPO / "apps" / "formcut.json").read_text(encoding="utf-8"))["platforms"]
     assert {"macos-arm64", "macos-x64"} <= {str(p).rstrip("?").partition("=")[0] for p in platforms}
+
+
+INTEL = "every app with a Mac build also builds for Intel Macs: list macos-x64 (required, not macos-x64?)"
+
+
+@pytest.mark.parametrize("platforms", [
+    ["macos-arm64", "linux-x64", "windows-x64"],
+    ["macos-arm64", "macos-x64?", "linux-x64", "windows-x64"],
+], ids=["no-intel", "optional-intel"])
+def test_a_mac_build_without_a_required_intel_build_is_refused(platforms):
+    assert INTEL in mutated(lambda e: e.update(platforms=platforms))
+
+
+def test_an_entry_without_a_mac_build_needs_no_intel_build():
+    assert INTEL not in mutated(lambda e: e.update(platforms=["linux-x64", "windows-x64"]))
+
+
+def test_every_app_with_a_mac_build_builds_for_intel_macs_by_default():
+    for entry in entries():
+        names = [str(p).partition("=")[0] for p in entry["platforms"]]
+        if any(n.rstrip("?").startswith("macos-") for n in names):
+            assert "macos-x64" in names, entry["app"]

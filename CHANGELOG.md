@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.13.5 · 2026-11-11
+
+- Every app with a Mac build builds for Intel Macs by default (Greg, 2026-11-11). `macos-x64` is now required, not optional, for FormVFX, FormPDF, FormVis, Form.ext, FormRec, FormSculpt, FormSurface, FormPromo and FormPublisher, as it already was for the rest; each is built natively on `macos-15-intel`.
+- `registry.py check` refuses an entry with a Mac build that does not list `macos-x64`, or lists it only as optional `macos-x64?`, so a new app cannot ship without an Intel build. Entries with no Mac build are unaffected.
+- The README counts 445 tests in 20 files.
+
 ## v0.13.4 · 2026-11-11
 
 - Intel Macs get a build of FormWav too: `apps/formwav.json` lists `macos-x64`, built natively on `macos-15-intel`. FormWav 2.26.2 shipped without one, so Intel Macs were sent to the download page.
