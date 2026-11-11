@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.13.4 · 2026-11-11
+
+- Intel Macs get a build of FormWav too: `apps/formwav.json` lists `macos-x64`, built natively on `macos-15-intel`. FormWav 2.26.2 shipped without one, so Intel Macs were sent to the download page.
+
 ## v0.13.3 · 2026-11-11
 
 - A tick that cannot make sense of the list of tick runs (a listing that is not an object, a run that is not one, or a run without an id) now reports it as a warning and keeps its 15-minute clock, as it does when GitHub cannot be reached. Before, the error ended the loop on its second pass without saying whether it yielded, so its successor started at once.
