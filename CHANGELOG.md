@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.13.1 · 2026-11-10
+
+- A tick that meets bad data, such as a feed state the store wrote in an unexpected shape, now reports it as a warning and a line in the summary and keeps its 15-minute clock. Before, the error ended the tick at once and its successor started straight away, so the chain restarted about once a minute until someone cancelled a run.
+- The v0.13.0 entry above and the pipeline's rationale log now describe FormRec's registry entry as it was merged: version from `src-tauri/tauri.conf.json`, no Python, `zip` on Linux, and its two skills from `.claude/skills`.
+- The README counts what is in the repository: 6 workflows (with `tick` and the Windows signing check), 21 Python scripts and 432 tests in 19 files.
+
 ## v0.13.0 · 2026-11-10
 
 - FormRec, the recorder for walkthroughs, podcasts, corporate messages and live feeds, is registered. `apps/formrec.json` follows FormCut's build: commands mode, `setup/build_release --target $FORMCOMPILER_TRIPLE` on every desktop runner, the release zips and the Windows NSIS installer from `release-dist/`, with the Node 22 server as the Tauri sidecar. Its version comes from `src-tauri/tauri.conf.json` and its check is `ci.yml`. No Python is set up; `zip` is installed on Linux for the Linux zip. Its catalogue entry is `formrec`, Apache-2.0, in prelaunch, with an MCP server and the formrec-harness and formrec-skillset skills from `.claude/skills`. The Intel Mac build is experimental for its first release, and its notes for the owner describe FormRec 0.3.0's build outputs, signing and seal check.
