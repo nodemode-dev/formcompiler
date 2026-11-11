@@ -1,0 +1,50 @@
+name: tick
+
+run-name: tick ${{ inputs.after && format('after {0}', inputs.after) || github.event_name }}
+
+on:
+  schedule:
+    - cron: "*/15 * * * *"
+  workflow_dispatch:
+    inputs:
+      after:
+        description: "Run id of the tick this one follows (set by the tick itself; leave empty)"
+        type: string
+        default: ""
+
+permissions:
+  contents: read
+  actions: write
+
+jobs:
+  tick:
+    # Only here, never in a fork, and only on main: a tick dispatched from another branch must not start a second clock.
+    if: github.repository == 'nodemode-dev/formcompiler' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 350
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - id: owner
+        name: Is another tick keeping the clock
+        env:
+          GH_TOKEN: ${{ github.token }}
+          AFTER: ${{ inputs.after }}
+        run: python3 -I scripts/tick.py owner --after "$AFTER"
+      - id: loop
+        name: Every 15 minutes start the watch and tell formpipe about releases it has not fed
+        if: steps.owner.outputs.owner == 'true'
+        timeout-minutes: 340
+        env:
+          GH_TOKEN: ${{ github.token }}
+          FORMCOMPILER_APP_TOKEN: ${{ secrets.FORMCOMPILER_APP_TOKEN }}
+          FORMPIPE_DISPATCH_TOKEN: ${{ secrets.FORMPIPE_DISPATCH_TOKEN }}
+          FORMCOMPILER_PUBLIC_BASE: ${{ vars.FORMCOMPILER_PUBLIC_BASE }}
+          AFTER: ${{ inputs.after }}
+        run: python3 -I scripts/tick.py loop --after "$AFTER" --minutes 330 --every 15
+      - name: Start the next tick
+        if: ${{ !cancelled() && steps.owner.outputs.owner == 'true' && steps.loop.outputs.yielded != 'true' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 -I scripts/tick.py chain

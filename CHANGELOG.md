@@ -4,6 +4,19 @@
 
 - FormRec, the recorder for walkthroughs, podcasts, corporate messages and live feeds, is registered. `apps/formrec.json` follows FormCut's build: commands mode, `setup/build_release --target $FORMCOMPILER_TRIPLE` on every desktop runner, the release zips and the Windows NSIS installer from `release-dist/`, with the Node 22 server as the Tauri sidecar. Its version comes from `package.json` and its check is `ci.yml`. Its catalogue entry is `formrec`, Apache-2.0, in prelaunch, with an MCP server and no skills folder yet. The Intel Mac build is experimental for its first release, and the release summary lists what to confirm against FormRec's desktop build before its first compile branch.
 
+## v0.12.3 · 2026-11-10
+
+- Releases start and reach the download store without anyone dispatching a workflow. A new `tick` workflow starts the watch every 15 minutes, because GitHub ran the watch's hourly schedule only every 4 to 10 hours. One tick keeps the clock for about five and a half hours, then starts its successor with the Actions token; its own `*/15` schedule restarts the clock if the chain ever breaks, and a scheduled run that finds a tick already running stops at once. On each tick it also reads the store's feed state and every app's releases, and when a release published by hand (every stable release) is not in the store yet it sends formpipe the same `formcompiler-published` dispatch the publish step sends for prereleases, with the existing `FORMPIPE_DISPATCH_TOKEN`. A GitHub hiccup is retried, then reported as a warning; it never fails the tick. Approving and publishing stay manual.
+- FormCut's build cache is also keyed on `backend/prepare_cv.py`, so a change to OpenCV's build flags builds again instead of restoring an older wheel.
+
+## v0.12.2 · 2026-11-09
+
+- A registry entry can cache folders its build makes and reuses: `toolchain.build_cache` names the folders and the files whose contents key them. FormCut and Format cache their LGPL FFmpeg (`backend/.lgpl-ffmpeg`) on every platform, keyed on the app, the platform, the runner and a hash of the scripts that build it, so a new FFmpeg version or configure line builds again. Their scripts skip the FFmpeg build when the folder is there; FormCut 2.15.1's Intel Mac build spent 16 of its minutes on it. The cache restores only on its exact key, saves after a failed or timed-out build too, and no other app has one. FormCut also keeps its macOS pip wheels, which takes effect once its OpenCV and PyAV installs stop passing `--no-cache-dir`; the pip key of an app with a build cache includes the build cache's hash, so a PyAV built against an older FFmpeg is never restored.
+
+## v0.12.1 · 2026-11-09
+
+- Intel Mac builds get 70 minutes for the Build step and 79 for the job; every other platform keeps 40 and 49. FormCut 2.15.1's `macos-x64` build hit the 40-minute step limit twice, the second time with its caches already saved, while its other platforms built well inside it. The 9 minutes between the step and the job, which let the caches save after a timed-out build, stay the same for every platform, and a test keeps them.
+
 ## v0.12.0 · 2026-11-08
 
 - form.ext, the extension studio, is built here. `apps/form.ext.json` registers it with its own `build_app` and `build_app.bat` in commands mode, since it has no `install-desktop` and its `build_app` takes no `--config`; signing reaches it through `src-tauri/tauri.<os>.conf.json` as for every app. The Rust build is pointed at `src-tauri/target` (its default is a cache folder outside the checkout), the macOS build no longer copies itself into `/Applications` on the runner, Linux adds rpm and AppImage to the deb, and a failed Windows build prints `build_app.log`. Its catalogue entry is `formext`, GPL-3.0-only, macOS 13 or later. Intel Mac and Linux ARM builds are experimental for its first release.
