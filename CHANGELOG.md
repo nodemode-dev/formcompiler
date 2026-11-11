@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.13.2 · 2026-11-11
+
+- FormPublisher is registered, disabled: `apps/formpublisher.json` names `nodemode-dev/formpublisher`, which is private and has no code yet, so nothing builds, watches or feeds it. Its build fields are the family's Tauri defaults and its catalogue entry is `formpublisher`, Apache-2.0, in prelaunch; the notes for the owner list what to confirm before enabling it.
+- The README counts 434 tests in 19 files.
+
 ## v0.13.1 · 2026-11-10
 
 - A tick that meets bad data, such as a feed state the store wrote in an unexpected shape, now reports it as a warning and a line in the summary and keeps its 15-minute clock. Before, the error ended the tick at once and its successor started straight away, so the chain restarted about once a minute until someone cancelled a run.
