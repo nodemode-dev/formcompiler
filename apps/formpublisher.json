@@ -1,0 +1,59 @@
+{
+  "app": "formpublisher",
+  "repository": "nodemode-dev/formpublisher",
+  "title": "formpublisher",
+  "enabled": false,
+  "disabled_reason": "The repository is private and has no code yet; enable once it has a check workflow and a desktop build.",
+  "release": "draft",
+  "version": {"file": "src-tauri/tauri.conf.json", "pattern": ""},
+  "checks": ["ci.yml"],
+  "platforms": ["macos-arm64", "linux-x64", "windows-x64"],
+  "toolchain": {
+    "node": "22",
+    "python": "3.12",
+    "rust": true,
+    "rust_targets": "",
+    "go": "",
+    "linux_packages": "libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf",
+    "windows_msvc": false
+  },
+  "build": {
+    "mode": "contract",
+    "cli": "formpublisher",
+    "install": true,
+    "install_args": "",
+    "install_desktop": true,
+    "windows_shell": "cmd",
+    "macos": "",
+    "linux": "",
+    "windows": "",
+    "tauri_config": ""
+  },
+  "setup": {"macos": "", "linux": "", "windows": ""},
+  "post_build": {"macos": "", "linux": "", "windows": ""},
+  "artifacts": [
+    "src-tauri/target/**/bundle/dmg/*.dmg",
+    "src-tauri/target/**/bundle/macos/*.app.tar.gz",
+    "src-tauri/target/**/bundle/appimage/*.AppImage",
+    "src-tauri/target/**/bundle/deb/*.deb",
+    "src-tauri/target/**/bundle/rpm/*.rpm",
+    "src-tauri/target/**/bundle/msi/*.msi",
+    "src-tauri/target/**/bundle/nsis/*.exe",
+    "src-tauri/target/**/bundle/*/*.sig"
+  ],
+  "assets": "",
+  "notes": "",
+  "updater": {"tauri": true, "tag_json": false, "files": []},
+  "signing": {"macos": "apple", "windows": "certificate"},
+  "agents": {"skills": ".claude/skills", "mcp": true},
+  "catalog": {
+    "id": "formpublisher",
+    "name": "FormPublisher",
+    "kind": "publisher",
+    "summary": "A new member of the Form family, in development.",
+    "identifier": "ai.nodemode.formpublisher",
+    "licence": "Apache-2.0",
+    "state": "prelaunch"
+  },
+  "notes_for_owner": "OWNER: drafted while the repository was blank, from the family's Tauri defaults (formdesign's entry). Before enabling, check the version file, check workflow, toolchain, platforms, artifacts and agents against the real repository, write the catalogue summary, and add the read token's access to nodemode-dev/formpublisher (the feed plan fails naming any enabled repository it cannot read)."
+}
