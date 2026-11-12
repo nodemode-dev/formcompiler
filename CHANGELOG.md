@@ -2,7 +2,7 @@
 
 ## v0.13.6 · 2026-11-12
 
-- Intel Mac builds download the wheels listed in `deps-macos-x64.json` from https://dl.formai.studio/deps/macos-x64/, check each against the SHA256 committed there, and only then point pip at that local folder (`PIP_FIND_LINKS` and `UV_FIND_LINKS`, set only on `macos-x64`). A file that does not match fails the build, so write access to the bucket alone cannot change what goes into a signed build. onnxruntime publishes no Intel Mac wheel after 1.23.2 and cryptography none after 48.0.1, so FormWav 2.26.3, FormPDF 0.60.3 and FormDAM 1.29.0 failed to build for Intel. The index holds onnxruntime 1.31.0 and cryptography 50.0.1 and 50.0.2, built from source for macOS 14 or later on x86_64, with SHA256SUMS and onnxruntime's licence and notices. Other platforms still install from PyPI only.
+- Intel Mac builds download the wheels listed in `deps-macos-x64.json` from https://storage.googleapis.com/formai-dl/deps/macos-x64/, check each against the SHA256 committed there, and only then point pip at that local folder (`PIP_FIND_LINKS` and `UV_FIND_LINKS`, set only on `macos-x64`). A file that does not match fails the build, so write access to the bucket alone cannot change what goes into a signed build. onnxruntime publishes no Intel Mac wheel after 1.23.2 and cryptography none after 48.0.1, so FormWav 2.26.3, FormPDF 0.60.3 and FormDAM 1.29.0 failed to build for Intel. The index holds onnxruntime 1.31.0 and cryptography 50.0.1 and 50.0.2, built from source for macOS 14 or later on x86_64, with SHA256SUMS and onnxruntime's licence and notices. Other platforms still install from PyPI only.
 - The README counts 448 tests in 21 files.
 
 ## v0.13.5 · 2026-11-11

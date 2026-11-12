@@ -1,5 +1,5 @@
 {
-  "index": "https://dl.formai.studio/deps/macos-x64/",
+  "index": "https://storage.googleapis.com/formai-dl/deps/macos-x64/",
   "wheels": {
     "cryptography-50.0.1-cp312-abi3-macosx_14_0_x86_64.whl": "86f839f6e50c477a5d854762c7eb004c28c9ec72644cff5b4d9ce9c539a722fd",
     "cryptography-50.0.2-cp312-abi3-macosx_14_0_x86_64.whl": "5e3021034c0cdf609a192682f4b4757a99fb06175f1c5fcff0811ec6ab41976e",

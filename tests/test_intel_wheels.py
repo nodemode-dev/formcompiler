@@ -34,7 +34,7 @@ def test_the_wheels_are_checked_against_the_committed_hashes_before_pip_sees_the
 
 def test_the_manifest_names_each_wheel_with_a_sha256_and_an_https_index():
     data = json.loads(MANIFEST.read_text(encoding="utf-8"))
-    assert data["index"].startswith("https://dl.formai.studio/") and data["index"].endswith("/")
+    assert data["index"].startswith("https://storage.googleapis.com/formai-dl/") and data["index"].endswith("/")
     assert data["wheels"]
     for name, digest in data["wheels"].items():
         assert re.fullmatch(r"[A-Za-z0-9_.-]+-macosx_\d+_0_x86_64\.whl", name), name
