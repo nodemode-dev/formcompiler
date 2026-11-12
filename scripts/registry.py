@@ -138,6 +138,8 @@ def validate(entry, filename):
         if name not in PLATFORM_NAMES:
             problems.append(f"unknown platform {platform!r}")
     listed = {str(p).rstrip("?").partition("=")[0] for p in entry["platforms"]}
+    if any(name.startswith("macos-") for name in listed) and "macos-x64" not in entry["platforms"]:
+        problems.append("every app with a Mac build also builds for Intel Macs: list macos-x64 (required, not macos-x64?)")
     for name, env in entry.get("platform_env", {}).items():
         if name not in listed:
             problems.append(f"platform_env names {name!r}, which is not in platforms")

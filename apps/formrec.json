@@ -6,7 +6,7 @@
   "release": "draft",
   "version": {"file": "src-tauri/tauri.conf.json", "pattern": ""},
   "checks": ["ci.yml"],
-  "platforms": ["macos-arm64", "macos-x64?", "linux-x64", "windows-x64"],
+  "platforms": ["macos-arm64", "macos-x64", "linux-x64", "windows-x64"],
   "toolchain": {
     "node": "22",
     "python": "",
