@@ -327,6 +327,11 @@ jobs:
           sudo apt-get update
           read -r -a list <<< "$PACKAGES"
           sudo apt-get install -y --no-install-recommends "${list[@]}"
+      - name: Intel Mac wheels
+        if: matrix.platform == 'macos-x64'
+        run: |
+          echo "PIP_FIND_LINKS=https://dl.formai.studio/deps/macos-x64/" >> "$GITHUB_ENV"
+          echo "UV_FIND_LINKS=https://dl.formai.studio/deps/macos-x64/" >> "$GITHUB_ENV"
       - name: App set-up
         env:
           SETUP_MACOS: ${{ inputs.setup-macos }}
