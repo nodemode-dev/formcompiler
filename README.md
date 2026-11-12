@@ -102,7 +102,7 @@
 - **Flow:** `tick.yml` starts `watch.yml` every 15 minutes (the watch's own hourly `17 * * * *` UTC schedule stays as a backup), or on demand, `release.yml` gates and builds, and a draft `vX.Y.Z` opens on the app's own repository.
 - **Channels:** `X.Y.Z` is stable; anything with `-beta.N` or `-rc.N` is beta and never touches `<app>-updates`.
 - **Publishing:** the download store, update feeds, catalogue signature and yanks run in a private companion pipeline.
-- **Tested:** 447 tests in 21 files (registry, versions, watch, triggers, tauri config, signing, app repository releases, GitHub binaries, workflow guards).
+- **Tested:** 448 tests in 21 files (registry, versions, watch, triggers, tauri config, signing, app repository releases, GitHub binaries, workflow guards).
 
 ## Where releases come from
 

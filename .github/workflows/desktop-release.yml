@@ -329,9 +329,18 @@ jobs:
           sudo apt-get install -y --no-install-recommends "${list[@]}"
       - name: Intel Mac wheels
         if: matrix.platform == 'macos-x64'
+        working-directory: .formcompiler
         run: |
-          echo "PIP_FIND_LINKS=https://dl.formai.studio/deps/macos-x64/" >> "$GITHUB_ENV"
-          echo "UV_FIND_LINKS=https://dl.formai.studio/deps/macos-x64/" >> "$GITHUB_ENV"
+          dest="$RUNNER_TEMP/intel-wheels"
+          mkdir -p "$dest"
+          index=$(python3 -I -c 'import json;print(json.load(open("deps-macos-x64.json"))["index"])')
+          python3 -I -c 'import json;[print(h + "  " + n) for n, h in json.load(open("deps-macos-x64.json"))["wheels"].items()]' > "$dest/SHA256SUMS"
+          while read -r _ name; do
+            curl --proto '=https' -fsSL --retry 3 -o "$dest/$name" "$index$name"
+          done < "$dest/SHA256SUMS"
+          (cd "$dest" && shasum -a 256 -c SHA256SUMS)
+          echo "PIP_FIND_LINKS=$dest" >> "$GITHUB_ENV"
+          echo "UV_FIND_LINKS=$dest" >> "$GITHUB_ENV"
       - name: App set-up
         env:
           SETUP_MACOS: ${{ inputs.setup-macos }}
