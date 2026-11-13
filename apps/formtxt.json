@@ -26,7 +26,7 @@
     "install_desktop": false,
     "windows_shell": "cmd",
     "macos": "./formtxt install\n./formtxt install-desktop\n./formtxt desktop build $FORMCOMPILER_CONFIG_ARG",
-    "linux": "./formtxt install\n./formtxt install-desktop\n./formtxt desktop build $FORMCOMPILER_CONFIG_ARG",
+    "linux": "./formtxt install\n./formtxt install-desktop\n./formtxt desktop build $FORMCOMPILER_CONFIG_ARG --bundles deb,appimage",
     "windows": "call formtxt.bat install\ncall formtxt.bat install-desktop\ncall setup\\desktop_build.bat %FORMCOMPILER_CONFIG_ARG%",
     "tauri_config": ""
   },
