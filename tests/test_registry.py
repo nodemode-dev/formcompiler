@@ -154,3 +154,23 @@ def test_every_app_with_a_mac_build_builds_for_intel_macs_by_default():
         names = [str(p).partition("=")[0] for p in entry["platforms"]]
         if any(n.rstrip("?").startswith("macos-") for n in names):
             assert "macos-x64" in names, entry["app"]
+
+
+@pytest.mark.parametrize("mode", ["apple", "developer-id", "adhoc", "none"])
+def test_every_macos_signing_mode_is_accepted(mode):
+    assert not mutated(lambda e: e["signing"].update(macos=mode))
+
+
+def test_an_unknown_macos_signing_mode_is_refused():
+    assert mutated(lambda e: e["signing"].update(macos="notarize-later"))
+
+
+def test_developer_id_signs_with_the_certificate_but_never_reaches_the_notary():
+    workflow = (REPO / ".github" / "workflows" / "desktop-release.yml").read_text(encoding="utf-8")
+    both = "(inputs.macos-signing == 'apple' || inputs.macos-signing == 'developer-id')"
+    assert workflow.count(both) == 5
+    for name in ("APPLE_ID", "APPLE_PASSWORD", "APPLE_TEAM_ID"):
+        lines = [line for line in workflow.splitlines() if line.strip().startswith(f"{name}: ${{{{ inputs.macos-signing")]
+        assert lines and all("'developer-id'" not in line for line in lines), name
+    notarize = workflow.split("- name: Notarize the macOS disk images", 1)[1].split("\n", 2)[1]
+    assert notarize.strip() == "if: runner.os == 'macOS' && inputs.macos-signing == 'apple'"

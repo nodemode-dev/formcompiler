@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.14.1 · 2026-11-13
+
+- A fourth macOS signing mode, `developer-id`: the app is signed with formcompiler's Developer ID certificate as `apple` signs it, but no Apple ID, password or team id reach the build and the disk images are not sent to the notary service. Since about 14:40 UTC Apple's notary answers 403 (a required agreement is missing or has expired) for every Mac build; until the account holder accepts it, FormCel, FormTxt and FormTools ship signed but not notarized, so macOS asks once before the first open. Switch them back to `apple` once notarization works.
+
 ## v0.14.0 · 2026-11-13
 
 - FormTxt's Linux build passes `--bundles deb,appimage`, as FormCel's does. With no bundle targets set, Tauri also built an rpm, and FormTxt 0.32.0's rpm step ran silent for 35 minutes until the 40-minute limit stopped the job (release run 43443905509).

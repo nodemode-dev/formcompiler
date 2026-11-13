@@ -40,7 +40,7 @@ on:
         type: string
         default: ""
       macos-signing:
-        description: "apple (formcompiler's Apple identity when set, ad hoc until then), adhoc, or none"
+        description: "apple (formcompiler's Apple identity when set, ad hoc until then), developer-id (that identity without notarization), adhoc, or none"
         type: string
         default: "apple"
       windows-signing:
@@ -420,7 +420,7 @@ jobs:
           AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
         run: python -I .formcompiler/scripts/windows_signing.py prepare --app-dir . --tools "$RUNNER_TEMP/formcompiler-sign"
       - name: Apple signing keychain
-        if: runner.os == 'macOS' && inputs.macos-signing == 'apple'
+        if: runner.os == 'macOS' && (inputs.macos-signing == 'apple' || inputs.macos-signing == 'developer-id')
         env:
           APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
           APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
@@ -451,9 +451,9 @@ jobs:
       - name: Build
         timeout-minutes: ${{ matrix.platform == 'macos-x64' && 70 || 40 }}
         env:
-          APPLE_CERTIFICATE: ${{ inputs.macos-signing == 'apple' && env.FORMCOMPILER_KEYCHAIN == '' && secrets.APPLE_CERTIFICATE || '' }}
-          APPLE_CERTIFICATE_PASSWORD: ${{ inputs.macos-signing == 'apple' && env.FORMCOMPILER_KEYCHAIN == '' && secrets.APPLE_CERTIFICATE_PASSWORD || '' }}
-          APPLE_SIGNING_IDENTITY: ${{ inputs.macos-signing == 'apple' && secrets.APPLE_CERTIFICATE != '' && secrets.APPLE_SIGNING_IDENTITY || '' }}
+          APPLE_CERTIFICATE: ${{ (inputs.macos-signing == 'apple' || inputs.macos-signing == 'developer-id') && env.FORMCOMPILER_KEYCHAIN == '' && secrets.APPLE_CERTIFICATE || '' }}
+          APPLE_CERTIFICATE_PASSWORD: ${{ (inputs.macos-signing == 'apple' || inputs.macos-signing == 'developer-id') && env.FORMCOMPILER_KEYCHAIN == '' && secrets.APPLE_CERTIFICATE_PASSWORD || '' }}
+          APPLE_SIGNING_IDENTITY: ${{ (inputs.macos-signing == 'apple' || inputs.macos-signing == 'developer-id') && secrets.APPLE_CERTIFICATE != '' && secrets.APPLE_SIGNING_IDENTITY || '' }}
           APPLE_ID: ${{ inputs.macos-signing == 'apple' && secrets.APPLE_ID || '' }}
           APPLE_PASSWORD: ${{ inputs.macos-signing == 'apple' && secrets.APPLE_PASSWORD || '' }}
           APPLE_TEAM_ID: ${{ inputs.macos-signing == 'apple' && secrets.APPLE_TEAM_ID || '' }}
@@ -507,7 +507,7 @@ jobs:
           key: ${{ steps.pipcache.outputs.cache-primary-key }}
       - name: Post-build
         env:
-          APPLE_SIGNING_IDENTITY: ${{ inputs.macos-signing == 'apple' && env.FORMCOMPILER_KEYCHAIN != '' && secrets.APPLE_SIGNING_IDENTITY || '' }}
+          APPLE_SIGNING_IDENTITY: ${{ (inputs.macos-signing == 'apple' || inputs.macos-signing == 'developer-id') && env.FORMCOMPILER_KEYCHAIN != '' && secrets.APPLE_SIGNING_IDENTITY || '' }}
           APPLE_ID: ${{ inputs.macos-signing == 'apple' && secrets.APPLE_ID || '' }}
           APPLE_PASSWORD: ${{ inputs.macos-signing == 'apple' && secrets.APPLE_PASSWORD || '' }}
           APPLE_TEAM_ID: ${{ inputs.macos-signing == 'apple' && secrets.APPLE_TEAM_ID || '' }}

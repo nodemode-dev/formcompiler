@@ -36,7 +36,7 @@
   "assets": "",
   "notes": "",
   "updater": {"tauri": false, "tag_json": false, "files": []},
-  "signing": {"macos": "apple", "windows": "certificate"},
+  "signing": {"macos": "developer-id", "windows": "certificate"},
   "agents": {"skills": "", "mcp": false},
   "catalog": {
     "id": "formcel",

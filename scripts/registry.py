@@ -180,8 +180,8 @@ def validate(entry, filename):
     updater = entry["updater"]
     if updater["tauri"] and updater["tag_json"]:
         problems.append("updater.tauri and updater.tag_json cannot both be true")
-    if entry["signing"]["macos"] not in ("apple", "adhoc", "none"):
-        problems.append("signing.macos must be apple, adhoc or none")
+    if entry["signing"]["macos"] not in ("apple", "developer-id", "adhoc", "none"):
+        problems.append("signing.macos must be apple, developer-id, adhoc or none")
     if entry["signing"]["windows"] not in ("certificate", "none"):
         problems.append("signing.windows must be certificate or none")
     catalog = entry["catalog"]
