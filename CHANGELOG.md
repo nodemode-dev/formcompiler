@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.14.0 · 2026-11-13
+
+- FormTxt's Linux build passes `--bundles deb,appimage`, as FormCel's does. With no bundle targets set, Tauri also built an rpm, and FormTxt 0.32.0's rpm step ran silent for 35 minutes until the 40-minute limit stopped the job (release run 43443905509).
+
 ## v0.13.9 · 2026-11-13
 
 - Windows desktop builds set `PY_PYTHON` and `PY_PYTHON3` to the recipe's Python, so an app launcher's `py -3 -m venv` makes a 3.12 venv instead of taking the newest Python on the runner (3.15). FormTxt 0.32.0 and FormTools 0.8.0 failed on Windows because onnxruntime and rawpy have no Python 3.15 wheels.
