@@ -11,7 +11,7 @@
 </p>
 
 <p align="center">
-  <img alt="version v0.13.6" src="https://img.shields.io/badge/version-v0.13.6-eef0f4?style=flat-square">
+  <img alt="version v0.13.7" src="https://img.shields.io/badge/version-v0.13.7-eef0f4?style=flat-square">
   <img alt="GitHub Actions" src="https://img.shields.io/badge/GitHub_Actions-watch_%C2%B7_release-2088FF?style=flat-square&logo=githubactions&logoColor=white">
   <img alt="Python 3.11+" src="https://img.shields.io/badge/Python-3.11%2B-3776AB?style=flat-square&logo=python&logoColor=white">
   <img alt="Builds for macOS, Windows and Linux" src="https://img.shields.io/badge/builds-macOS_%C2%B7_Windows_%C2%B7_Linux-2f7bf5?style=flat-square">

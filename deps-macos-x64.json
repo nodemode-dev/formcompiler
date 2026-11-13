@@ -3,6 +3,8 @@
   "wheels": {
     "cryptography-50.0.1-cp312-abi3-macosx_14_0_x86_64.whl": "86f839f6e50c477a5d854762c7eb004c28c9ec72644cff5b4d9ce9c539a722fd",
     "cryptography-50.0.2-cp312-abi3-macosx_14_0_x86_64.whl": "5e3021034c0cdf609a192682f4b4757a99fb06175f1c5fcff0811ec6ab41976e",
-    "onnxruntime-1.31.0-cp312-cp312-macosx_14_0_x86_64.whl": "ca23a80e222c4c3c7cc33a91acd9e06b94ceb63608c8a67d938443fab42d82ba"
+    "onnxruntime-1.30.0-cp312-cp312-macosx_14_0_x86_64.whl": "841a484caab009a86ae8a2aba792b94368f58486f39ac77adc9e25fbc1d88f43",
+    "onnxruntime-1.31.0-cp312-cp312-macosx_14_0_x86_64.whl": "ca23a80e222c4c3c7cc33a91acd9e06b94ceb63608c8a67d938443fab42d82ba",
+    "onnxruntime-1.31.0-cp314-cp314-macosx_14_0_x86_64.whl": "c8f0b1fdff5d9aaa29674bafe84f6781d8672d39eb492d1dd888e3d87fd47834"
   }
 }
