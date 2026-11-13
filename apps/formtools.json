@@ -1,0 +1,87 @@
+{
+  "app": "formtools",
+  "repository": "nodemode-dev/formtools",
+  "title": "formtools",
+  "enabled": true,
+  "release": "draft",
+  "version": {
+    "file": "src-tauri/tauri.conf.json",
+    "pattern": ""
+  },
+  "checks": [
+    "ci.yml"
+  ],
+  "platforms": [
+    "macos-arm64",
+    "macos-x64",
+    "linux-x64",
+    "windows-x64"
+  ],
+  "toolchain": {
+    "node": "22",
+    "python": "3.12",
+    "rust": true,
+    "rust_targets": "",
+    "rust_cache": [
+      "src-tauri"
+    ],
+    "go": "",
+    "linux_packages": "libwebkit2gtk-4.1-dev libayatana-appindicator3-dev librsvg2-dev libxdo-dev libssl-dev libdbus-1-dev pkg-config build-essential file patchelf",
+    "windows_msvc": false
+  },
+  "build": {
+    "mode": "contract",
+    "cli": "formtools",
+    "install": true,
+    "install_args": "",
+    "install_desktop": true,
+    "windows_shell": "cmd",
+    "macos": "",
+    "linux": "",
+    "windows": "",
+    "tauri_config": ""
+  },
+  "setup": {
+    "macos": "",
+    "linux": "",
+    "windows": ""
+  },
+  "post_build": {
+    "macos": "",
+    "linux": "",
+    "windows": ""
+  },
+  "artifacts": [],
+  "extras": [],
+  "assets": "",
+  "notes": "",
+  "updater": {
+    "tauri": true,
+    "tag_json": false,
+    "files": []
+  },
+  "signing": {
+    "macos": "apple",
+    "windows": "certificate"
+  },
+  "agents": {
+    "skills": ".claude/skills",
+    "mcp": true
+  },
+  "catalog": {
+    "id": "formtools",
+    "name": "FormTools",
+    "kind": "utility",
+    "summary": "Viewers for almost any file, batch image tools, 3D viewing and desktop utilities in one window.",
+    "identifier": "ai.nodemode.formtools",
+    "licence": "Apache-2.0",
+    "state": "prelaunch",
+    "project_extensions": [],
+    "minimum_os": {
+      "macos": "macOS 12",
+      "windows": "",
+      "linux": ""
+    }
+  },
+  "notes_for_owner": "UNTESTED: first formtools entry, modelled on formpath and formdesign (contract mode). The launcher has install, install-desktop and 'desktop build [--config F]' (setup/desktop_build passes its arguments to tauri build); formtools.bat shifts 'desktop build' off before calling setup\\desktop_build.bat, so cmd contract mode works on Windows. bundle.targets is 'all'. minimumSystemVersion 12.0 in tauri.conf.json. The updater public key is empty, so the app skips update checks until a key pair is made. Catalogue entry follows formai.studio's catalog/products.json."
+}
