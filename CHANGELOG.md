@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.13.8 · 2026-11-13
+
+- FormTools is registered (`apps/formtools.json`) for Apple silicon, Intel Macs, Windows and Linux, in contract mode after FormPath and FormDesign: `install`, `install-desktop`, then `desktop build`, with `formtools.bat` under cmd on Windows. It is in launch Group 2 with FormCel and FormTxt. The catalogue entry follows formai.studio's `catalog/products.json`.
+
 ## v0.13.7 · 2026-11-12
 
 - Two more Intel Mac wheels in `deps-macos-x64.json`, built from source and checked by an inference run on x86_64 Python: onnxruntime 1.31.0 for Python 3.14, which FormPDF's OCR set-up uses, and onnxruntime 1.30.0 for Python 3.12, which FormWav pins. Both 0.60.3 and 2.26.3 still failed for Intel with the 1.31.0 Python 3.12 wheel alone, after the hash check had passed. FormDAM 1.29.0 shipped for Intel with v0.13.6.
