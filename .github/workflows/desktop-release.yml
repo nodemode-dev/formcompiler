@@ -344,7 +344,7 @@ jobs:
           index=$(python3 -I -c 'import json;print(json.load(open("deps-macos-x64.json"))["index"])')
           python3 -I -c 'import json;[print(h + "  " + n) for n, h in json.load(open("deps-macos-x64.json"))["wheels"].items()]' > "$dest/SHA256SUMS"
           while read -r _ name; do
-            curl --proto '=https' -fsSL --retry 3 -o "$dest/$name" "$index$name"
+            curl --proto '=https' -fsSL --retry 5 --retry-all-errors --retry-delay 2 -o "$dest/$name" "$index$name"
           done < "$dest/SHA256SUMS"
           (cd "$dest" && shasum -a 256 -c SHA256SUMS)
           echo "PIP_FIND_LINKS=$dest" >> "$GITHUB_ENV"
