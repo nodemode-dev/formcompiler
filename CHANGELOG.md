@@ -1,6 +1,6 @@
 # Changelog
 
-## v0.13.10 · 2026-11-13
+## v0.14.0 · 2026-11-13
 
 - FormTxt's Linux build passes `--bundles deb,appimage`, as FormCel's does. With no bundle targets set, Tauri also built an rpm, and FormTxt 0.32.0's rpm step ran silent for 35 minutes until the 40-minute limit stopped the job (release run 43443905509).
 
