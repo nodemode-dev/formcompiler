@@ -303,6 +303,14 @@ jobs:
         with:
           python-version: ${{ inputs.python-version }}
           architecture: ${{ matrix.pyarch }}
+      - name: py launcher picks the recipe's Python
+        if: runner.os == 'Windows'
+        shell: bash
+        env:
+          PYTHON_VERSION: ${{ inputs.python-version }}
+        run: |
+          echo "PY_PYTHON=$PYTHON_VERSION" >> "$GITHUB_ENV"
+          echo "PY_PYTHON3=$PYTHON_VERSION" >> "$GITHUB_ENV"
       - uses: dtolnay/rust-toolchain@683b588c487a69d01f6c6ddf40f036ff682cc2c8 # v1
         with:
           toolchain: stable

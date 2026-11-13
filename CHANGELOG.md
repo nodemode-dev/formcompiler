@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.13.9 · 2026-11-13
+
+- Windows desktop builds set `PY_PYTHON` and `PY_PYTHON3` to the recipe's Python, so an app launcher's `py -3 -m venv` makes a 3.12 venv instead of taking the newest Python on the runner (3.15). FormTxt 0.32.0 and FormTools 0.8.0 failed on Windows because onnxruntime and rawpy have no Python 3.15 wheels.
+
 ## v0.13.8 · 2026-11-13
 
 - FormTools is registered (`apps/formtools.json`) for Apple silicon, Intel Macs, Windows and Linux, in contract mode after FormPath and FormDesign: `install`, `install-desktop`, then `desktop build`, with `formtools.bat` under cmd on Windows. It is in launch Group 2 with FormCel and FormTxt. The catalogue entry follows formai.studio's `catalog/products.json`.
