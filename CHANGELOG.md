@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.14.3 · 2026-11-16
+
+- A Mac build under `signing.macos` `apple` no longer fails while Apple's notary refuses the account. Before the build, a new Notary check step asks the notary for the account's history; when the answer is that a required agreement is missing or has expired, that one run builds as `developer-id` does (signed with the Developer ID, nothing sent to the notary) and shows a warning. Any other answer changes nothing, and the first run after the agreement is accepted is notarized again. No registry entry changed. FormRef 0.39.2, FormWeb 0.21.2, Format 0.26.3, form.ext 0.4.1, FormMCP 0.10.4 and FormPortal 0.64.1 failed on both Mac platforms on 2026-11-16 at notarization with that 403; start a new release run for each, because re-running the failed jobs keeps the old workflow. A fallback build is not notarized, so macOS does not open it on a plain double-click the first time. Unproven until a Mac run: that the history request gets the same 403 as a submission; if it does not, the build fails at notarization as before.
+
 ## v0.14.2 · 2026-11-13
 
 - The Intel Mac wheel downloads retry five times on any error, a connection reset included (`--retry-all-errors`). FormTxt 0.32.0's Intel build (run 43485904101) stopped on `curl: (56) Recv failure: Connection reset by peer`, which plain `--retry` does not retry.
