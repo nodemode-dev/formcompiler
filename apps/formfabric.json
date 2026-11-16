@@ -1,0 +1,53 @@
+{
+  "app": "formfabric",
+  "repository": "nodemode-dev/formfabric",
+  "title": "formfabric",
+  "enabled": true,
+  "release": "draft",
+  "version": {"file": "src-tauri/tauri.conf.json", "pattern": ""},
+  "checks": ["ci.yml"],
+  "platforms": ["macos-arm64", "macos-x64", "linux-x64", "windows-x64"],
+  "toolchain": {
+    "node": "22",
+    "python": "3.12",
+    "rust": true,
+    "rust_targets": "wasm32-unknown-unknown",
+    "rust_cache": ["src-tauri", "native"],
+    "go": "",
+    "linux_packages": "libwebkit2gtk-4.1-dev libayatana-appindicator3-dev librsvg2-dev patchelf libxdo-dev",
+    "windows_msvc": true
+  },
+  "build": {
+    "mode": "contract",
+    "cli": "formfabric",
+    "install": true,
+    "install_args": "",
+    "install_desktop": true,
+    "windows_shell": "cmd",
+    "macos": "",
+    "linux": "",
+    "windows": "",
+    "tauri_config": ""
+  },
+  "setup": {"macos": "", "linux": "", "windows": ""},
+  "post_build": {"macos": "", "linux": "", "windows": ""},
+  "artifacts": [],
+  "extras": [],
+  "assets": "",
+  "notes": "",
+  "updater": {"tauri": true, "tag_json": false, "files": []},
+  "signing": {"macos": "developer-id", "windows": "certificate"},
+  "agents": {"skills": ".claude/skills", "mcp": true},
+  "catalog": {
+    "id": "formfabric",
+    "name": "FormFabric",
+    "kind": "garment",
+    "summary": "Garment pattern design and cloth simulation: draw patterns, sew, drape and export.",
+    "identifier": "ai.nodemode.formfabric",
+    "licence": "Apache-2.0",
+    "state": "prelaunch",
+    "project_extensions": [".ffbrc"],
+    "minimum_os": {"macos": "macOS 12", "windows": "Windows 10", "linux": ""}
+  },
+  "notes_for_owner": "UNTESTED: formfabric is registered for its first release (0.25.0, with FormSculpt and FormSurface on 2026-11-19), so no earlier run backs this entry. The app repo follows the contract: ./formfabric install, install-desktop and desktop build [--config FILE] (bash), and the same three verbs in formfabric.bat, so windows_shell is cmd; if the first Windows run fails in the bat path, set windows_shell to bash as formsculpt does. windows_msvc is true because the engine compiles C (ufbx) with the cc crate. rust_targets installs the wasm32 target the browser engine needs (rust-toolchain.toml lists it too). macOS: the engine is a PyInstaller onedir shipped as a resource; with APPLE_SIGNING_IDENTITY set, setup/freeze_backend signs every Mach-O in it with hardened runtime, a timestamp and src-tauri/entitlements.plist; none of this has run in CI yet. Intel Macs: every Python dependency has an Intel wheel on PyPI and the Rust engine builds on the Intel runner, untested until the first macos-x64 run. Signing is developer-id while Apple refuses notarization, as for FormSculpt and FormSurface; switch to apple when it works. Updater: plugins.updater names the store feed with an empty pubkey, so the app skips update checks until formcompiler writes the key at build time. Not in formportal's products.json: the catalog entry is written from the README and tauri.conf.json (project file .ffbrc from the file association). Add agents.mcp_launch {command, args} once the bundle path of the program is fixed: the installed program answers mcp as its first argument over stdio, so args is [\"mcp\"]."
+}
