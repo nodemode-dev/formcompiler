@@ -40,7 +40,7 @@ on:
         type: string
         default: ""
       macos-signing:
-        description: "apple (formcompiler's Apple identity when set, ad hoc until then), developer-id (that identity without notarization), adhoc, or none"
+        description: "apple (formcompiler's Apple identity when set, ad hoc until then; without notarization for a run in which the notary refuses the account), developer-id (that identity without notarization), adhoc, or none"
         type: string
         default: "apple"
       windows-signing:
@@ -443,6 +443,26 @@ jobs:
           if ! security find-identity -v -p codesigning "$keychain" | grep -qF "$APPLE_SIGNING_IDENTITY"; then echo "::error::the Apple certificate does not hold the identity APPLE_SIGNING_IDENTITY names"; exit 1; fi
           echo "FORMCOMPILER_KEYCHAIN=$keychain" >> "$GITHUB_ENV"
           echo "Apple identity ready in the build keychain"
+      - name: Notary check
+        if: runner.os == 'macOS' && inputs.macos-signing == 'apple'
+        env:
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+        run: |
+          if [ -z "$APPLE_ID" ] || [ -z "$APPLE_PASSWORD" ] || [ -z "$APPLE_TEAM_ID" ] || [ -z "$FORMCOMPILER_KEYCHAIN" ]; then
+            echo "Apple identity not set: nothing is sent to the notary"; exit 0
+          fi
+          if answer="$(xcrun notarytool history --apple-id "$APPLE_ID" --password "$APPLE_PASSWORD" --team-id "$APPLE_TEAM_ID" 2>&1)"; then
+            echo "the notary answers for this account: the build is notarized"; exit 0
+          fi
+          if printf '%s\n' "$answer" | grep -qiF "agreement is missing or has expired"; then
+            echo "FORMCOMPILER_NOTARY=refused" >> "$GITHUB_ENV"
+            echo "::warning::Apple's notary refuses this account (a required agreement is missing or has expired): this Mac build is signed with the Developer ID and not notarized"
+            exit 0
+          fi
+          printf '%s\n' "$answer" | tail -n 5
+          echo "::warning::the notary check failed for another reason: the build goes on and notarizes as usual"
       - name: MSVC environment
         if: runner.os == 'Windows' && inputs.windows-msvc
         uses: ilammy/msvc-dev-cmd@0b201ec74fa43914dc39ae48a89fd1d8cb592756 # v1.13.0
@@ -454,9 +474,9 @@ jobs:
           APPLE_CERTIFICATE: ${{ (inputs.macos-signing == 'apple' || inputs.macos-signing == 'developer-id') && env.FORMCOMPILER_KEYCHAIN == '' && secrets.APPLE_CERTIFICATE || '' }}
           APPLE_CERTIFICATE_PASSWORD: ${{ (inputs.macos-signing == 'apple' || inputs.macos-signing == 'developer-id') && env.FORMCOMPILER_KEYCHAIN == '' && secrets.APPLE_CERTIFICATE_PASSWORD || '' }}
           APPLE_SIGNING_IDENTITY: ${{ (inputs.macos-signing == 'apple' || inputs.macos-signing == 'developer-id') && secrets.APPLE_CERTIFICATE != '' && secrets.APPLE_SIGNING_IDENTITY || '' }}
-          APPLE_ID: ${{ inputs.macos-signing == 'apple' && secrets.APPLE_ID || '' }}
-          APPLE_PASSWORD: ${{ inputs.macos-signing == 'apple' && secrets.APPLE_PASSWORD || '' }}
-          APPLE_TEAM_ID: ${{ inputs.macos-signing == 'apple' && secrets.APPLE_TEAM_ID || '' }}
+          APPLE_ID: ${{ inputs.macos-signing == 'apple' && env.FORMCOMPILER_NOTARY != 'refused' && secrets.APPLE_ID || '' }}
+          APPLE_PASSWORD: ${{ inputs.macos-signing == 'apple' && env.FORMCOMPILER_NOTARY != 'refused' && secrets.APPLE_PASSWORD || '' }}
+          APPLE_TEAM_ID: ${{ inputs.macos-signing == 'apple' && env.FORMCOMPILER_NOTARY != 'refused' && secrets.APPLE_TEAM_ID || '' }}
           TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
           TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
           TAURI_UPDATER_PUBKEY: ${{ vars.TAURI_UPDATER_PUBKEY }}
@@ -508,9 +528,9 @@ jobs:
       - name: Post-build
         env:
           APPLE_SIGNING_IDENTITY: ${{ (inputs.macos-signing == 'apple' || inputs.macos-signing == 'developer-id') && env.FORMCOMPILER_KEYCHAIN != '' && secrets.APPLE_SIGNING_IDENTITY || '' }}
-          APPLE_ID: ${{ inputs.macos-signing == 'apple' && secrets.APPLE_ID || '' }}
-          APPLE_PASSWORD: ${{ inputs.macos-signing == 'apple' && secrets.APPLE_PASSWORD || '' }}
-          APPLE_TEAM_ID: ${{ inputs.macos-signing == 'apple' && secrets.APPLE_TEAM_ID || '' }}
+          APPLE_ID: ${{ inputs.macos-signing == 'apple' && env.FORMCOMPILER_NOTARY != 'refused' && secrets.APPLE_ID || '' }}
+          APPLE_PASSWORD: ${{ inputs.macos-signing == 'apple' && env.FORMCOMPILER_NOTARY != 'refused' && secrets.APPLE_PASSWORD || '' }}
+          APPLE_TEAM_ID: ${{ inputs.macos-signing == 'apple' && env.FORMCOMPILER_NOTARY != 'refused' && secrets.APPLE_TEAM_ID || '' }}
           MSIX_IDENTITY_NAME: ${{ vars.MSIX_IDENTITY_NAME }}
           MSIX_PUBLISHER: ${{ vars.MSIX_PUBLISHER }}
           MSIX_PUBLISHER_DISPLAY_NAME: ${{ vars.MSIX_PUBLISHER_DISPLAY_NAME }}
@@ -554,6 +574,9 @@ jobs:
         run: |
           if [ -z "$APPLE_ID" ] || [ -z "$APPLE_PASSWORD" ] || [ -z "$APPLE_TEAM_ID" ] || [ -z "$FORMCOMPILER_KEYCHAIN" ]; then
             echo "Apple identity not set: the disk images stay unsigned and are not notarized"; exit 0
+          fi
+          if [ "$FORMCOMPILER_NOTARY" = "refused" ]; then
+            echo "the notary refuses this account: the disk images stay unsigned and are not notarized"; exit 0
           fi
           submitted="$RUNNER_TEMP/formcompiler-notarize.tsv"
           : > "$submitted"
