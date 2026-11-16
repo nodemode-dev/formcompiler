@@ -50,7 +50,7 @@
   "assets": "APP=app\n[ -d \"$APP/src-tauri\" ] || APP=.\npython3 - \"$APP\" \"$DIST\" <<'PY'\nimport hashlib, json, sys, urllib.request\napp, dist = sys.argv[1], sys.argv[2]\nsrc = json.load(open(app + '/src-tauri/binaries/ffmpeg-licence.json'))['source']['ffmpeg']\nname = dist + '/' + src['url'].rsplit('/', 1)[1]\nurllib.request.urlretrieve(src['url'], name)\ndigest = hashlib.sha256(open(name, 'rb').read()).hexdigest()\nassert digest == src['sha256'], (digest, src['sha256'])\nprint('attached', name, digest)\nlame = dist + '/lame-3.100.tar.gz'\nurllib.request.urlretrieve('https://downloads.sourceforge.net/project/lame/lame/3.100/lame-3.100.tar.gz', lame)\ndigest = hashlib.sha256(open(lame, 'rb').read()).hexdigest()\nassert digest == 'ddfe36cab873794038ae2c1210557ad34857a4b6bdc515785d1da9e175b1da1e', digest\nprint('attached', lame, digest)\nPY\ncp \"$APP/src-tauri/binaries/LGPL-2.1.txt\" \"$APP/src-tauri/binaries/THIRD-PARTY-NOTICES.txt\" \"$APP/src-tauri/binaries/ffmpeg-licence.json\" \"$DIST/\"\n",
   "notes": "",
   "updater": {"tauri": true, "tag_json": false, "files": []},
-  "signing": {"macos": "apple", "windows": "certificate"},
+  "signing": {"macos": "developer-id", "windows": "certificate"},
   "agents": {"skills": ".claude/skills", "mcp": true},
   "catalog": {
     "id": "formencoder",

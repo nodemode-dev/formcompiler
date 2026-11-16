@@ -36,7 +36,7 @@
   "assets": "python3 setup/build_packages.py --out \"$DIST\"",
   "notes": "",
   "updater": {"tauri": false, "tag_json": false, "files": []},
-  "signing": {"macos": "apple", "windows": "certificate"},
+  "signing": {"macos": "developer-id", "windows": "certificate"},
   "agents": {"skills": ".claude/skills", "mcp": true},
   "catalog": {
     "id": "formpromo",
