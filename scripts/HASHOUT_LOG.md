@@ -1003,3 +1003,10 @@ onnxruntime stopped publishing Intel Mac wheels after 1.23.2 and cryptography af
 - logged: v0.14.2 · 2026-11-15
 
 FormSculpt and FormSurface release with FormFabric on 2026-11-19, while the Apple account cannot notarize (the notary's 403 of 2026-11-13, and the Developer ID held up by the move to the organisation). Under `apple` their Mac builds would have gone to the notary as FormCel's, FormTxt's and FormTools' did before v0.14.1. They now use `developer-id`, as those three do: signed with formcompiler's Developer ID certificate when it is set, never sent to the notary, so macOS asks once before the first open. Switch all six back to `apple` once notarization works.
+
+### apps/formfabric.json · FormFabric is registered
+- refers-to: apps/formfabric.json
+- kind: decision
+- logged: v0.14.2 · 2026-11-15
+
+FormFabric (nodemode-dev/formfabric) releases for the first time with FormSculpt and FormSurface. The entry is the one the app repository drafted in `docs/integration/apps-formfabric.json` from the registry contract, with three changes: `enabled` is true and `disabled_reason` is gone; `macos-x64` is listed, which the check requires of every app with a Mac build since v0.13.5 (its Python dependencies all have Intel wheels on PyPI, and the Rust engine builds on the Intel runner, as FormSculpt's does); and `signing.macos` is `developer-id` like the other two. Windows runs `formfabric.bat` under cmd, which has install, install-desktop and desktop build; the entry's notes say to switch to bash as FormSculpt does if that path fails on its first run.
