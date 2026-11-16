@@ -41,7 +41,7 @@
   "assets": "python3 setup/package_release.py --finish --out \"$DIST\"",
   "notes": "",
   "updater": {"tauri": true, "tag_json": false, "files": []},
-  "signing": {"macos": "apple", "windows": "certificate"},
+  "signing": {"macos": "developer-id", "windows": "certificate"},
   "agents": {"skills": ".claude/skills", "mcp": true},
   "catalog": {
     "id": "formai",

@@ -56,7 +56,7 @@
   "assets": "",
   "notes": "",
   "updater": {"tauri": false, "tag_json": true, "files": []},
-  "signing": {"macos": "apple", "windows": "certificate"},
+  "signing": {"macos": "developer-id", "windows": "certificate"},
   "catalog": {
     "id": "formnet",
     "name": "FormNET",

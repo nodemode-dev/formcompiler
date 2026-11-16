@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.14.3 · 2026-11-16
+
+- Every registered app now signs its Mac builds with `developer-id`, not just the six that did. Apple's notary still answers 403 (a required agreement is missing or has expired): at 17:32 to 17:37 UTC on 2026-11-16 the releases of FormAT 0.26.3, FormRef 0.39.2 and FormWeb 0.21.2 (Group 3, due 17:00), and of form.ext, FormDeck, FormMCP, FormPortal, FormSkills, FormPath, FormVis, form.md and FormDesign, all stopped at `failed to notarize app` on both Mac runners. Their Mac builds ship signed but not notarized, so macOS asks once before the first open. Switch every entry back to `apple` once the account holder accepts the agreement and a notarization succeeds.
+
 ## v0.14.2 · 2026-11-13
 
 - The Intel Mac wheel downloads retry five times on any error, a connection reset included (`--retry-all-errors`). FormTxt 0.32.0's Intel build (run 43485904101) stopped on `curl: (56) Recv failure: Connection reset by peer`, which plain `--retry` does not retry.
