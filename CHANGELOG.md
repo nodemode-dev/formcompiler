@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.14.5 · 2026-11-17
+
+- FormFabric 0.25.1, FormSculpt 1.21.0 and FormSurface 0.62.1 are yanked until their release on Thursday 2026-11-19 at 12:00 EST. v0.14.4 alone did not take them out: the publishing pipeline refuses to publish a catalogue that loses every release of an app the store lists today unless those versions are yanked, so the first feed after v0.14.4 stopped and published nothing, and every later feed would have stopped the same way. The builds are sound; they were published before their date. To release them: remove their three rows from `yanked.json`, make the three repositories public and start a feed.
+
 ## v0.14.4 · 2026-11-17
 
 - A release on a private app repository is no longer listed in the catalogue. FormSculpt 1.21.0, FormSurface 0.62.1 and FormFabric 0.25.1, due on Thursday 2026-11-19 at 12:00 EST with their repositories still private, had their drafts published on the night of 2026-11-16, and the catalogue of 2026-11-17 10:02 EST offered all three, so formai.studio and FormPortal showed them as released two days early. `catalog.py build` now asks GitHub whether each repository with a release is public and leaves a private one's releases out, with a notice naming it; the app stays listed with no release, which is how both show an app that is not out yet. An app opens when its repository is made public. A dry run with `--releases FILE` is unchanged. The files of those three releases are already in the download store; taking them down is the publishing pipeline's side.

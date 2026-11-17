@@ -1,3 +1,22 @@
 {
-  "yanked": []
+  "yanked": [
+    {
+      "app": "formfabric",
+      "version": "0.25.1",
+      "reason": "Published before its release date of 2026-11-19; the build is sound and is listed again on that date.",
+      "date": "2026-11-17"
+    },
+    {
+      "app": "formsculpt",
+      "version": "1.21.0",
+      "reason": "Published before its release date of 2026-11-19; the build is sound and is listed again on that date.",
+      "date": "2026-11-17"
+    },
+    {
+      "app": "formsurface",
+      "version": "0.62.1",
+      "reason": "Published before its release date of 2026-11-19; the build is sound and is listed again on that date.",
+      "date": "2026-11-17"
+    }
+  ]
 }
