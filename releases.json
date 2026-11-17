@@ -1,7 +1,7 @@
 {
   "format": "formai-catalog",
   "format_version": 1,
-  "generated": "2026-11-17T04:43:47Z",
+  "generated": "2026-11-17T15:02:13Z",
   "origin": "https://github.com/nodemode-dev/formcompiler",
   "products": [
     {
@@ -3362,7 +3362,101 @@
         "mcp": true,
         "skills": true
       },
-      "channels": {}
+      "channels": {
+        "stable": {
+          "version": "0.25.1",
+          "published": "2026-11-17T05:00:20Z",
+          "notes": "https://github.com/nodemode-dev/formfabric/releases/tag/v0.25.1",
+          "origin": "store",
+          "artifacts": [
+            {
+              "platform": "linux",
+              "arch": "x86_64",
+              "kind": "appimage",
+              "file": "formfabric-0.25.1-linux-x64.AppImage",
+              "url": "https://dl.formai.studio/formfabric/0.25.1/formfabric-0.25.1-linux-x64.AppImage",
+              "bytes": 137611768,
+              "sha256": "6cd8212e1b47dfd405e49235d3b83750c28e181bc31fc6638d2c46c789bcf2df",
+              "minimum_os": ""
+            },
+            {
+              "platform": "linux",
+              "arch": "x86_64",
+              "kind": "deb",
+              "file": "formfabric-0.25.1-linux-x64.deb",
+              "url": "https://dl.formai.studio/formfabric/0.25.1/formfabric-0.25.1-linux-x64.deb",
+              "bytes": 59339814,
+              "sha256": "0a8f40475d41a902610818fc040dc03926bc40106c67d5ae518d45cd2e8e54eb",
+              "minimum_os": ""
+            },
+            {
+              "platform": "linux",
+              "arch": "x86_64",
+              "kind": "rpm",
+              "file": "formfabric-0.25.1-linux-x64.rpm",
+              "url": "https://dl.formai.studio/formfabric/0.25.1/formfabric-0.25.1-linux-x64.rpm",
+              "bytes": 59348608,
+              "sha256": "fc9fb0937abb0a5ba4f2c53f2d403ddd4df71feebe7a02c8b0f8dc0ffad2381f",
+              "minimum_os": ""
+            },
+            {
+              "platform": "macos",
+              "arch": "arm64",
+              "kind": "dmg",
+              "file": "formfabric-0.25.1-macos-arm64.dmg",
+              "url": "https://dl.formai.studio/formfabric/0.25.1/formfabric-0.25.1-macos-arm64.dmg",
+              "bytes": 45375575,
+              "sha256": "b27f4f9e9def542560035ca2be89e9bf7cf8960faf6a229374c81028993d6160",
+              "minimum_os": "macOS 12"
+            },
+            {
+              "platform": "macos",
+              "arch": "x86_64",
+              "kind": "dmg",
+              "file": "formfabric-0.25.1-macos-x64.dmg",
+              "url": "https://dl.formai.studio/formfabric/0.25.1/formfabric-0.25.1-macos-x64.dmg",
+              "bytes": 46972967,
+              "sha256": "d9d86355b9c765632d9bcf9024e8ecc0539a292de55b95856b8efe89c07eb9b2",
+              "minimum_os": "macOS 12"
+            },
+            {
+              "platform": "windows",
+              "arch": "x86_64",
+              "kind": "nsis",
+              "file": "formfabric-0.25.1-windows-x64-setup.exe",
+              "url": "https://dl.formai.studio/formfabric/0.25.1/formfabric-0.25.1-windows-x64-setup.exe",
+              "bytes": 38754968,
+              "sha256": "d101ab37e65037fdcaf8a74e1bf4fcd296ccc30e460dad0539819eb6de921e3a",
+              "minimum_os": "Windows 10"
+            },
+            {
+              "platform": "windows",
+              "arch": "x86_64",
+              "kind": "msi",
+              "file": "formfabric-0.25.1-windows-x64.msi",
+              "url": "https://dl.formai.studio/formfabric/0.25.1/formfabric-0.25.1-windows-x64.msi",
+              "bytes": 39952384,
+              "sha256": "5a6998b103df26777472b9343deda4f80570dab3704dab99de3ceeb96b3e2766",
+              "minimum_os": "Windows 10"
+            }
+          ],
+          "commit": "654bfe9776e7cb789b2c7709febbfe555d294ea4",
+          "agents": {
+            "manifest": {
+              "file": "form-app.json",
+              "url": "https://dl.formai.studio/formfabric/0.25.1/form-app.json",
+              "bytes": 2600,
+              "sha256": "a7c18e6111765433823aa2857faf4c0701b29cad2858ada9614a09eb1e6dfa5c"
+            },
+            "skills": {
+              "file": "formfabric-skills-v0.25.1.zip",
+              "url": "https://dl.formai.studio/formfabric/0.25.1/formfabric-skills-v0.25.1.zip",
+              "bytes": 56760,
+              "sha256": "0f5fee39b01a3cc86d2913605f726e9a64f1f216ad4ec0b5bec57fd1496e0e5c"
+            }
+          }
+        }
+      }
     },
     {
       "id": "formlit",
@@ -6951,7 +7045,91 @@
         "mcp": true,
         "skills": true
       },
-      "channels": {}
+      "channels": {
+        "stable": {
+          "version": "0.62.1",
+          "published": "2026-11-17T04:51:40Z",
+          "notes": "https://github.com/nodemode-dev/formsurface/releases/tag/v0.62.1",
+          "origin": "store",
+          "artifacts": [
+            {
+              "platform": "linux",
+              "arch": "x86_64",
+              "kind": "appimage",
+              "file": "formsurface-0.62.1-linux-x64.AppImage",
+              "url": "https://dl.formai.studio/formsurface/0.62.1/formsurface-0.62.1-linux-x64.AppImage",
+              "bytes": 145644024,
+              "sha256": "50a520baae6589b9111ca768f86a29c2a53568a8d22a75d713d7b9ab189528ac",
+              "minimum_os": ""
+            },
+            {
+              "platform": "linux",
+              "arch": "x86_64",
+              "kind": "deb",
+              "file": "formsurface-0.62.1-linux-x64.deb",
+              "url": "https://dl.formai.studio/formsurface/0.62.1/formsurface-0.62.1-linux-x64.deb",
+              "bytes": 67375040,
+              "sha256": "f78460f6ed1a258be27d50e1ed2e5e91ae2d8a8fc718e7b18448efb8dbae24d8",
+              "minimum_os": ""
+            },
+            {
+              "platform": "macos",
+              "arch": "arm64",
+              "kind": "dmg",
+              "file": "formsurface-0.62.1-macos-arm64.dmg",
+              "url": "https://dl.formai.studio/formsurface/0.62.1/formsurface-0.62.1-macos-arm64.dmg",
+              "bytes": 52785482,
+              "sha256": "fdc8485eff2f405546f6150ab1d77ba3c6e549070b8d012f906f465b233e630c",
+              "minimum_os": "macOS 12"
+            },
+            {
+              "platform": "macos",
+              "arch": "x86_64",
+              "kind": "dmg",
+              "file": "formsurface-0.62.1-macos-x64.dmg",
+              "url": "https://dl.formai.studio/formsurface/0.62.1/formsurface-0.62.1-macos-x64.dmg",
+              "bytes": 54500405,
+              "sha256": "6e689d0c6b804f9bf8548bfee48b653a5e83469dfd25122ad35accd6c36def92",
+              "minimum_os": "macOS 12"
+            },
+            {
+              "platform": "windows",
+              "arch": "x86_64",
+              "kind": "nsis",
+              "file": "formsurface-0.62.1-windows-x64-setup.exe",
+              "url": "https://dl.formai.studio/formsurface/0.62.1/formsurface-0.62.1-windows-x64-setup.exe",
+              "bytes": 51309768,
+              "sha256": "9df8e7e2f4c2cd9ea1fcec57906c448e14b2aea653ef8c92b21c8b961963d33e",
+              "minimum_os": "Windows 10"
+            },
+            {
+              "platform": "windows",
+              "arch": "x86_64",
+              "kind": "msi",
+              "file": "formsurface-0.62.1-windows-x64.msi",
+              "url": "https://dl.formai.studio/formsurface/0.62.1/formsurface-0.62.1-windows-x64.msi",
+              "bytes": 52002816,
+              "sha256": "f72aac84850be7ce5f58296076bbd00a5281c7d9cdb9bad3393dfdd411283f5b",
+              "minimum_os": "Windows 10"
+            }
+          ],
+          "commit": "f92ff4b176a63195111395d4d2aa1efb0b028b96",
+          "agents": {
+            "manifest": {
+              "file": "form-app.json",
+              "url": "https://dl.formai.studio/formsurface/0.62.1/form-app.json",
+              "bytes": 2321,
+              "sha256": "80bc8b52721f2f7a085b75eb09b9d38fd244172a85d51983906f401a196c08b6"
+            },
+            "skills": {
+              "file": "formsurface-skills-v0.62.1.zip",
+              "url": "https://dl.formai.studio/formsurface/0.62.1/formsurface-skills-v0.62.1.zip",
+              "bytes": 37885,
+              "sha256": "6c6a74423626c923f97e461e7f057667099bff7b7030731b822433b250a987c6"
+            }
+          }
+        }
+      }
     },
     {
       "id": "formtools",
