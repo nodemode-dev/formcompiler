@@ -11,7 +11,7 @@
 </p>
 
 <p align="center">
-  <img alt="version v0.14.3" src="https://img.shields.io/badge/version-v0.14.3-eef0f4?style=flat-square">
+  <img alt="version v0.14.4" src="https://img.shields.io/badge/version-v0.14.4-eef0f4?style=flat-square">
   <img alt="GitHub Actions" src="https://img.shields.io/badge/GitHub_Actions-watch_%C2%B7_release-2088FF?style=flat-square&logo=githubactions&logoColor=white">
   <img alt="Python 3.11+" src="https://img.shields.io/badge/Python-3.11%2B-3776AB?style=flat-square&logo=python&logoColor=white">
   <img alt="Builds for macOS, Windows and Linux" src="https://img.shields.io/badge/builds-macOS_%C2%B7_Windows_%C2%B7_Linux-2f7bf5?style=flat-square">
@@ -73,6 +73,7 @@
 - **Drafts, never surprises.** A stable release is a draft a person publishes; a published release is never overwritten.
 - **Betas publish themselves.** A prerelease version becomes a GitHub prerelease once its builds pass.
 - **Yank, never delete.** A version in `yanked.json` leaves the catalogue; its files stay in place.
+- **Private stays out.** A release on a private app repository is left out of the catalogue until the repository is public.
 - **Skills in every release.** Each release carries `form-app.json` and a reproducible `<app>-skills-v<version>.zip`.
 - **Pinned actions.** Every third-party action is pinned to a full commit SHA.
 
