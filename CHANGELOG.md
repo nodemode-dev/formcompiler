@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.14.4 · 2026-11-17
+
+- A release on a private app repository is no longer listed in the catalogue. FormSculpt 1.21.0, FormSurface 0.62.1 and FormFabric 0.25.1, due on Thursday 2026-11-19 at 12:00 EST with their repositories still private, had their drafts published on the night of 2026-11-16, and the catalogue of 2026-11-17 10:02 EST offered all three, so formai.studio and FormPortal showed them as released two days early. `catalog.py build` now asks GitHub whether each repository with a release is public and leaves a private one's releases out, with a notice naming it; the app stays listed with no release, which is how both show an app that is not out yet. An app opens when its repository is made public. A dry run with `--releases FILE` is unchanged. The files of those three releases are already in the download store; taking them down is the publishing pipeline's side.
+
 ## v0.14.3 · 2026-11-16
 
 - A Mac build under `signing.macos` `apple` no longer fails while Apple's notary refuses the account. Before the build, a new Notary check step asks the notary for the account's history; when the answer is that a required agreement is missing or has expired, that one run builds as `developer-id` does (signed with the Developer ID, nothing sent to the notary) and shows a warning. Any other answer changes nothing, and the first run after the agreement is accepted is notarized again. No registry entry changed. FormRef 0.39.2, FormWeb 0.21.2, Format 0.26.3, form.ext 0.4.1, FormMCP 0.10.4 and FormPortal 0.64.1 failed on both Mac platforms on 2026-11-16 at notarization with that 403; start a new release run for each, because re-running the failed jobs keeps the old workflow. A fallback build is not notarized, so macOS does not open it on a plain double-click the first time. Unproven until a Mac run: that the history request gets the same 403 as a submission; if it does not, the build fails at notarization as before.
