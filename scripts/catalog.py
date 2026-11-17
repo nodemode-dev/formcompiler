@@ -247,6 +247,21 @@ def fetch_releases(entries) -> dict:
     return found
 
 
+def public_only(releases_by_repo: dict) -> dict:
+    kept = {}
+    for repository, found in releases_by_repo.items():
+        if found:
+            try:
+                public = gh.repository_public(repository)
+            except gh.ApiError as error:
+                sys.exit(f"::error::could not read whether {repository} is public: {error}")
+            if not public:
+                print(f"::notice::{repository} is private: its releases ({len(found)}) are left out of the catalogue until the repository is public")
+                found = []
+        kept[repository] = found
+    return kept
+
+
 def read_releases(path: str) -> dict:
     data = json.loads(Path(path).read_text(encoding="utf-8"))
     if not isinstance(data, dict) or not all(isinstance(v, list) for v in data.values()):
@@ -329,7 +344,7 @@ def main():
     except (ValueError, yank.YankError) as error:
         sys.exit(f"::error::{error}")
     entries = all_entries()
-    releases_by_repo = read_releases(args.releases) if args.releases else fetch_releases(entries)
+    releases_by_repo = read_releases(args.releases) if args.releases else public_only(fetch_releases(entries))
     document = build(entries, releases_by_repo, base, yanked, args.origin, args.sums_dir, args.asset_origin)
     text = json.dumps(document, indent=2, ensure_ascii=False) + "\n"
     Path(args.out).write_text(text, encoding="utf-8")

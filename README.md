@@ -73,6 +73,7 @@
 - **Drafts, never surprises.** A stable release is a draft a person publishes; a published release is never overwritten.
 - **Betas publish themselves.** A prerelease version becomes a GitHub prerelease once its builds pass.
 - **Yank, never delete.** A version in `yanked.json` leaves the catalogue; its files stay in place.
+- **Private stays out.** A release on a private app repository is left out of the catalogue until the repository is public.
 - **Skills in every release.** Each release carries `form-app.json` and a reproducible `<app>-skills-v<version>.zip`.
 - **Pinned actions.** Every third-party action is pinned to a full commit SHA.
 
