@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.15.1 · 2026-11-18
+
+- FormTray signs its Mac builds with `apple` again: signed with the Developer ID and notarized with the App Store Connect API key from v0.15.0. It is the first app back on the notary, through its 0.16.3 release, which stays a draft on the app repository until it is checked (FormTray's family contract allows no prerelease versions); the other apps stay on `developer-id` until its notarized disk images check out on both Mac platforms.
+
 ## v0.15.0 · 2026-11-18
 
 - Mac builds can notarize with an App Store Connect API key instead of an Apple ID and app-specific password. Set `APPLE_API_KEY` (the key ID), `APPLE_API_ISSUER` (the issuer ID) and `APPLE_API_PRIVATE_KEY` (the base64 of the `.p8` file); a new Notary API key step writes the key to a file readable only by the runner user, the Notary check, the Tauri build, Post-build and the disk image notarization all use it, and the always-run cleanup step removes it. When the key is set the Apple ID and password are not passed to Tauri, so a build uses one notary method. Without the key nothing changes. The key needs no two-factor code, so notarization no longer depends on whoever receives the Apple ID's codes.
