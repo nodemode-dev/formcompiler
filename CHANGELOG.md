@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.15.2 · 2026-11-18
+
+- The README counts 470 tests in 22 files: the per-entry registry tests gain three with the new entry.
+- FormCAD is registered (`apps/formCAD.json`): `contract` mode for Apple silicon, Intel Macs, Linux and Windows (Git Bash there), `developer-id` on macOS, rpm compression off, no updater. Its repository is private and its release stays a draft, so nothing reaches the catalogue or the download store. Its kernel and mesher workers are not in the build; the app downloads them from the `formcad/` releases of formai-binaries once the first is published.
+
 ## v0.15.1 · 2026-11-18
 
 - FormTray signs its Mac builds with `apple` again: signed with the Developer ID and notarized with the App Store Connect API key from v0.15.0. It is the first app back on the notary, through its 0.16.3 release, which stays a draft on the app repository until it is checked (FormTray's family contract allows no prerelease versions); the other apps stay on `developer-id` until its notarized disk images check out on both Mac platforms.
