@@ -56,7 +56,7 @@
   "agents": {"skills": ".claude/skills", "mcp": true},
   "catalog": {
     "id": "formslide",
-    "name": "FormSlide",
+    "name": "FormDeck",
     "kind": "slides",
     "summary": "Presentations: build slides, present and export.",
     "identifier": "ai.nodemode.formdeck",
