@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.15.0 · 2026-11-18
+
+- Mac builds can notarize with an App Store Connect API key instead of an Apple ID and app-specific password. Set `APPLE_API_KEY` (the key ID), `APPLE_API_ISSUER` (the issuer ID) and `APPLE_API_PRIVATE_KEY` (the base64 of the `.p8` file); a new Notary API key step writes the key to a file readable only by the runner user, the Notary check, the Tauri build, Post-build and the disk image notarization all use it, and the always-run cleanup step removes it. When the key is set the Apple ID and password are not passed to Tauri, so a build uses one notary method. Without the key nothing changes. The key needs no two-factor code, so notarization no longer depends on whoever receives the Apple ID's codes.
+- The build job runs in a new `signing` environment. Its deployment branch policy admits `main` only, so a workflow pushed to any other branch cannot read the Apple certificate or the notary key kept there. An environment secret replaces an organisation or repository secret of the same name, so the Apple secrets move into `signing` (docs/ACCOUNTS.md, "Mac signing and notarization"). The environment has no required reviewer, so builds do not wait.
+- The README counts 466 tests in 22 files.
+
 ## v0.14.5 · 2026-11-17
 
 - FormFabric 0.25.1, FormSculpt 1.21.0 and FormSurface 0.62.1 are yanked until their release on Thursday 2026-11-19 at 12:00 EST. v0.14.4 alone did not take them out: the publishing pipeline refuses to publish a catalogue that loses every release of an app the store lists today unless those versions are yanked, so the first feed after v0.14.4 stopped and published nothing, and every later feed would have stopped the same way. The builds are sound; they were published before their date. To release them: remove their three rows from `yanked.json`, make the three repositories public and start a feed.

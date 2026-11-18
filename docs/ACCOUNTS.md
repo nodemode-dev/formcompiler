@@ -33,6 +33,37 @@ One line in FormPortal's `core/github_client.txt` (below its comment lines), the
 
 keyring, which FormPortal uses for the keychain, links the system D-Bus library on Linux, so FormPortal's registry entry installs `libdbus-1-dev` for its Linux build (formcompiler v0.4.3). macOS and Windows need nothing extra.
 
+## Mac signing and notarization (owner)
+
+The build job runs in the `signing` environment. Create it once: Settings, Environments, New environment, `signing`. Deployment branches and tags: Selected branches, `main` only. No required reviewer, or every build waits for one. Its secrets take the place of any organisation or repository secret of the same name.
+
+Environment secrets:
+
+| Secret | What it is |
+| --- | --- |
+| `APPLE_CERTIFICATE` | base64 of the Developer ID Application `.p12` |
+| `APPLE_CERTIFICATE_PASSWORD` | the `.p12` password |
+| `APPLE_SIGNING_IDENTITY` | `Developer ID Application: <name> (<team ID>)`, exactly as `security find-identity -v -p codesigning` prints it |
+| `APPLE_TEAM_ID` | the 10-character team ID |
+| `APPLE_API_KEY` | the App Store Connect API key ID |
+| `APPLE_API_ISSUER` | the API key's issuer ID |
+| `APPLE_API_PRIVATE_KEY` | base64 of the `AuthKey_<key ID>.p8` file, on one line |
+
+The API key is made at App Store Connect, Users and Access, Integrations, Team Keys, with the Developer role; Apple lets the `.p8` be downloaded once. It replaces `APPLE_ID` and `APPLE_PASSWORD`, which need a two-factor code to create; when the key is set those two are not used, and they may be left unset.
+
+```shell
+E=(-R nodemode-dev/formcompiler --env signing)
+base64 -i developer-id.p12 | tr -d '\n' | gh secret set APPLE_CERTIFICATE "${E[@]}"
+gh secret set APPLE_CERTIFICATE_PASSWORD "${E[@]}"
+gh secret set APPLE_SIGNING_IDENTITY "${E[@]}"
+gh secret set APPLE_TEAM_ID "${E[@]}"
+gh secret set APPLE_API_KEY "${E[@]}"
+gh secret set APPLE_API_ISSUER "${E[@]}"
+base64 -i AuthKey_<key ID>.p8 | tr -d '\n' | gh secret set APPLE_API_PRIVATE_KEY "${E[@]}"
+```
+
+Check the key before a release: `xcrun notarytool history --key AuthKey_<key ID>.p8 --key-id <key ID> --issuer <issuer ID>` lists the account's submissions, or says there are none; an agreement Apple is waiting for shows here as a 403. An app's `signing.macos` is `apple` to notarize and `developer-id` to sign without the notary (docs/REGISTRY.md).
+
 ## The release credential (owner)
 
 From formcompiler v0.9.0 every app release is created on the app's own repository: the draft `vX.Y.Z` at the gated commit, the deletion of the app's older drafts and the publishing of a beta or of a `release: publish` app. formcompiler's own Actions token cannot write to another repository, so release.yml's `publish` job runs in the `release` environment of this repository and takes its credential from that environment's secrets. That job checks out formcompiler only and downloads the finished release files; every job that runs the app's own code (the builds, the extras, and the release files job that runs the registry's `assets` and `notes` commands) is outside the environment and holds nothing: an environment secret is not passed on by `secrets: inherit`, and a job without `environment: release` cannot read one. The job accepts two shapes, chosen by which secrets exist (`scripts/release_credential.sh`); with neither it fails before any work with an error that names this page. There is no fallback from one shape to the other: when the App secrets are set and the token cannot be minted (the App is not installed on that repository, the key was revoked), the job fails and says so, and the token is not tried, because a mint failure is a configuration to fix, not a reason to act as a person.

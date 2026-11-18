@@ -184,6 +184,12 @@ on:
         required: false
       APPLE_TEAM_ID:
         required: false
+      APPLE_API_KEY:
+        required: false
+      APPLE_API_ISSUER:
+        required: false
+      APPLE_API_PRIVATE_KEY:
+        required: false
       TAURI_SIGNING_PRIVATE_KEY:
         required: false
       TAURI_SIGNING_PRIVATE_KEY_PASSWORD:
@@ -251,6 +257,7 @@ jobs:
     name: ${{ matrix.platform }}
     needs: plan
     runs-on: ${{ matrix.runner }}
+    environment: signing
     timeout-minutes: ${{ matrix.platform == 'macos-x64' && 79 || 49 }}
     continue-on-error: ${{ matrix.experimental }}
     strategy:
@@ -443,17 +450,43 @@ jobs:
           if ! security find-identity -v -p codesigning "$keychain" | grep -qF "$APPLE_SIGNING_IDENTITY"; then echo "::error::the Apple certificate does not hold the identity APPLE_SIGNING_IDENTITY names"; exit 1; fi
           echo "FORMCOMPILER_KEYCHAIN=$keychain" >> "$GITHUB_ENV"
           echo "Apple identity ready in the build keychain"
+      - name: Notary API key
+        if: runner.os == 'macOS' && inputs.macos-signing == 'apple'
+        env:
+          APPLE_API_PRIVATE_KEY: ${{ secrets.APPLE_API_PRIVATE_KEY }}
+          APPLE_API_KEY: ${{ secrets.APPLE_API_KEY }}
+          APPLE_API_ISSUER: ${{ secrets.APPLE_API_ISSUER }}
+        run: |
+          if [ -z "$APPLE_API_PRIVATE_KEY" ] || [ -z "$APPLE_API_KEY" ] || [ -z "$APPLE_API_ISSUER" ]; then
+            echo "no App Store Connect API key: the notary uses the Apple ID, if one is set"; exit 0
+          fi
+          case "$APPLE_API_KEY" in *[!A-Za-z0-9]*) echo "::error::APPLE_API_KEY must be the key ID only (letters and digits)"; exit 1 ;; esac
+          dir="$RUNNER_TEMP/formcompiler-notary"
+          mkdir -p "$dir" && chmod 700 "$dir"
+          key="$dir/AuthKey_$APPLE_API_KEY.p8"
+          (umask 077 && printf '%s' "$APPLE_API_PRIVATE_KEY" | base64 --decode > "$key")
+          chmod 600 "$key"
+          if ! grep -q "BEGIN PRIVATE KEY" "$key"; then rm -f "$key"; echo "::error::APPLE_API_PRIVATE_KEY is not the base64 of a .p8 key"; exit 1; fi
+          echo "FORMCOMPILER_NOTARY_KEY=$key" >> "$GITHUB_ENV"
+          echo "App Store Connect API key ready for the notary"
       - name: Notary check
         if: runner.os == 'macOS' && inputs.macos-signing == 'apple'
         env:
           APPLE_ID: ${{ secrets.APPLE_ID }}
           APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          APPLE_API_KEY: ${{ secrets.APPLE_API_KEY }}
+          APPLE_API_ISSUER: ${{ secrets.APPLE_API_ISSUER }}
         run: |
-          if [ -z "$APPLE_ID" ] || [ -z "$APPLE_PASSWORD" ] || [ -z "$APPLE_TEAM_ID" ] || [ -z "$FORMCOMPILER_KEYCHAIN" ]; then
+          if [ -n "${FORMCOMPILER_NOTARY_KEY:-}" ]; then
+            notary=(--key "$FORMCOMPILER_NOTARY_KEY" --key-id "$APPLE_API_KEY" --issuer "$APPLE_API_ISSUER")
+          elif [ -n "$APPLE_ID" ] && [ -n "$APPLE_PASSWORD" ] && [ -n "$APPLE_TEAM_ID" ]; then
+            notary=(--apple-id "$APPLE_ID" --password "$APPLE_PASSWORD" --team-id "$APPLE_TEAM_ID")
+          else
             echo "Apple identity not set: nothing is sent to the notary"; exit 0
           fi
-          if answer="$(xcrun notarytool history --apple-id "$APPLE_ID" --password "$APPLE_PASSWORD" --team-id "$APPLE_TEAM_ID" 2>&1)"; then
+          if [ -z "$FORMCOMPILER_KEYCHAIN" ]; then echo "Apple identity not set: nothing is sent to the notary"; exit 0; fi
+          if answer="$(xcrun notarytool history "${notary[@]}" 2>&1)"; then
             echo "the notary answers for this account: the build is notarized"; exit 0
           fi
           if printf '%s\n' "$answer" | grep -qiF "agreement is missing or has expired"; then
@@ -474,9 +507,12 @@ jobs:
           APPLE_CERTIFICATE: ${{ (inputs.macos-signing == 'apple' || inputs.macos-signing == 'developer-id') && env.FORMCOMPILER_KEYCHAIN == '' && secrets.APPLE_CERTIFICATE || '' }}
           APPLE_CERTIFICATE_PASSWORD: ${{ (inputs.macos-signing == 'apple' || inputs.macos-signing == 'developer-id') && env.FORMCOMPILER_KEYCHAIN == '' && secrets.APPLE_CERTIFICATE_PASSWORD || '' }}
           APPLE_SIGNING_IDENTITY: ${{ (inputs.macos-signing == 'apple' || inputs.macos-signing == 'developer-id') && secrets.APPLE_CERTIFICATE != '' && secrets.APPLE_SIGNING_IDENTITY || '' }}
-          APPLE_ID: ${{ inputs.macos-signing == 'apple' && env.FORMCOMPILER_NOTARY != 'refused' && secrets.APPLE_ID || '' }}
-          APPLE_PASSWORD: ${{ inputs.macos-signing == 'apple' && env.FORMCOMPILER_NOTARY != 'refused' && secrets.APPLE_PASSWORD || '' }}
+          APPLE_ID: ${{ inputs.macos-signing == 'apple' && env.FORMCOMPILER_NOTARY != 'refused' && env.FORMCOMPILER_NOTARY_KEY == '' && secrets.APPLE_ID || '' }}
+          APPLE_PASSWORD: ${{ inputs.macos-signing == 'apple' && env.FORMCOMPILER_NOTARY != 'refused' && env.FORMCOMPILER_NOTARY_KEY == '' && secrets.APPLE_PASSWORD || '' }}
           APPLE_TEAM_ID: ${{ inputs.macos-signing == 'apple' && env.FORMCOMPILER_NOTARY != 'refused' && secrets.APPLE_TEAM_ID || '' }}
+          APPLE_API_KEY: ${{ inputs.macos-signing == 'apple' && env.FORMCOMPILER_NOTARY != 'refused' && env.FORMCOMPILER_NOTARY_KEY != '' && secrets.APPLE_API_KEY || '' }}
+          APPLE_API_ISSUER: ${{ inputs.macos-signing == 'apple' && env.FORMCOMPILER_NOTARY != 'refused' && env.FORMCOMPILER_NOTARY_KEY != '' && secrets.APPLE_API_ISSUER || '' }}
+          APPLE_API_KEY_PATH: ${{ inputs.macos-signing == 'apple' && env.FORMCOMPILER_NOTARY != 'refused' && env.FORMCOMPILER_NOTARY_KEY != '' && env.FORMCOMPILER_NOTARY_KEY || '' }}
           TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
           TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
           TAURI_UPDATER_PUBKEY: ${{ vars.TAURI_UPDATER_PUBKEY }}
@@ -528,9 +564,12 @@ jobs:
       - name: Post-build
         env:
           APPLE_SIGNING_IDENTITY: ${{ (inputs.macos-signing == 'apple' || inputs.macos-signing == 'developer-id') && env.FORMCOMPILER_KEYCHAIN != '' && secrets.APPLE_SIGNING_IDENTITY || '' }}
-          APPLE_ID: ${{ inputs.macos-signing == 'apple' && env.FORMCOMPILER_NOTARY != 'refused' && secrets.APPLE_ID || '' }}
-          APPLE_PASSWORD: ${{ inputs.macos-signing == 'apple' && env.FORMCOMPILER_NOTARY != 'refused' && secrets.APPLE_PASSWORD || '' }}
+          APPLE_ID: ${{ inputs.macos-signing == 'apple' && env.FORMCOMPILER_NOTARY != 'refused' && env.FORMCOMPILER_NOTARY_KEY == '' && secrets.APPLE_ID || '' }}
+          APPLE_PASSWORD: ${{ inputs.macos-signing == 'apple' && env.FORMCOMPILER_NOTARY != 'refused' && env.FORMCOMPILER_NOTARY_KEY == '' && secrets.APPLE_PASSWORD || '' }}
           APPLE_TEAM_ID: ${{ inputs.macos-signing == 'apple' && env.FORMCOMPILER_NOTARY != 'refused' && secrets.APPLE_TEAM_ID || '' }}
+          APPLE_API_KEY: ${{ inputs.macos-signing == 'apple' && env.FORMCOMPILER_NOTARY != 'refused' && env.FORMCOMPILER_NOTARY_KEY != '' && secrets.APPLE_API_KEY || '' }}
+          APPLE_API_ISSUER: ${{ inputs.macos-signing == 'apple' && env.FORMCOMPILER_NOTARY != 'refused' && env.FORMCOMPILER_NOTARY_KEY != '' && secrets.APPLE_API_ISSUER || '' }}
+          APPLE_API_KEY_PATH: ${{ inputs.macos-signing == 'apple' && env.FORMCOMPILER_NOTARY != 'refused' && env.FORMCOMPILER_NOTARY_KEY != '' && env.FORMCOMPILER_NOTARY_KEY || '' }}
           MSIX_IDENTITY_NAME: ${{ vars.MSIX_IDENTITY_NAME }}
           MSIX_PUBLISHER: ${{ vars.MSIX_PUBLISHER }}
           MSIX_PUBLISHER_DISPLAY_NAME: ${{ vars.MSIX_PUBLISHER_DISPLAY_NAME }}
@@ -569,10 +608,19 @@ jobs:
           APPLE_ID: ${{ secrets.APPLE_ID }}
           APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          APPLE_API_KEY: ${{ secrets.APPLE_API_KEY }}
+          APPLE_API_ISSUER: ${{ secrets.APPLE_API_ISSUER }}
           APPLE_SIGNING_IDENTITY: ${{ secrets.APPLE_SIGNING_IDENTITY }}
           ARTIFACTS: ${{ inputs.artifacts }}
         run: |
-          if [ -z "$APPLE_ID" ] || [ -z "$APPLE_PASSWORD" ] || [ -z "$APPLE_TEAM_ID" ] || [ -z "$FORMCOMPILER_KEYCHAIN" ]; then
+          if [ -n "${FORMCOMPILER_NOTARY_KEY:-}" ]; then
+            notary=(--key "$FORMCOMPILER_NOTARY_KEY" --key-id "$APPLE_API_KEY" --issuer "$APPLE_API_ISSUER")
+          elif [ -n "$APPLE_ID" ] && [ -n "$APPLE_PASSWORD" ] && [ -n "$APPLE_TEAM_ID" ]; then
+            notary=(--apple-id "$APPLE_ID" --password "$APPLE_PASSWORD" --team-id "$APPLE_TEAM_ID")
+          else
+            notary=()
+          fi
+          if [ "${#notary[@]}" = 0 ] || [ -z "$FORMCOMPILER_KEYCHAIN" ]; then
             echo "Apple identity not set: the disk images stay unsigned and are not notarized"; exit 0
           fi
           if [ "$FORMCOMPILER_NOTARY" = "refused" ]; then
@@ -590,15 +638,15 @@ jobs:
               codesign --force --timestamp --sign "$APPLE_SIGNING_IDENTITY" "$dmg"
               echo "signed: $dmg"
             fi
-            id="$(xcrun notarytool submit "$dmg" --apple-id "$APPLE_ID" --password "$APPLE_PASSWORD" --team-id "$APPLE_TEAM_ID" --output-format json | python3 -I -c 'import json, sys; print(json.load(sys.stdin)["id"])')"
+            id="$(xcrun notarytool submit "$dmg" "${notary[@]}" --output-format json | python3 -I -c 'import json, sys; print(json.load(sys.stdin)["id"])')"
             printf '%s\t%s\n' "$id" "$dmg" >> "$submitted"
             echo "submitted $dmg for notarization as $id"
           done 3< <(find src-tauri/target target src-tauri/target.nosync -name '*.dmg' -path '*/bundle/*' -type f -print0 2>/dev/null || true; find src-tauri/target.nosync -name '*.dmg' -type f -print0 2>/dev/null || true; python3 -I -c 'import glob, sys; [sys.stdout.write(f + "\0") for p in sys.argv[1].splitlines() if p.strip() for f in sorted(glob.glob(p.strip(), recursive=True)) if f.endswith(".dmg")]' "$ARTIFACTS")
           while IFS=$'\t' read -r id dmg <&4; do
-            xcrun notarytool wait "$id" --apple-id "$APPLE_ID" --password "$APPLE_PASSWORD" --team-id "$APPLE_TEAM_ID" || true
-            status="$(xcrun notarytool info "$id" --apple-id "$APPLE_ID" --password "$APPLE_PASSWORD" --team-id "$APPLE_TEAM_ID" --output-format json | python3 -I -c 'import json, sys; print(json.load(sys.stdin).get("status", ""))')"
+            xcrun notarytool wait "$id" "${notary[@]}" || true
+            status="$(xcrun notarytool info "$id" "${notary[@]}" --output-format json | python3 -I -c 'import json, sys; print(json.load(sys.stdin).get("status", ""))')"
             if [ "$status" != "Accepted" ]; then
-              xcrun notarytool log "$id" --apple-id "$APPLE_ID" --password "$APPLE_PASSWORD" --team-id "$APPLE_TEAM_ID" || true
+              xcrun notarytool log "$id" "${notary[@]}" || true
               echo "::error::notarization of $dmg ended $status"; exit 1
             fi
             for attempt in 1 2 3 4 5; do
@@ -631,3 +679,4 @@ jobs:
         if: always() && runner.os == 'macOS'
         run: |
           if [ -n "${FORMCOMPILER_KEYCHAIN:-}" ] && [ -f "$FORMCOMPILER_KEYCHAIN" ]; then security delete-keychain "$FORMCOMPILER_KEYCHAIN"; echo "build keychain removed"; else echo "no build keychain"; fi
+          if [ -n "${FORMCOMPILER_NOTARY_KEY:-}" ]; then rm -f "$FORMCOMPILER_NOTARY_KEY"; echo "notary key removed"; else echo "no notary key"; fi

@@ -103,7 +103,7 @@
 - **Flow:** `tick.yml` starts `watch.yml` every 15 minutes (the watch's own hourly `17 * * * *` UTC schedule stays as a backup), or on demand, `release.yml` gates and builds, and a draft `vX.Y.Z` opens on the app's own repository.
 - **Channels:** `X.Y.Z` is stable; anything with `-beta.N` or `-rc.N` is beta and never touches `<app>-updates`.
 - **Publishing:** the download store, update feeds, catalogue signature and yanks run in a private companion pipeline.
-- **Tested:** 448 tests in 21 files (registry, versions, watch, triggers, tauri config, signing, app repository releases, GitHub binaries, workflow guards).
+- **Tested:** 466 tests in 22 files (registry, versions, watch, triggers, tauri config, signing, notary key, app repository releases, GitHub binaries, workflow guards).
 
 ## Where releases come from
 
@@ -140,7 +140,7 @@ git push origin main:refs/heads/compile_v1.96.5
 
 If a release run fails for a runner reason, use **Re-run failed jobs** in Actions, never **Re-run all jobs**.
 
-Secrets (`FORMCOMPILER_APP_TOKEN`, `APPLE_*`, `AZURE_*`, `TAURI_SIGNING_PRIVATE_KEY`, `FORMPIPE_DISPATCH_TOKEN`) are all optional; without them macOS builds are signed ad hoc and Windows builds are unsigned.
+Secrets (`FORMCOMPILER_APP_TOKEN`, `APPLE_*`, `AZURE_*`, `TAURI_SIGNING_PRIVATE_KEY`, `FORMPIPE_DISPATCH_TOKEN`) are all optional; without them macOS builds are signed ad hoc and Windows builds are unsigned. The Apple certificate and notary key belong in the `signing` environment ([`docs/ACCOUNTS.md`](docs/ACCOUNTS.md)).
 
 > [!IMPORTANT]
 > **Status:** in use. It builds the 13 launch apps; the catalogue lists each app once its release is published. See [`CHANGELOG.md`](CHANGELOG.md).
