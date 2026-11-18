@@ -61,7 +61,7 @@
     "files": []
   },
   "signing": {
-    "macos": "developer-id",
+    "macos": "apple",
     "windows": "certificate"
   },
   "agents": {
