@@ -12,6 +12,7 @@ VERSION_SITES = [
     ("VERSION", r"^(\S+)$"),
     ("CHANGELOG.md", r"^## v(\S+) ·"),
     ("scripts/HASHOUT_LOG.md", r"^Current build version: v(\S+)$"),
+    ("README.md", r"badge/version-v(\d+\.\d+\.\d+)-eef0f4"),
 ]
 STRIP_EXEMPT = []
 
