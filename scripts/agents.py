@@ -56,15 +56,24 @@ def front_matter(text):
     return found
 
 
+def leaves(path, root):
+    return path.is_symlink() and not path.resolve().is_relative_to(root.resolve())
+
+
 def skill_files(folder, root):
+    if leaves(folder, root):
+        fail(f"{folder} links outside the skills folder")
     files = []
     for current, dirs, names in os.walk(folder, followlinks=False):
         dirs[:] = sorted(d for d in dirs if d not in SKIP_DIRS)
+        for name in dirs:
+            if leaves(Path(current) / name, root):
+                fail(f"{Path(current) / name} links outside the skills folder")
         for name in sorted(names):
             if name in SKIP_FILES or name.endswith(".pyc"):
                 continue
             path = Path(current) / name
-            if path.is_symlink() and not path.resolve().is_relative_to(root.resolve()):
+            if leaves(path, root):
                 fail(f"{path} links outside the skills folder")
             if path.is_file():
                 files.append(path)
