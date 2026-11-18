@@ -2,7 +2,7 @@
 
 ## v0.15.1 · 2026-11-18
 
-- FormTray signs its Mac builds with `apple` again: signed with the Developer ID and notarized with the App Store Connect API key from v0.15.0. It is the first app back on the notary, through a beta (0.16.4-beta.1); the other apps stay on `developer-id` until its notarized disk images check out on both Mac platforms.
+- FormTray signs its Mac builds with `apple` again: signed with the Developer ID and notarized with the App Store Connect API key from v0.15.0. It is the first app back on the notary, through its 0.16.3 release, which stays a draft on the app repository until it is checked (FormTray's family contract allows no prerelease versions); the other apps stay on `developer-id` until its notarized disk images check out on both Mac platforms.
 
 ## v0.15.0 · 2026-11-18
 
