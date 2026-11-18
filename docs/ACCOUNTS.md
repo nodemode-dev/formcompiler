@@ -35,7 +35,7 @@ keyring, which FormPortal uses for the keychain, links the system D-Bus library 
 
 ## Mac signing and notarization (owner)
 
-The build job runs in the `signing` environment. Create it once: Settings, Environments, New environment, `signing`. Deployment branches and tags: Selected branches, `main` only. No required reviewer, or every build waits for one. Its secrets take the place of any organisation or repository secret of the same name.
+The build job runs in the `signing` environment. Create it once: Settings, Environments, New environment, `signing`. Deployment branches and tags: Selected branches, `main` only. No required reviewer, or every build waits for one. Create it before the first release that uses it: a job that names a missing environment makes it with no branch policy. Its secrets take the place of any organisation or repository secret of the same name inside the build job, but a workflow on another branch can still read those other copies, so once `signing` holds the Apple secrets, delete the repository's `APPLE_*` secrets and take formcompiler off the organisation's `APPLE_*` secrets.
 
 Environment secrets:
 

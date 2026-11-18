@@ -43,10 +43,17 @@ def test_the_key_file_is_written_only_for_apple_signing_on_macos():
     assert WORKFLOW.index("- name: Notary API key") < WORKFLOW.index("- name: Notary check")
 
 
-def test_the_cleanup_step_removes_the_key_file():
+def test_every_line_of_the_decoded_key_is_masked_before_anything_else_runs():
+    text = step("Notary API key")
+    mask = text.index('echo "::add-mask::$line"')
+    assert text.index("base64 --decode") < mask < text.index("FORMCOMPILER_NOTARY_KEY=")
+
+
+def test_the_cleanup_step_removes_the_key_folder_even_after_a_failed_decode():
     text = step("Remove the Apple signing keychain")
     assert "if: always() && runner.os == 'macOS'" in text
-    assert 'rm -f "$FORMCOMPILER_NOTARY_KEY"' in text
+    assert 'rm -rf "$RUNNER_TEMP/formcompiler-notary"' in text
+    assert "FORMCOMPILER_NOTARY_KEY:-" not in text
 
 
 def test_every_notarytool_call_takes_the_chosen_credentials():

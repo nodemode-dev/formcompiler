@@ -466,6 +466,7 @@ jobs:
           key="$dir/AuthKey_$APPLE_API_KEY.p8"
           (umask 077 && printf '%s' "$APPLE_API_PRIVATE_KEY" | base64 --decode > "$key")
           chmod 600 "$key"
+          while IFS= read -r line || [ -n "$line" ]; do if [ -n "$line" ]; then echo "::add-mask::$line"; fi; done < "$key"
           if ! grep -q "BEGIN PRIVATE KEY" "$key"; then rm -f "$key"; echo "::error::APPLE_API_PRIVATE_KEY is not the base64 of a .p8 key"; exit 1; fi
           echo "FORMCOMPILER_NOTARY_KEY=$key" >> "$GITHUB_ENV"
           echo "App Store Connect API key ready for the notary"
@@ -679,4 +680,5 @@ jobs:
         if: always() && runner.os == 'macOS'
         run: |
           if [ -n "${FORMCOMPILER_KEYCHAIN:-}" ] && [ -f "$FORMCOMPILER_KEYCHAIN" ]; then security delete-keychain "$FORMCOMPILER_KEYCHAIN"; echo "build keychain removed"; else echo "no build keychain"; fi
-          if [ -n "${FORMCOMPILER_NOTARY_KEY:-}" ]; then rm -f "$FORMCOMPILER_NOTARY_KEY"; echo "notary key removed"; else echo "no notary key"; fi
+          rm -rf "$RUNNER_TEMP/formcompiler-notary"
+          echo "notary key folder removed"
