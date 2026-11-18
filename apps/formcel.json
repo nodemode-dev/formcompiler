@@ -37,7 +37,7 @@
   "notes": "",
   "updater": {"tauri": false, "tag_json": false, "files": []},
   "signing": {"macos": "developer-id", "windows": "certificate"},
-  "agents": {"skills": "", "mcp": false},
+  "agents": {"skills": ".claude/skills", "mcp": true},
   "catalog": {
     "id": "formcel",
     "name": "FormCel",
