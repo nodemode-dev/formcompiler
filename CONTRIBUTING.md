@@ -23,7 +23,7 @@ library (`cryptography` only to sign the catalogue), and the tests need:
 python3 -m pip install -r tests/requirements.txt
 ```
 
-The README's "Run the scripts by hand" shows each script on its own.
+The README's "Run it from source" shows the commands that check the registry and the watch.
 
 The code lives in:
 
@@ -89,8 +89,8 @@ FormCompiler's own `VERSION` and CHANGELOG. An app is released only from a
 maintainer's `compile_vX.Y.Z` branch or `vX.Y.Z` tag on a commit already on that app's
 `main`, with its version file matching, its version above the last published one and
 its own checks green on that commit; a stable release is then a draft that a
-maintainer publishes. No contributor's push starts a release. See the README's
-"How a release flows".
+maintainer publishes. The watch looks for such a branch or tag every hour (the
+tick also starts it every 15 minutes). No contributor's push starts a release. See the README's "Where releases come from".
 
 ## Licensing
 

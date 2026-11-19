@@ -30,7 +30,7 @@
 <p align="center">
   <img src="docs/images/formcompiler-hero.png" alt="Terminal running the registry check, the app list and the catalogue listing of FormCompiler" width="100%">
   <br>
-  <sub>The registry check passing for every app, and the three apps the catalogue lists today.</sub>
+  <sub>The registry check passing for every app, and the catalogue listing, as it stood when the screenshot was taken.</sub>
 </p>
 
 <p align="center">
@@ -100,7 +100,7 @@
 
 - **Language:** 21 Python scripts on the standard library; `cryptography` only signs the catalogue.
 - **Contract:** [`docs/REGISTRY.md`](docs/REGISTRY.md) defines the registry file every app writes.
-- **Flow:** `tick.yml` starts `watch.yml` every 15 minutes (the watch's own hourly `17 * * * *` UTC schedule stays as a backup), or on demand, `release.yml` gates and builds, and a draft `vX.Y.Z` opens on the app's own repository.
+- **Flow:** `watch.yml` runs every hour (`17 * * * *` UTC) and on demand, and `tick.yml` also starts it every 15 minutes; `release.yml` gates and builds, and a draft `vX.Y.Z` opens on the app's own repository.
 - **Channels:** `X.Y.Z` is stable; anything with `-beta.N` or `-rc.N` is beta and never touches `<app>-updates`.
 - **Publishing:** the download store, update feeds, catalogue signature and yanks run in a private companion pipeline.
 - **Tested:** 492 tests in 23 files (registry, versions, watch, triggers, tauri config, signing, notary key, app repository releases, GitHub binaries, workflow guards).
@@ -143,7 +143,7 @@ If a release run fails for a runner reason, use **Re-run failed jobs** in Action
 Secrets (`FORMCOMPILER_APP_TOKEN`, `APPLE_*`, `AZURE_*`, `TAURI_SIGNING_PRIVATE_KEY`, `FORMPIPE_DISPATCH_TOKEN`) are all optional; without them macOS builds are signed ad hoc and Windows builds are unsigned. The Apple certificate and notary key belong in the `signing` environment ([`docs/ACCOUNTS.md`](docs/ACCOUNTS.md)).
 
 > [!IMPORTANT]
-> **Status:** in use. It builds the 13 launch apps; the catalogue lists each app once its release is published. See [`CHANGELOG.md`](CHANGELOG.md).
+> **Status:** in use. It builds every enabled app in `apps/`; the catalogue lists each app once its release is published. See [`CHANGELOG.md`](CHANGELOG.md).
 
 **Contributing:** branch from `main`, keep changes to the registry and scripts here, and leave app code to the app repositories. Packaging and releases live in FormCompiler. See [`AGENTS.md`](AGENTS.md).
 
