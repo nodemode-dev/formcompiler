@@ -1,5 +1,12 @@
 # Changelog
 
+## v0.16.0 · 2026-11-18
+
+- Every app signs its Mac builds with `apple` again: signed with the Developer ID and notarized with the App Store Connect API key. FormTray 0.16.4 proved it on both Mac platforms (run 44371292910: both disk images and the apps inside pass `spctl` as "Notarized Developer ID" and are stapled). Each app is notarized from its next release.
+- Mac builds get time for Apple. A Mac build now waits on the notary twice, for the app inside the Build step and for the disk images after it, and on 2026-11-18 Apple's first answers for a new account came after the Build step's 40 minutes. Apple silicon: Build step 60 minutes, job 85. Intel: 100 and 125 (FormCut's Intel build already took 62 of its 70). Windows and Linux keep 40 and 49. The window after a Mac Build step is 25 minutes, so the disk image notarization fits after the cache saves.
+- The disk image notarization has its own 15-minute limit and asks Apple at most twice, six minutes each. When Apple is still working, the step stops with an error that says the build is fine and to use Re-run failed jobs, instead of waiting until the job is killed.
+- The README counts 470 tests in 23 files.
+
 ## v0.15.1 · 2026-11-18
 
 - FormTray signs its Mac builds with `apple` again: signed with the Developer ID and notarized with the App Store Connect API key from v0.15.0. It is the first app back on the notary, through its 0.16.3 release, which stays a draft on the app repository until it is checked (FormTray's family contract allows no prerelease versions); the other apps stay on `developer-id` until its notarized disk images check out on both Mac platforms.

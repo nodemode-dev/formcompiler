@@ -258,7 +258,7 @@ jobs:
     needs: plan
     runs-on: ${{ matrix.runner }}
     environment: signing
-    timeout-minutes: ${{ matrix.platform == 'macos-x64' && 79 || 49 }}
+    timeout-minutes: ${{ matrix.platform == 'macos-x64' && 125 || (matrix.os == 'macos' && 85 || 49) }}
     continue-on-error: ${{ matrix.experimental }}
     strategy:
       fail-fast: false
@@ -503,7 +503,7 @@ jobs:
         with:
           arch: ${{ matrix.arch == 'aarch64' && 'arm64' || 'x64' }}
       - name: Build
-        timeout-minutes: ${{ matrix.platform == 'macos-x64' && 70 || 40 }}
+        timeout-minutes: ${{ matrix.platform == 'macos-x64' && 100 || (matrix.os == 'macos' && 60 || 40) }}
         env:
           APPLE_CERTIFICATE: ${{ (inputs.macos-signing == 'apple' || inputs.macos-signing == 'developer-id') && env.FORMCOMPILER_KEYCHAIN == '' && secrets.APPLE_CERTIFICATE || '' }}
           APPLE_CERTIFICATE_PASSWORD: ${{ (inputs.macos-signing == 'apple' || inputs.macos-signing == 'developer-id') && env.FORMCOMPILER_KEYCHAIN == '' && secrets.APPLE_CERTIFICATE_PASSWORD || '' }}
@@ -605,6 +605,7 @@ jobs:
         run: python -I .formcompiler/scripts/windows_signing.py sign --artifacts="$ARTIFACTS"
       - name: Notarize the macOS disk images
         if: runner.os == 'macOS' && inputs.macos-signing == 'apple'
+        timeout-minutes: 15
         env:
           APPLE_ID: ${{ secrets.APPLE_ID }}
           APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
@@ -644,8 +645,16 @@ jobs:
             echo "submitted $dmg for notarization as $id"
           done 3< <(find src-tauri/target target src-tauri/target.nosync -name '*.dmg' -path '*/bundle/*' -type f -print0 2>/dev/null || true; find src-tauri/target.nosync -name '*.dmg' -type f -print0 2>/dev/null || true; python3 -I -c 'import glob, sys; [sys.stdout.write(f + "\0") for p in sys.argv[1].splitlines() if p.strip() for f in sorted(glob.glob(p.strip(), recursive=True)) if f.endswith(".dmg")]' "$ARTIFACTS")
           while IFS=$'\t' read -r id dmg <&4; do
-            xcrun notarytool wait "$id" "${notary[@]}" || true
-            status="$(xcrun notarytool info "$id" "${notary[@]}" --output-format json | python3 -I -c 'import json, sys; print(json.load(sys.stdin).get("status", ""))')"
+            status=""
+            for wait in 1 2; do
+              xcrun notarytool wait "$id" "${notary[@]}" --timeout 6m || true
+              status="$(xcrun notarytool info "$id" "${notary[@]}" --output-format json | python3 -I -c 'import json, sys; print(json.load(sys.stdin).get("status", ""))')"
+              if [ "$status" != "In Progress" ]; then break; fi
+              echo "Apple has not finished notarizing $dmg after wait $wait of 2"
+            done
+            if [ "$status" = "In Progress" ]; then
+              echo "::error::Apple is still notarizing $dmg ($id); the build is fine. Use Re-run failed jobs once Apple catches up"; exit 1
+            fi
             if [ "$status" != "Accepted" ]; then
               xcrun notarytool log "$id" "${notary[@]}" || true
               echo "::error::notarization of $dmg ended $status"; exit 1

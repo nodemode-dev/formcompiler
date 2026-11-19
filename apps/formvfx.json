@@ -36,7 +36,7 @@
   "assets": "",
   "notes": "",
   "updater": {"tauri": true, "tag_json": false, "files": []},
-  "signing": {"macos": "developer-id", "windows": "certificate"},
+  "signing": {"macos": "apple", "windows": "certificate"},
   "agents": {"skills": ".claude/skills", "mcp": true},
   "catalog": {
     "id": "formvfx",

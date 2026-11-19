@@ -76,7 +76,7 @@
   "assets": "python3 setup/package_desktop.py feed --tag \"$FORMCOMPILER_TAG\" --base-url \"https://github.com/$FORMCOMPILER_REPOSITORY/releases/download/$FORMCOMPILER_TAG/\" --dir \"$DIST\"\npython3 setup/release_notes.py \"v$FORMCOMPILER_VERSION\" --out release-notes.md\npython3 setup/mcpb.py --out \"$DIST\"\npython3 setup/package_desktop.py sums --dir \"$DIST\"",
   "notes": "cat release-notes.md",
   "updater": {"tauri": true, "tag_json": false, "files": ["*.AppImage.zsync"]},
-  "signing": {"macos": "developer-id", "windows": "certificate"},
+  "signing": {"macos": "apple", "windows": "certificate"},
   "agents": {"skills": ".claude/skills", "mcp": true},
   "catalog": {
     "id": "formvis",
