@@ -1,5 +1,15 @@
 # Changelog
 
+## v0.17.1 · 2026-11-19
+
+- The watch builds a commit once. It keeps a record of every release run it has seen or started, by app and commit, and does not start a commit again when its run failed, was cancelled, is still running or waits for approval of its release. On 2026-11-19 it had started FormVis 2.3.6 a second time after the first run of the same commit failed, and FormSculpt 1.21.1 after a person had already run it.
+- The record outlives the run. Deleting a failed run from Actions no longer makes the watch start that commit again on its next pass.
+- A run a person starts with a branch or tag name counts too. Before, the watch knew a run only by a title that ended in the full commit id.
+- A new version, or a new commit on the same compile branch, builds as before.
+- Run workflow on the watch has a new field, Again: an app's name there starts that app's held commit once more. Re-run failed jobs on the failed run works as before, and the watch then shows that commit as running.
+- The watch's summary says why each commit is held: failed, cancelled, running, waiting for approval, succeeded, or started with no run to show for it.
+- The README counts 22 Python scripts. No test was added: the change is to be seen on GitHub first.
+
 ## v0.17.0 · 2026-11-19
 
 - The gate keeps the family's version rule: `x.yy.z` with x from 0 to 9, yy from 0 to 99 and z from 0 to 9, and no zero padding. A release asked for with a version outside the rule is refused, and the message names the version to use instead: 0.15.10 is refused with 0.16.0 to use, 0.100.0 with 1.0.0, and past 9.99.9 it says to ask the owner. Prerelease versions (`-beta.N`, `-rc.N`) work as before. The watch refuses such a version too and goes on to the app's other versions. The 101 version tags in the family's public repositories, read on 2026-11-18, are all inside the rule.
