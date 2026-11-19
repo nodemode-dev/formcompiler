@@ -1,5 +1,12 @@
 # Changelog
 
+## v0.17.2 · 2026-11-19
+
+- The gate waits for the app's own checks. A release started while the app's CI is still running on that commit now waits for it, up to 45 minutes, and goes on when it passes. Before, it stopped with "checks not finished", as FormCel 0.44.0 did minutes after its merge.
+- A check that failed still stops the release at once, with its name.
+- A run that stopped at the gate does not count as a failed build. The watch starts that commit once its checks pass, without anyone using Again. A build that failed is held as in v0.17.1.
+- After the watch starts a commit, an older run of the same commit can no longer make it start a second time.
+
 ## v0.17.1 · 2026-11-19
 
 - The watch builds a commit once. It keeps a record of every release run it has seen or started, by app and commit, and does not start a commit again when its run failed, was cancelled, is still running or waits for approval of its release. On 2026-11-19 it had started FormVis 2.3.6 a second time after the first run of the same commit failed, and FormSculpt 1.21.1 after a person had already run it.
