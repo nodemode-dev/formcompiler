@@ -77,9 +77,16 @@ class Lazy:
             return
         if self._runs is None:
             self._runs = gh.release_runs(self.repo)
-            ledger.fold(self.record, self._runs)
+            ledger.fold(self.record, self._runs, refused=self.at_gate)
             ledger.settle(self.record, self._runs)
-        ledger.fold(self.record, self._runs, app, dict(refs))
+        ledger.fold(self.record, self._runs, app, dict(refs), refused=self.at_gate)
+
+    def at_gate(self, run):
+        return gh.gate_refused(self.repo, run)
+
+    def refused(self, app, sha):
+        entry = ledger.known(self.record, app, sha) if self.record is not None else None
+        return bool(entry) and entry["state"] == ledger.REFUSED
 
     def known(self, app, sha):
         return ledger.known(self.record, app, sha) if self.record is not None else None
@@ -120,12 +127,13 @@ def watch_app(entry, refs, state, args):
             continue
         status, reason, version = readiness.evaluate(entry, ref, sha, state.releases(entry["repository"]), state.active(), built=state.succeeded())
         built = False
-        held = None if again else state.known(entry["app"], sha)
+        refused = state.refused(entry["app"], sha)
+        held = None if again or refused else state.known(entry["app"], sha)
         if status == readiness.READY and gh.run_title(entry["app"], version, sha) in state.succeeded():
             status, built = readiness.SKIP, True
             reason = (f"the release run for {entry['app']} {version} at {sha[:9]} succeeded; its release is on "
                       f"{entry['repository']}, or was deleted there; to build this commit again, start release.yml by hand")
-        elif status == readiness.READY and not again and gh.run_title(entry["app"], version, sha) in state.stopped():
+        elif status == readiness.READY and not again and not refused and gh.run_title(entry["app"], version, sha) in state.stopped():
             status = readiness.SKIP
             reason = (f"the release run for {entry['app']} {version} at {sha[:9]} failed or was cancelled; "
                       "open it in Actions and use Re-run failed jobs, or fix the app and release a new version")

@@ -2,6 +2,7 @@ import argparse
 import os
 import re
 import sys
+import time
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -33,6 +34,8 @@ def main():
     parser.add_argument("--version", default="")
     parser.add_argument("--repo", default=os.environ.get("GITHUB_REPOSITORY", "nodemode-dev/formcompiler"))
     parser.add_argument("--run-title", default="")
+    parser.add_argument("--wait-minutes", type=int, default=0)
+    parser.add_argument("--every", type=int, default=60)
     args = parser.parse_args()
 
     entry = load(args.app)
@@ -56,7 +59,16 @@ def main():
 
     active = {t for t in gh.active_release_runs(args.repo) if t != args.run_title}
     built = gh.succeeded_release_runs(args.repo, gh.RELEASES_ON_APP_REPOS_SINCE)
-    state, reason, version = readiness.evaluate(entry, branch, sha, gh.releases(entry["repository"]), active, built=built)
+    releases = gh.releases(entry["repository"])
+    state, reason, version = readiness.evaluate(entry, branch, sha, releases, active, built=built)
+    waited = 0
+    while state == readiness.WAIT and waited < args.wait_minutes * 60:
+        print(f"{reason}; looking again in {args.every} seconds ({waited // 60} of {args.wait_minutes} minutes waited)", flush=True)
+        time.sleep(args.every)
+        waited += args.every
+        state, reason, version = readiness.evaluate(entry, branch, sha, releases, active, built=built)
+    if state == readiness.WAIT and args.wait_minutes:
+        reason = f"{reason}, after waiting {args.wait_minutes} minutes for them; when they pass, use Re-run failed jobs on this run"
     gh.summary(f"### Gate: {entry['app']} `{branch}` at `{sha[:12]}`\n\n{state}: {reason}\n\n")
     if entry.get("notes_for_owner"):
         gh.summary(f"> {entry['notes_for_owner']}\n\n")

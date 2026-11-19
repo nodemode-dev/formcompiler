@@ -8,6 +8,7 @@ FORMAT = 1
 TITLE = re.compile(r"^(\S+) (\S*) at (\S+)$")
 SHA = re.compile(r"^[0-9a-f]{40}$")
 RUNNING, WAITING, FAILED, CANCELLED, SUCCEEDED, STARTED, GONE = "running", "waiting", "failed", "cancelled", "succeeded", "started", "gone"
+REFUSED = "refused"
 LIVE = (RUNNING, WAITING, STARTED)
 
 
@@ -41,7 +42,15 @@ def key(app, sha):
     return f"{app} {sha}"
 
 
-def state_of(run):
+def at_gate(data, run, refused):
+    gates = data.setdefault("gates", {})
+    mark = f"{run.get('id')}/{run.get('run_attempt') or 1}"
+    if mark not in gates:
+        gates[mark] = bool(refused(run))
+    return gates[mark]
+
+
+def state_of(run, data=None, refused=None):
     if run.get("status") == "waiting":
         return WAITING
     if run.get("status") != "completed":
@@ -50,10 +59,12 @@ def state_of(run):
         return SUCCEEDED
     if run.get("conclusion") == "cancelled":
         return CANCELLED
+    if refused is not None and data is not None and at_gate(data, run, refused):
+        return REFUSED
     return FAILED
 
 
-def fold(data, runs, app="", heads=None):
+def fold(data, runs, app="", heads=None, refused=None):
     heads = heads or {}
     for run in sorted(runs, key=lambda r: r.get("run_number") or 0):
         found = TITLE.match(run.get("display_title") or "")
@@ -68,8 +79,9 @@ def fold(data, runs, app="", heads=None):
                 continue
             data["runs"][run_id] = sha
         number = run.get("run_number") or 0
-        if number >= data["builds"].get(key(name, sha), {}).get("number", 0):
-            data["builds"][key(name, sha)] = {"state": state_of(run), "number": number, "by": (run.get("actor") or {}).get("login", "")}
+        seen = data["builds"].get(key(name, sha), {})
+        if number > seen.get("number", 0) or (number == seen.get("number", 0) and seen.get("state") != STARTED):
+            data["builds"][key(name, sha)] = {"state": state_of(run, data, refused), "number": number, "by": (run.get("actor") or {}).get("login", "")}
 
 
 def settle(data, runs):
@@ -88,4 +100,5 @@ def started(data, app, sha):
         now = datetime.datetime.now(zoneinfo.ZoneInfo("America/New_York"))
     except zoneinfo.ZoneInfoNotFoundError:
         now = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=-5), "EST"))
-    data["builds"][key(app, sha)] = {"state": STARTED, "number": 0, "by": "watch", "at": now.strftime("%b %d, %I:%M %p %Z")}
+    last = data["builds"].get(key(app, sha), {}).get("number", 0)
+    data["builds"][key(app, sha)] = {"state": STARTED, "number": last, "by": "watch", "at": now.strftime("%b %d, %I:%M %p %Z")}

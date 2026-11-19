@@ -189,6 +189,11 @@ def release_runs(repo, pages=3):
     return runs
 
 
+def gate_refused(repo, run):
+    jobs = get(f"/repos/{repo}/actions/runs/{run.get('id')}/jobs?per_page=100").get("jobs", [])
+    return any(job.get("name") == "gate" and job.get("conclusion") == "failure" for job in jobs)
+
+
 def run_title(app, version, sha):
     return f"{app} {version} at {sha}"
 
