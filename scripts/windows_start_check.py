@@ -529,7 +529,7 @@ class Session:
             self.consoles[window["hwnd"]] = window
         self.hosts |= {row["name"] for row in console_hosts(rows)}
         for window in error_dialogs(shown, pids):
-            if window["hwnd"] not in self.asked:
+            if window["hwnd"] not in self.asked and window["hwnd"] not in self.before:
                 self.asked.add(window["hwnd"])
                 self.dialogs.append({"title": window["title"], "text": self.desktop.texts(window["hwnd"]), "process": window["pid"]})
                 self.desktop.close(window["hwnd"])
@@ -829,6 +829,9 @@ def main():
         print("formcompiler: the Windows start check runs on Windows only")
         return
 
+    for stream in (sys.stdout, sys.stderr):
+        if hasattr(stream, "reconfigure"):
+            stream.reconfigure(errors="replace")
     began = time.monotonic()
     report = {
         "format": "formcompiler-windows-start-check", "format_version": 1, "app": args.app, "version": args.version,
