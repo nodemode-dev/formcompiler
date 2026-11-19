@@ -11,7 +11,7 @@
 </p>
 
 <p align="center">
-  <img alt="version v0.16.0" src="https://img.shields.io/badge/version-v0.16.0-eef0f4?style=flat-square">
+  <img alt="version v0.16.1" src="https://img.shields.io/badge/version-v0.16.1-eef0f4?style=flat-square">
   <img alt="GitHub Actions" src="https://img.shields.io/badge/GitHub_Actions-watch_%C2%B7_release-2088FF?style=flat-square&logo=githubactions&logoColor=white">
   <img alt="Python 3.11+" src="https://img.shields.io/badge/Python-3.11%2B-3776AB?style=flat-square&logo=python&logoColor=white">
   <img alt="Builds for macOS, Windows and Linux" src="https://img.shields.io/badge/builds-macOS_%C2%B7_Windows_%C2%B7_Linux-2f7bf5?style=flat-square">
@@ -82,7 +82,7 @@
 <table>
   <tr>
     <td width="33%" valign="top">
-      <h4>31 registered apps, 30 enabled</h4>
+      <h4>32 registered apps, 31 enabled</h4>
       One <code>apps/&lt;app&gt;.json</code> each: version source · checks · platforms · toolchain · build commands · extra jobs · assets · update files · catalogue entry
     </td>
     <td width="33%" valign="top">
@@ -103,7 +103,7 @@
 - **Flow:** `watch.yml` runs every hour (`17 * * * *` UTC) and on demand, and `tick.yml` also starts it every 15 minutes; `release.yml` gates and builds, and a draft `vX.Y.Z` opens on the app's own repository.
 - **Channels:** `X.Y.Z` is stable; anything with `-beta.N` or `-rc.N` is beta and never touches `<app>-updates`.
 - **Publishing:** the download store, update feeds, catalogue signature and yanks run in a private companion pipeline.
-- **Tested:** 492 tests in 23 files (registry, versions, watch, triggers, tauri config, signing, notary key, app repository releases, GitHub binaries, workflow guards).
+- **Tested:** 495 tests in 23 files (registry, versions, watch, triggers, tauri config, signing, notary key, app repository releases, GitHub binaries, workflow guards).
 
 ## Where releases come from
 
