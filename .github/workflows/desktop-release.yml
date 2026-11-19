@@ -262,7 +262,7 @@ jobs:
     needs: plan
     runs-on: ${{ matrix.runner }}
     environment: signing
-    timeout-minutes: ${{ matrix.platform == 'macos-x64' && 125 || (matrix.os == 'macos' && 85 || 49) }}
+    timeout-minutes: ${{ matrix.platform == 'macos-x64' && 125 || (matrix.os == 'macos' && 85 || 56) }}
     continue-on-error: ${{ matrix.experimental }}
     strategy:
       fail-fast: false
