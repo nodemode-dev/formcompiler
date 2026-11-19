@@ -167,6 +167,10 @@ on:
         description: "formcompiler names the release files <app>-<version>-<platform>[-setup].<ext>; app keeps the build's own names"
         type: string
         default: "formcompiler"
+      windows-start-check:
+        description: "report installs and starts the Windows build on the runner and shows what happened; gate also fails the build when a step fails; off skips it"
+        type: string
+        default: "report"
       formcompiler-ref:
         description: "Ref of nodemode-dev/formcompiler whose scripts run; match the ref this workflow is called at"
         type: string
@@ -666,6 +670,30 @@ jobs:
               sleep $((attempt * 20))
             done
           done 4< "$submitted"
+      - name: Windows start check
+        id: startcheck
+        if: runner.os == 'Windows' && inputs.windows-start-check != 'off'
+        timeout-minutes: 6
+        continue-on-error: ${{ inputs.windows-start-check != 'gate' }}
+        env:
+          ARTIFACTS: ${{ inputs.artifacts }}
+          APP: ${{ inputs.app-name }}
+          TITLE: ${{ inputs.app-title }}
+          VERSION: ${{ needs.plan.outputs.version }}
+          CHECK_PLATFORM: ${{ matrix.platform }}
+          CHECK_MODE: ${{ inputs.windows-start-check }}
+        run: >-
+          python -I .formcompiler/scripts/windows_start_check.py --app="$APP" --title="$TITLE"
+          --version="$VERSION" --platform="$CHECK_PLATFORM" --mode="$CHECK_MODE" --artifacts="$ARTIFACTS"
+          --out=formcompiler-start-check
+      - name: Keep the Windows start check
+        if: always() && runner.os == 'Windows' && (steps.startcheck.outcome == 'success' || steps.startcheck.outcome == 'failure')
+        continue-on-error: true
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: start-check-${{ inputs.app-name }}-${{ matrix.platform }}
+          path: formcompiler-start-check/*
+          if-no-files-found: warn
       - name: Stage
         env:
           ARTIFACTS: ${{ inputs.artifacts }}

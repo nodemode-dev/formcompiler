@@ -111,6 +111,7 @@ jobs:
       macos-signing: ${{ fromJSON(needs.gate.outputs.config).macos_signing }}
       windows-signing: ${{ fromJSON(needs.gate.outputs.config).windows_signing }}
       file-names: ${{ fromJSON(needs.gate.outputs.config).file_names }}
+      windows-start-check: ${{ fromJSON(needs.gate.outputs.config).windows_start_check }}
       formcompiler-ref: ${{ github.sha }}
     secrets: inherit
 
