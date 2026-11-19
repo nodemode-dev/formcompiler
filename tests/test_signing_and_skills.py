@@ -103,3 +103,29 @@ def test_build_refuses_a_bad_version(tmp_path, version):
     app = sample_app(tmp_path / "app")
     out = script("agents.py", "build", "--app", "formvis", "--app-dir", str(app), "--dist", str(tmp_path / "dist"), "--version", version)
     assert out.returncode != 0
+
+
+def linked_build(tmp_path, link, target):
+    app = sample_app(tmp_path / "app")
+    outside = tmp_path / "outside"
+    (outside / "docs").mkdir(parents=True)
+    (outside / "docs" / "notes.md").write_text("# Notes\n", encoding="utf-8")
+    (outside / "docs" / "SKILL.md").write_text("---\nname: docs\n---\n", encoding="utf-8")
+    place = app / ".claude" / "skills" / link
+    place.symlink_to(target(app, outside), target_is_directory=True)
+    return script("agents.py", "build", "--app", "formvis", "--app-dir", str(app), "--dist", str(tmp_path / "dist"), "--version", "1.2.3")
+
+
+@pytest.mark.parametrize("link", ["sample-harness/linked", "linked-skill"])
+def test_a_folder_link_that_leaves_the_skills_folder_stops_the_build(tmp_path, link):
+    out = linked_build(tmp_path, link, lambda app, outside: outside / "docs")
+    assert out.returncode != 0
+    assert "links outside the skills folder" in out.stdout
+    assert not (tmp_path / "dist" / "formvis-skills-v1.2.3.zip").exists()
+
+
+def test_a_folder_link_inside_the_skills_folder_is_not_followed(tmp_path):
+    out = linked_build(tmp_path, "sample-harness/again", lambda app, outside: app / ".claude" / "skills" / "sample-harness" / "references")
+    assert out.returncode == 0, out.stdout + out.stderr
+    with zipfile.ZipFile(tmp_path / "dist" / "formvis-skills-v1.2.3.zip") as opened:
+        assert sorted(opened.namelist()) == ["sample-harness/SKILL.md", "sample-harness/references/tools.md"]

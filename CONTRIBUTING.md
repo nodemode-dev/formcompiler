@@ -23,18 +23,18 @@ library (`cryptography` only to sign the catalogue), and the tests need:
 python3 -m pip install -r tests/requirements.txt
 ```
 
-The README's "Run the scripts by hand" shows each script on its own.
+The README's "Run it from source" shows the commands that check the registry and the watch.
 
 The code lives in:
 
 | Folder | What is there |
 | --- | --- |
-| `.github/workflows` | watch, release, desktop-release, feed, yank and self-check |
+| `.github/workflows` | tick, watch, release, desktop-release, self-check and windows-signing-check |
 | `apps` | one registry file per app |
-| `scripts` | the Python the workflows run: registry, readiness, gate, plan, build, staging, catalogue, feed, yank |
+| `scripts` | the Python the workflows and the private publishing pipeline run: registry, tick, watch, readiness, gate, versions, plan, run_build, build_cache, tauri_config, stage, windows_signing, release_assets, with_portal, notes, agents, catalog, public_urls, feed, yank and github_api, plus `release_credential.sh` |
 | `tests` | the test suite |
-| `docs` | the registry contract, accounts and the going-public checklist |
-| `releases.json`, `yanked.json` | the published catalogue and the yank list, written by the feed and yank workflows |
+| `docs` | the registry contract (`REGISTRY.md`) and the accounts and tokens (`ACCOUNTS.md`) |
+| `releases.json`, `yanked.json` | the published catalogue and the yank list, changed only through the private publishing pipeline's pull requests |
 
 ## Before you open a pull request
 
@@ -83,13 +83,14 @@ Only a maintainer pushes to `main`. Everyone else forks the repository and opens
 ## Releases
 
 FormCompiler releases the Form apps; a change here takes effect once it is on `main`,
-where the watch, release, feed and yank workflows run from. A maintainer bumps
+where the tick, watch and release workflows run from; the feed and the yanks run in the
+private publishing pipeline, which checks out these scripts. A maintainer bumps
 FormCompiler's own `VERSION` and CHANGELOG. An app is released only from a
 maintainer's `compile_vX.Y.Z` branch or `vX.Y.Z` tag on a commit already on that app's
 `main`, with its version file matching, its version above the last published one and
 its own checks green on that commit; a stable release is then a draft that a
-maintainer publishes. No contributor's push starts a release. See the README's
-"How a release flows".
+maintainer publishes. The watch looks for such a branch or tag every hour (the
+tick also starts it every 15 minutes). No contributor's push starts a release. See the README's "Where releases come from".
 
 ## Licensing
 

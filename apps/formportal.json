@@ -48,7 +48,7 @@
     "name": "FormPortal",
     "kind": "portal",
     "summary": "One place to install, open and update every Form app.",
-    "identifier": "dev.formai.portal",
+    "identifier": "studio.formai.portal",
     "licence": "GPL-3.0-only",
     "state": "public",
     "project_extensions": [],

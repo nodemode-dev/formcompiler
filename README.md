@@ -11,7 +11,7 @@
 </p>
 
 <p align="center">
-  <img alt="version v0.14.5" src="https://img.shields.io/badge/version-v0.14.5-eef0f4?style=flat-square">
+  <img alt="version v0.17.0" src="https://img.shields.io/badge/version-v0.17.0-eef0f4?style=flat-square">
   <img alt="GitHub Actions" src="https://img.shields.io/badge/GitHub_Actions-watch_%C2%B7_release-2088FF?style=flat-square&logo=githubactions&logoColor=white">
   <img alt="Python 3.11+" src="https://img.shields.io/badge/Python-3.11%2B-3776AB?style=flat-square&logo=python&logoColor=white">
   <img alt="Builds for macOS, Windows and Linux" src="https://img.shields.io/badge/builds-macOS_%C2%B7_Windows_%C2%B7_Linux-2f7bf5?style=flat-square">
@@ -30,7 +30,7 @@
 <p align="center">
   <img src="docs/images/formcompiler-hero.png" alt="Terminal running the registry check, the app list and the catalogue listing of FormCompiler" width="100%">
   <br>
-  <sub>The registry check passing for every app, and the three apps the catalogue lists today.</sub>
+  <sub>The registry check passing for every app, and the catalogue listing, as it stood when the screenshot was taken.</sub>
 </p>
 
 <p align="center">
@@ -82,7 +82,7 @@
 <table>
   <tr>
     <td width="33%" valign="top">
-      <h4>28 registered apps</h4>
+      <h4>32 registered apps, 31 enabled</h4>
       One <code>apps/&lt;app&gt;.json</code> each: version source · checks · platforms · toolchain · build commands · extra jobs · assets · update files · catalogue entry
     </td>
     <td width="33%" valign="top">
@@ -100,10 +100,10 @@
 
 - **Language:** 21 Python scripts on the standard library; `cryptography` only signs the catalogue.
 - **Contract:** [`docs/REGISTRY.md`](docs/REGISTRY.md) defines the registry file every app writes.
-- **Flow:** `tick.yml` starts `watch.yml` every 15 minutes (the watch's own hourly `17 * * * *` UTC schedule stays as a backup), or on demand, `release.yml` gates and builds, and a draft `vX.Y.Z` opens on the app's own repository.
+- **Flow:** `watch.yml` runs every hour (`17 * * * *` UTC) and on demand, and `tick.yml` also starts it every 15 minutes; `release.yml` gates and builds, and a draft `vX.Y.Z` opens on the app's own repository.
 - **Channels:** `X.Y.Z` is stable; anything with `-beta.N` or `-rc.N` is beta and never touches `<app>-updates`.
 - **Publishing:** the download store, update feeds, catalogue signature and yanks run in a private companion pipeline.
-- **Tested:** 473 tests in 23 files (registry, versions, watch, triggers, tauri config, signing, notary key, app repository releases, GitHub binaries, workflow guards).
+- **Tested:** 495 tests in 23 files (registry, versions, watch, triggers, tauri config, signing, notary key, app repository releases, GitHub binaries, workflow guards).
 
 ## Where releases come from
 
@@ -143,7 +143,7 @@ If a release run fails for a runner reason, use **Re-run failed jobs** in Action
 Secrets (`FORMCOMPILER_APP_TOKEN`, `APPLE_*`, `AZURE_*`, `TAURI_SIGNING_PRIVATE_KEY`, `FORMPIPE_DISPATCH_TOKEN`) are all optional; without them macOS builds are signed ad hoc and Windows builds are unsigned. The Apple certificate and notary key belong in the `signing` environment ([`docs/ACCOUNTS.md`](docs/ACCOUNTS.md)).
 
 > [!IMPORTANT]
-> **Status:** in use. It builds the 13 launch apps; the catalogue lists each app once its release is published. See [`CHANGELOG.md`](CHANGELOG.md).
+> **Status:** in use. It builds every enabled app in `apps/`; the catalogue lists each app once its release is published. See [`CHANGELOG.md`](CHANGELOG.md).
 
 **Contributing:** branch from `main`, keep changes to the registry and scripts here, and leave app code to the app repositories. Packaging and releases live in FormCompiler. See [`AGENTS.md`](AGENTS.md).
 

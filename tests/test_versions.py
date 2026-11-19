@@ -96,3 +96,31 @@ def test_a_beta_never_supersedes_a_stable_draft():
     releases = [release("v1.2.0", draft=True), release("v1.3.0-beta.1", draft=True)]
     assert versions.older_drafts("formvis", "1.3.0-beta.2", releases) == ["v1.3.0-beta.1"]
     assert versions.older_drafts("formvis", "1.3.0", releases) == ["v1.3.0-beta.1", "v1.2.0"]
+
+
+@pytest.mark.parametrize("version", ["0.15.9", "0.16.0", "9.99.9", "0.0.0", "1.2.3-beta.1", "1.2.3-rc.2", "v2.3.5"])
+def test_a_version_inside_the_rule_passes(version):
+    assert versions.rule_breach(version) == ""
+
+
+@pytest.mark.parametrize("version, instead", [
+    ("0.15.10", "0.16.0"),
+    ("0.100.0", "1.0.0"),
+    ("0.99.10", "1.0.0"),
+    ("1.2.10-beta.1", "1.3.0-beta.1"),
+])
+def test_a_version_outside_the_rule_is_refused_with_the_version_to_use(version, instead):
+    why = versions.rule_breach(version)
+    assert why.startswith(f"{version} is outside the version rule")
+    assert "x 0 to 9, yy 0 to 99 and z 0 to 9" in why
+    assert f"compile_v{instead} " in why
+
+
+def test_no_version_follows_the_last_one_the_rule_allows():
+    why = versions.rule_breach("10.0.0")
+    assert "outside the version rule" in why and "9.99.9 is the last version" in why
+
+
+def test_the_rule_does_not_change_the_order():
+    assert versions.semver_key("0.15.10") > versions.semver_key("0.15.9")
+    assert versions.semver_key("0.16.0") > versions.semver_key("0.15.9")

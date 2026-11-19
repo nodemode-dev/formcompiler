@@ -38,7 +38,7 @@
   "notes": "",
   "updater": {"tauri": false, "tag_json": false, "files": []},
   "signing": {"macos": "apple", "windows": "certificate"},
-  "agents": {"skills": "", "mcp": false},
+  "agents": {"skills": ".claude/skills", "mcp": true},
   "catalog": {
     "id": "formtxt",
     "name": "FormTxt",
@@ -50,5 +50,5 @@
     "project_extensions": [],
     "minimum_os": {"macos": "", "windows": "", "linux": ""}
   },
-  "notes_for_owner": "UNTESTED: formtxt had no build workflow, so no earlier run backs this entry. macOS and Linux follow the contract by hand: './formtxt desktop build' runs setup/desktop_build, which passes its arguments to 'tauri build'. On Windows 'formtxt.bat desktop build' forwards the word 'build' to setup\\desktop_build.bat (which would run 'tauri build build --config ...'), so Windows calls setup\\desktop_build.bat directly. bundle.targets is not set, so Tauri builds every bundle for the platform (dmg and app, deb, rpm, AppImage, msi, nsis); ./build_app, by contrast, builds the .app plus hdiutil dmg and the deb only and puts the Rust build outside the checkout. Not in formportal's products.json: the catalog entry is written from the README and tauri.conf.json. No bundle.macOS.minimumSystemVersion is set, so minimum_os is empty. No Tauri updater. macOS (formtxt 0.30.3): the engine is a PyInstaller onedir shipped as resource 'engine'; with APPLE_SIGNING_IDENTITY set, setup/freeze_backend signs every Mach-O in it with hardened runtime, a timestamp and src-tauri/entitlements.plist, and bundle.macOS.entitlements signs the app with the same file; neither has run in CI yet."
+  "notes_for_owner": "UNTESTED: formtxt had no build workflow, so no earlier run backs this entry. macOS and Linux follow the contract by hand: './formtxt desktop build' runs setup/desktop_build, which passes its arguments to 'tauri build'. On Windows 'formtxt.bat desktop build' forwards the word 'build' to setup\\desktop_build.bat (which would run 'tauri build build --config ...'), so Windows calls setup\\desktop_build.bat directly. bundle.targets is not set, so Tauri builds every bundle for the platform (dmg and app, deb, rpm, AppImage, msi, nsis); ./build_app, by contrast, builds the .app plus hdiutil dmg and the deb only and puts the Rust build outside the checkout. formportal's products.json lists it (id formtxt), and the catalog entry matches it. No bundle.macOS.minimumSystemVersion is set, so minimum_os is empty. No Tauri updater. macOS (formtxt 0.33.0): the engine is a PyInstaller onedir shipped as resource 'engine'; with APPLE_SIGNING_IDENTITY set, setup/freeze_backend signs every Mach-O in it with hardened runtime, a timestamp and src-tauri/entitlements.plist, and bundle.macOS.entitlements signs the app with the same file; neither has run in CI yet."
 }

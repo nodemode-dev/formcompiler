@@ -36,6 +36,9 @@ def evaluate(entry, ref, sha, all_releases, active_titles, check_runs=True, buil
     version, kind = ref_version(ref)
     if not version:
         return SKIP, f"`{ref}` is not a release ref (a compile_vX.Y.Z branch or a vX.Y.Z tag, with an optional -beta.N)", ""
+    breach = versions.rule_breach(version)
+    if breach:
+        return REFUSE, breach, version
     app = entry["app"]
     tag = versions.tag_of(version)
     release = gh.release_by_tag(all_releases, tag)

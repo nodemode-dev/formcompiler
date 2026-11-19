@@ -30,6 +30,33 @@ def channel(version):
     return BETA if found.group(4) else STABLE
 
 
+LIMITS = (9, 99, 9)
+RULE = "versions are x.yy.z with x 0 to 9, yy 0 to 99 and z 0 to 9, no zero padding; a fix after z reaches 9 is the next yy with z 0, and after yy 99 comes the next x with yy 0"
+
+
+def next_in_rule(major, minor, patch):
+    if patch > LIMITS[2]:
+        minor, patch = minor + 1, 0
+    if minor > LIMITS[1]:
+        major, minor, patch = major + 1, 0, 0
+    return "" if major > LIMITS[0] else f"{major}.{minor}.{patch}"
+
+
+def rule_breach(version):
+    bare = version.strip().removeprefix("v")
+    found = SEMVER.match(bare)
+    if not found:
+        return f"{version!r} is not a version; {RULE}"
+    numbers = tuple(int(found.group(i)) for i in (1, 2, 3))
+    if all(n <= limit for n, limit in zip(numbers, LIMITS)):
+        return ""
+    instead = next_in_rule(*numbers)
+    if not instead:
+        return f"{bare} is outside the version rule: {RULE}. 9.99.9 is the last version the rule allows; ask the owner before releasing past it"
+    instead += found.group(4) or ""
+    return f"{bare} is outside the version rule: {RULE}. Set the version file to {instead} and release compile_v{instead} (or the tag v{instead}) instead"
+
+
 TAG_PREFIX = "v"
 
 

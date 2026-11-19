@@ -219,3 +219,48 @@ def test_watch_finds_a_stable_fix_behind_a_published_beta(monkeypatch, watched):
     dispatched, deref, _, _ = watched(published, evaluate)
     assert dispatched == [("alpha", "1.5.1")]
     assert deref == [(TAG_OBJECT, "tag")]
+
+
+@pytest.mark.parametrize("ref", ["compile_v0.15.10", "v0.100.0", "compile_v10.0.0", "v1.2.10-beta.1"])
+def test_a_version_outside_the_rule_is_refused_before_the_commit_is_read(api, ref):
+    calls, state = api
+    state["version"] = readiness.ref_version(ref)[0]
+    status, reason, _ = evaluate(ref)
+    assert status == readiness.REFUSE
+    assert "outside the version rule" in reason
+    assert calls["on_main"] == [] and calls["file_at"] == []
+
+
+def test_the_watch_refuses_a_version_outside_the_rule_and_starts_the_one_below(monkeypatch, capsys, api):
+    _, state = api
+    dispatched = []
+    monkeypatch.setattr(watch, "all_entries", lambda: [ENTRY])
+    monkeypatch.setattr(watch, "validate", lambda entry, _: [])
+    monkeypatch.setattr(gh, "compile_branches", lambda repo: [("compile_v0.15.10", OTHER), ("compile_v0.15.9", SHA)])
+    monkeypatch.setattr(gh, "releases", lambda repo: [{"tag_name": "v0.15.8", "draft": False}])
+    monkeypatch.setattr(gh, "active_release_runs", lambda repo: set())
+    monkeypatch.setattr(gh, "stopped_release_runs", lambda repo: set())
+    monkeypatch.setattr(gh, "succeeded_release_runs", lambda repo, since: set())
+    monkeypatch.setattr(gh, "dispatch", lambda repo, ref, inputs: dispatched.append((inputs["ref"], inputs["version"])))
+    monkeypatch.setattr(sys, "argv", ["watch.py"])
+    monkeypatch.delenv("GITHUB_STEP_SUMMARY", raising=False)
+    state["version"] = "0.15.9"
+    watch.main()
+    out = capsys.readouterr().out
+    assert dispatched == [(SHA, "0.15.9")]
+    assert "| alpha | compile_v0.15.10 | refuse | 0.15.10 is outside the version rule" in out
+
+
+def test_the_gate_refuses_a_version_outside_the_rule(monkeypatch, capsys, api):
+    monkeypatch.setattr(gate, "load", lambda app: ENTRY)
+    monkeypatch.setattr(gh, "compile_branches", lambda repo: [("compile_v0.15.10", SHA)])
+    monkeypatch.setattr(gh, "releases", lambda repo: [])
+    monkeypatch.setattr(gh, "active_release_runs", lambda repo: set())
+    monkeypatch.setattr(gh, "succeeded_release_runs", lambda repo, since: set())
+    monkeypatch.setattr(sys, "argv", ["gate.py", "--app", "alpha", "--ref", "compile_v0.15.10"])
+    monkeypatch.delenv("GITHUB_STEP_SUMMARY", raising=False)
+    monkeypatch.delenv("GITHUB_OUTPUT", raising=False)
+    with pytest.raises(SystemExit) as stopped:
+        gate.main()
+    assert stopped.value.code == 1
+    assert "::error::0.15.10 is outside the version rule" in capsys.readouterr().out
