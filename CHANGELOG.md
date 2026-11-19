@@ -1,5 +1,14 @@
 # Changelog
 
+## v0.18.0 · 2026-11-19
+
+- Every Windows build is tried on its runner before it is staged: the installer the build made is installed, the app is started, its window is looked for, it is closed, nothing of it may be left running, and it is started a second time. The second start is the case a tester hit, where a leftover engine kept an app from opening.
+- The check also looks for an error dialog, such as the "Unhandled exception in script" a tester saw from FormWeb's engine, and starts each helper program alone with no console to see that none shows one.
+- The result is a table in the job summary and a small report kept with the run. It does not fail a build yet: a new registry field, `windows_start_check`, is `report` for every app, and can be set to `gate` once the check has proven itself, or `off`.
+- The Windows and Linux build job may run 56 minutes, was 49, so the check has room after a long build.
+- None of the check's Windows code has run before the first Windows build after this release; its first reports are also the test of the check itself.
+- The README counts 23 Python scripts. No test was added.
+
 ## v0.17.2 · 2026-11-19
 
 - The gate waits for the app's own checks. A release started while the app's CI is still running on that commit now waits for it, up to 45 minutes, and goes on when it passes. Before, it stopped with "checks not finished", as FormCel 0.44.0 did minutes after its merge.

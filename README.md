@@ -11,7 +11,7 @@
 </p>
 
 <p align="center">
-  <img alt="version v0.17.2" src="https://img.shields.io/badge/version-v0.17.2-eef0f4?style=flat-square">
+  <img alt="version v0.18.0" src="https://img.shields.io/badge/version-v0.18.0-eef0f4?style=flat-square">
   <img alt="GitHub Actions" src="https://img.shields.io/badge/GitHub_Actions-watch_%C2%B7_release-2088FF?style=flat-square&logo=githubactions&logoColor=white">
   <img alt="Python 3.11+" src="https://img.shields.io/badge/Python-3.11%2B-3776AB?style=flat-square&logo=python&logoColor=white">
   <img alt="Builds for macOS, Windows and Linux" src="https://img.shields.io/badge/builds-macOS_%C2%B7_Windows_%C2%B7_Linux-2f7bf5?style=flat-square">
@@ -98,7 +98,7 @@
 
 ## Under the hood
 
-- **Language:** 22 Python scripts on the standard library; `cryptography` only signs the catalogue.
+- **Language:** 23 Python scripts on the standard library; `cryptography` only signs the catalogue.
 - **Contract:** [`docs/REGISTRY.md`](docs/REGISTRY.md) defines the registry file every app writes.
 - **Flow:** `watch.yml` runs every hour (`17 * * * *` UTC) and on demand, and `tick.yml` also starts it every 15 minutes; `release.yml` gates and builds, and a draft `vX.Y.Z` opens on the app's own repository.
 - **One build per commit:** the watch keeps a record of every release run it has seen or started. A commit whose run failed, was cancelled, is running or waits for approval is not started a second time, also after its run is deleted from Actions; a new version or a new commit builds as before. A release started while the app's own checks still run waits for them at the gate, up to 45 minutes; a run that stopped at the gate is not a failed build and does not hold its commit.
