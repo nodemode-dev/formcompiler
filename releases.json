@@ -1,7 +1,7 @@
 {
   "format": "formai-catalog",
   "format_version": 1,
-  "generated": "2026-11-17T15:02:13Z",
+  "generated": "2026-11-17T20:08:04Z",
   "origin": "https://github.com/nodemode-dev/formcompiler",
   "products": [
     {
@@ -3362,101 +3362,7 @@
         "mcp": true,
         "skills": true
       },
-      "channels": {
-        "stable": {
-          "version": "0.25.1",
-          "published": "2026-11-17T05:00:20Z",
-          "notes": "https://github.com/nodemode-dev/formfabric/releases/tag/v0.25.1",
-          "origin": "store",
-          "artifacts": [
-            {
-              "platform": "linux",
-              "arch": "x86_64",
-              "kind": "appimage",
-              "file": "formfabric-0.25.1-linux-x64.AppImage",
-              "url": "https://dl.formai.studio/formfabric/0.25.1/formfabric-0.25.1-linux-x64.AppImage",
-              "bytes": 137611768,
-              "sha256": "6cd8212e1b47dfd405e49235d3b83750c28e181bc31fc6638d2c46c789bcf2df",
-              "minimum_os": ""
-            },
-            {
-              "platform": "linux",
-              "arch": "x86_64",
-              "kind": "deb",
-              "file": "formfabric-0.25.1-linux-x64.deb",
-              "url": "https://dl.formai.studio/formfabric/0.25.1/formfabric-0.25.1-linux-x64.deb",
-              "bytes": 59339814,
-              "sha256": "0a8f40475d41a902610818fc040dc03926bc40106c67d5ae518d45cd2e8e54eb",
-              "minimum_os": ""
-            },
-            {
-              "platform": "linux",
-              "arch": "x86_64",
-              "kind": "rpm",
-              "file": "formfabric-0.25.1-linux-x64.rpm",
-              "url": "https://dl.formai.studio/formfabric/0.25.1/formfabric-0.25.1-linux-x64.rpm",
-              "bytes": 59348608,
-              "sha256": "fc9fb0937abb0a5ba4f2c53f2d403ddd4df71feebe7a02c8b0f8dc0ffad2381f",
-              "minimum_os": ""
-            },
-            {
-              "platform": "macos",
-              "arch": "arm64",
-              "kind": "dmg",
-              "file": "formfabric-0.25.1-macos-arm64.dmg",
-              "url": "https://dl.formai.studio/formfabric/0.25.1/formfabric-0.25.1-macos-arm64.dmg",
-              "bytes": 45375575,
-              "sha256": "b27f4f9e9def542560035ca2be89e9bf7cf8960faf6a229374c81028993d6160",
-              "minimum_os": "macOS 12"
-            },
-            {
-              "platform": "macos",
-              "arch": "x86_64",
-              "kind": "dmg",
-              "file": "formfabric-0.25.1-macos-x64.dmg",
-              "url": "https://dl.formai.studio/formfabric/0.25.1/formfabric-0.25.1-macos-x64.dmg",
-              "bytes": 46972967,
-              "sha256": "d9d86355b9c765632d9bcf9024e8ecc0539a292de55b95856b8efe89c07eb9b2",
-              "minimum_os": "macOS 12"
-            },
-            {
-              "platform": "windows",
-              "arch": "x86_64",
-              "kind": "nsis",
-              "file": "formfabric-0.25.1-windows-x64-setup.exe",
-              "url": "https://dl.formai.studio/formfabric/0.25.1/formfabric-0.25.1-windows-x64-setup.exe",
-              "bytes": 38754968,
-              "sha256": "d101ab37e65037fdcaf8a74e1bf4fcd296ccc30e460dad0539819eb6de921e3a",
-              "minimum_os": "Windows 10"
-            },
-            {
-              "platform": "windows",
-              "arch": "x86_64",
-              "kind": "msi",
-              "file": "formfabric-0.25.1-windows-x64.msi",
-              "url": "https://dl.formai.studio/formfabric/0.25.1/formfabric-0.25.1-windows-x64.msi",
-              "bytes": 39952384,
-              "sha256": "5a6998b103df26777472b9343deda4f80570dab3704dab99de3ceeb96b3e2766",
-              "minimum_os": "Windows 10"
-            }
-          ],
-          "commit": "654bfe9776e7cb789b2c7709febbfe555d294ea4",
-          "agents": {
-            "manifest": {
-              "file": "form-app.json",
-              "url": "https://dl.formai.studio/formfabric/0.25.1/form-app.json",
-              "bytes": 2600,
-              "sha256": "a7c18e6111765433823aa2857faf4c0701b29cad2858ada9614a09eb1e6dfa5c"
-            },
-            "skills": {
-              "file": "formfabric-skills-v0.25.1.zip",
-              "url": "https://dl.formai.studio/formfabric/0.25.1/formfabric-skills-v0.25.1.zip",
-              "bytes": 56760,
-              "sha256": "0f5fee39b01a3cc86d2913605f726e9a64f1f216ad4ec0b5bec57fd1496e0e5c"
-            }
-          }
-        }
-      }
+      "channels": {}
     },
     {
       "id": "formlit",
@@ -5637,101 +5543,7 @@
         "mcp": true,
         "skills": true
       },
-      "channels": {
-        "stable": {
-          "version": "1.21.0",
-          "published": "2026-11-17T04:33:35Z",
-          "notes": "https://github.com/nodemode-dev/formsculpt/releases/tag/v1.21.0",
-          "origin": "store",
-          "artifacts": [
-            {
-              "platform": "linux",
-              "arch": "x86_64",
-              "kind": "appimage",
-              "file": "formsculpt-1.21.0-linux-x64.AppImage",
-              "url": "https://dl.formai.studio/formsculpt/1.21.0/formsculpt-1.21.0-linux-x64.AppImage",
-              "bytes": 129055224,
-              "sha256": "608ba18e81852a9dbc51992ed68782ce86cb1ee5e2c8cc80793b109687592d56",
-              "minimum_os": ""
-            },
-            {
-              "platform": "linux",
-              "arch": "x86_64",
-              "kind": "deb",
-              "file": "formsculpt-1.21.0-linux-x64.deb",
-              "url": "https://dl.formai.studio/formsculpt/1.21.0/formsculpt-1.21.0-linux-x64.deb",
-              "bytes": 50997030,
-              "sha256": "7e7903a6a1d3f7ce61f00c1d34d65a7d4d3179dc55c01ba58d82d6f7e72ade86",
-              "minimum_os": ""
-            },
-            {
-              "platform": "linux",
-              "arch": "x86_64",
-              "kind": "rpm",
-              "file": "formsculpt-1.21.0-linux-x64.rpm",
-              "url": "https://dl.formai.studio/formsculpt/1.21.0/formsculpt-1.21.0-linux-x64.rpm",
-              "bytes": 50998027,
-              "sha256": "9ed1e1d8b4d21bdcdc92d7de45e24c8b1e7f2f21050514e3f431356d201fb2e7",
-              "minimum_os": ""
-            },
-            {
-              "platform": "macos",
-              "arch": "arm64",
-              "kind": "dmg",
-              "file": "formsculpt-1.21.0-macos-arm64.dmg",
-              "url": "https://dl.formai.studio/formsculpt/1.21.0/formsculpt-1.21.0-macos-arm64.dmg",
-              "bytes": 34422261,
-              "sha256": "e00ef365593fb1e3541ebe9e089f740256108ba918bc852a7302866c2e6647f0",
-              "minimum_os": "macOS 12"
-            },
-            {
-              "platform": "macos",
-              "arch": "x86_64",
-              "kind": "dmg",
-              "file": "formsculpt-1.21.0-macos-x64.dmg",
-              "url": "https://dl.formai.studio/formsculpt/1.21.0/formsculpt-1.21.0-macos-x64.dmg",
-              "bytes": 35313300,
-              "sha256": "9ece6b7ddf9ba1c98c13d7a752d3b2cba22bad0918fb78795bb59cdee5118b60",
-              "minimum_os": "macOS 12"
-            },
-            {
-              "platform": "windows",
-              "arch": "x86_64",
-              "kind": "nsis",
-              "file": "formsculpt-1.21.0-windows-x64-setup.exe",
-              "url": "https://dl.formai.studio/formsculpt/1.21.0/formsculpt-1.21.0-windows-x64-setup.exe",
-              "bytes": 30243808,
-              "sha256": "f74c1fefacbfda4b9d738b7dca98b27a3fb1478ca236a91bb0d4dde522d34160",
-              "minimum_os": ""
-            },
-            {
-              "platform": "windows",
-              "arch": "x86_64",
-              "kind": "msi",
-              "file": "formsculpt-1.21.0-windows-x64.msi",
-              "url": "https://dl.formai.studio/formsculpt/1.21.0/formsculpt-1.21.0-windows-x64.msi",
-              "bytes": 31342592,
-              "sha256": "abd796b238b91244d6bc58ead1c97e7aa2062f5a475a1fc456d952e31666d0f3",
-              "minimum_os": ""
-            }
-          ],
-          "commit": "8e80890dc315cff27ca6a23c1e650260ca7d7627",
-          "agents": {
-            "manifest": {
-              "file": "form-app.json",
-              "url": "https://dl.formai.studio/formsculpt/1.21.0/form-app.json",
-              "bytes": 2269,
-              "sha256": "0be23aff6a062bdecb757d350d8c1576385b27c4c68263dd889af54597c80b65"
-            },
-            "skills": {
-              "file": "formsculpt-skills-v1.21.0.zip",
-              "url": "https://dl.formai.studio/formsculpt/1.21.0/formsculpt-skills-v1.21.0.zip",
-              "bytes": 91776,
-              "sha256": "c0b37cc019f0ac5717751440dc3ce0e199d361f1272130eb2b5131306f1ce9df"
-            }
-          }
-        }
-      }
+      "channels": {}
     },
     {
       "id": "formskills",
@@ -7045,91 +6857,7 @@
         "mcp": true,
         "skills": true
       },
-      "channels": {
-        "stable": {
-          "version": "0.62.1",
-          "published": "2026-11-17T04:51:40Z",
-          "notes": "https://github.com/nodemode-dev/formsurface/releases/tag/v0.62.1",
-          "origin": "store",
-          "artifacts": [
-            {
-              "platform": "linux",
-              "arch": "x86_64",
-              "kind": "appimage",
-              "file": "formsurface-0.62.1-linux-x64.AppImage",
-              "url": "https://dl.formai.studio/formsurface/0.62.1/formsurface-0.62.1-linux-x64.AppImage",
-              "bytes": 145644024,
-              "sha256": "50a520baae6589b9111ca768f86a29c2a53568a8d22a75d713d7b9ab189528ac",
-              "minimum_os": ""
-            },
-            {
-              "platform": "linux",
-              "arch": "x86_64",
-              "kind": "deb",
-              "file": "formsurface-0.62.1-linux-x64.deb",
-              "url": "https://dl.formai.studio/formsurface/0.62.1/formsurface-0.62.1-linux-x64.deb",
-              "bytes": 67375040,
-              "sha256": "f78460f6ed1a258be27d50e1ed2e5e91ae2d8a8fc718e7b18448efb8dbae24d8",
-              "minimum_os": ""
-            },
-            {
-              "platform": "macos",
-              "arch": "arm64",
-              "kind": "dmg",
-              "file": "formsurface-0.62.1-macos-arm64.dmg",
-              "url": "https://dl.formai.studio/formsurface/0.62.1/formsurface-0.62.1-macos-arm64.dmg",
-              "bytes": 52785482,
-              "sha256": "fdc8485eff2f405546f6150ab1d77ba3c6e549070b8d012f906f465b233e630c",
-              "minimum_os": "macOS 12"
-            },
-            {
-              "platform": "macos",
-              "arch": "x86_64",
-              "kind": "dmg",
-              "file": "formsurface-0.62.1-macos-x64.dmg",
-              "url": "https://dl.formai.studio/formsurface/0.62.1/formsurface-0.62.1-macos-x64.dmg",
-              "bytes": 54500405,
-              "sha256": "6e689d0c6b804f9bf8548bfee48b653a5e83469dfd25122ad35accd6c36def92",
-              "minimum_os": "macOS 12"
-            },
-            {
-              "platform": "windows",
-              "arch": "x86_64",
-              "kind": "nsis",
-              "file": "formsurface-0.62.1-windows-x64-setup.exe",
-              "url": "https://dl.formai.studio/formsurface/0.62.1/formsurface-0.62.1-windows-x64-setup.exe",
-              "bytes": 51309768,
-              "sha256": "9df8e7e2f4c2cd9ea1fcec57906c448e14b2aea653ef8c92b21c8b961963d33e",
-              "minimum_os": "Windows 10"
-            },
-            {
-              "platform": "windows",
-              "arch": "x86_64",
-              "kind": "msi",
-              "file": "formsurface-0.62.1-windows-x64.msi",
-              "url": "https://dl.formai.studio/formsurface/0.62.1/formsurface-0.62.1-windows-x64.msi",
-              "bytes": 52002816,
-              "sha256": "f72aac84850be7ce5f58296076bbd00a5281c7d9cdb9bad3393dfdd411283f5b",
-              "minimum_os": "Windows 10"
-            }
-          ],
-          "commit": "f92ff4b176a63195111395d4d2aa1efb0b028b96",
-          "agents": {
-            "manifest": {
-              "file": "form-app.json",
-              "url": "https://dl.formai.studio/formsurface/0.62.1/form-app.json",
-              "bytes": 2321,
-              "sha256": "80bc8b52721f2f7a085b75eb09b9d38fd244172a85d51983906f401a196c08b6"
-            },
-            "skills": {
-              "file": "formsurface-skills-v0.62.1.zip",
-              "url": "https://dl.formai.studio/formsurface/0.62.1/formsurface-skills-v0.62.1.zip",
-              "bytes": 37885,
-              "sha256": "6c6a74423626c923f97e461e7f057667099bff7b7030731b822433b250a987c6"
-            }
-          }
-        }
-      }
+      "channels": {}
     },
     {
       "id": "formtools",
@@ -7716,82 +7444,159 @@
       },
       "channels": {
         "stable": {
-          "version": "0.32.1",
-          "published": "2026-11-15T05:16:05Z",
-          "notes": "https://github.com/nodemode-dev/formtxt/releases/tag/v0.32.1",
+          "version": "0.33.0",
+          "published": "2026-11-17T18:40:46Z",
+          "notes": "https://github.com/nodemode-dev/formtxt/releases/tag/v0.33.0",
           "origin": "store",
           "artifacts": [
             {
               "platform": "linux",
               "arch": "x86_64",
               "kind": "appimage",
-              "file": "formtxt-0.32.1-linux-x64.AppImage",
-              "url": "https://dl.formai.studio/formtxt/0.32.1/formtxt-0.32.1-linux-x64.AppImage",
-              "bytes": 361417208,
-              "sha256": "2c80376468ec143b5f14b56f18042987847939264fa501f83350b30aea35fe3b",
+              "file": "formtxt-0.33.0-linux-x64.AppImage",
+              "url": "https://dl.formai.studio/formtxt/0.33.0/formtxt-0.33.0-linux-x64.AppImage",
+              "bytes": 360380920,
+              "sha256": "4f0fa9cfdd213c9f973ad960ab698fc98a4860fa7838e40373dd315b5bfba184",
               "minimum_os": ""
             },
             {
               "platform": "linux",
               "arch": "x86_64",
               "kind": "deb",
-              "file": "formtxt-0.32.1-linux-x64.deb",
-              "url": "https://dl.formai.studio/formtxt/0.32.1/formtxt-0.32.1-linux-x64.deb",
-              "bytes": 272201676,
-              "sha256": "df18b82adb9973865a855b7fc853c238f9353e50198d98ba19e996d79c5d181f",
+              "file": "formtxt-0.33.0-linux-x64.deb",
+              "url": "https://dl.formai.studio/formtxt/0.33.0/formtxt-0.33.0-linux-x64.deb",
+              "bytes": 271201318,
+              "sha256": "0c28ce8d40534f746b56c146cab0d30180fb02c70286037b7b41857e8948978b",
               "minimum_os": ""
             },
             {
               "platform": "macos",
               "arch": "arm64",
               "kind": "dmg",
-              "file": "formtxt-0.32.1-macos-arm64.dmg",
-              "url": "https://dl.formai.studio/formtxt/0.32.1/formtxt-0.32.1-macos-arm64.dmg",
-              "bytes": 180854805,
-              "sha256": "a72e6472e517bc01a1711069ceab638ee2684bf9e3a43f6ceb2a4e1738f1df6a",
+              "file": "formtxt-0.33.0-macos-arm64.dmg",
+              "url": "https://dl.formai.studio/formtxt/0.33.0/formtxt-0.33.0-macos-arm64.dmg",
+              "bytes": 180961829,
+              "sha256": "bc52ed9ceb1d974eb79461cad2abdb6e6cd8e920824b830bf3c28ec524c6fe91",
               "minimum_os": ""
             },
             {
               "platform": "macos",
               "arch": "x86_64",
               "kind": "dmg",
-              "file": "formtxt-0.32.1-macos-x64.dmg",
-              "url": "https://dl.formai.studio/formtxt/0.32.1/formtxt-0.32.1-macos-x64.dmg",
-              "bytes": 206290710,
-              "sha256": "7fc39729be5f8771892830f40b95f70d81e665c4f5b53653bd688d32f5c774a2",
+              "file": "formtxt-0.33.0-macos-x64.dmg",
+              "url": "https://dl.formai.studio/formtxt/0.33.0/formtxt-0.33.0-macos-x64.dmg",
+              "bytes": 206316989,
+              "sha256": "ebf260e8939730800c6e1994f30025768e811415e9200384860290e52dc8db7f",
               "minimum_os": ""
             },
             {
               "platform": "windows",
               "arch": "x86_64",
               "kind": "nsis",
-              "file": "formtxt-0.32.1-windows-x64-setup.exe",
-              "url": "https://dl.formai.studio/formtxt/0.32.1/formtxt-0.32.1-windows-x64-setup.exe",
-              "bytes": 201423808,
-              "sha256": "ed19daf075947feab7b03be941e182324745e2ea1e9175336264376fa73ef39c",
+              "file": "formtxt-0.33.0-windows-x64-setup.exe",
+              "url": "https://dl.formai.studio/formtxt/0.33.0/formtxt-0.33.0-windows-x64-setup.exe",
+              "bytes": 205364488,
+              "sha256": "ca1ca2f13a305d51735c81a6065bb22d8d1a0a5abac37894dc66e9ecc4ff4ff6",
               "minimum_os": ""
             },
             {
               "platform": "windows",
               "arch": "x86_64",
               "kind": "msi",
-              "file": "formtxt-0.32.1-windows-x64.msi",
-              "url": "https://dl.formai.studio/formtxt/0.32.1/formtxt-0.32.1-windows-x64.msi",
-              "bytes": 201564160,
-              "sha256": "63ae3bf26328c424687a82b18591a07a7cdf98d048893c678360fc4fea943c6b",
+              "file": "formtxt-0.33.0-windows-x64.msi",
+              "url": "https://dl.formai.studio/formtxt/0.33.0/formtxt-0.33.0-windows-x64.msi",
+              "bytes": 205484032,
+              "sha256": "d1742a2241d0c24ea16d8f119eb66a6e89ffcf835fcbbdf1aaf589d9c62d3de5",
               "minimum_os": ""
             }
           ],
-          "commit": "3a60b112e97a0216a71a3541ed0e00c828346236",
+          "commit": "66bedafbdccbffcceab9b0f85cd5c0010bba4e7e",
           "agents": {
             "manifest": {
               "file": "form-app.json",
-              "url": "https://dl.formai.studio/formtxt/0.32.1/form-app.json",
+              "url": "https://dl.formai.studio/formtxt/0.33.0/form-app.json",
               "bytes": 312,
-              "sha256": "68ccbec6c8204de16873601ab5c082d3dd2155ce244e60f1f9a5cbc43569b327"
+              "sha256": "54c0e0086172c9546679e258e78d4b6023f2ba63458ae74cac668fc108a47e72"
             }
           },
           "history": [
+            {
+              "version": "0.32.1",
+              "published": "2026-11-15T05:16:05Z",
+              "notes": "https://github.com/nodemode-dev/formtxt/releases/tag/v0.32.1",
+              "origin": "store",
+              "artifacts": [
+                {
+                  "platform": "linux",
+                  "arch": "x86_64",
+                  "kind": "appimage",
+                  "file": "formtxt-0.32.1-linux-x64.AppImage",
+                  "url": "https://dl.formai.studio/formtxt/0.32.1/formtxt-0.32.1-linux-x64.AppImage",
+                  "bytes": 361417208,
+                  "sha256": "2c80376468ec143b5f14b56f18042987847939264fa501f83350b30aea35fe3b",
+                  "minimum_os": ""
+                },
+                {
+                  "platform": "linux",
+                  "arch": "x86_64",
+                  "kind": "deb",
+                  "file": "formtxt-0.32.1-linux-x64.deb",
+                  "url": "https://dl.formai.studio/formtxt/0.32.1/formtxt-0.32.1-linux-x64.deb",
+                  "bytes": 272201676,
+                  "sha256": "df18b82adb9973865a855b7fc853c238f9353e50198d98ba19e996d79c5d181f",
+                  "minimum_os": ""
+                },
+                {
+                  "platform": "macos",
+                  "arch": "arm64",
+                  "kind": "dmg",
+                  "file": "formtxt-0.32.1-macos-arm64.dmg",
+                  "url": "https://dl.formai.studio/formtxt/0.32.1/formtxt-0.32.1-macos-arm64.dmg",
+                  "bytes": 180854805,
+                  "sha256": "a72e6472e517bc01a1711069ceab638ee2684bf9e3a43f6ceb2a4e1738f1df6a",
+                  "minimum_os": ""
+                },
+                {
+                  "platform": "macos",
+                  "arch": "x86_64",
+                  "kind": "dmg",
+                  "file": "formtxt-0.32.1-macos-x64.dmg",
+                  "url": "https://dl.formai.studio/formtxt/0.32.1/formtxt-0.32.1-macos-x64.dmg",
+                  "bytes": 206290710,
+                  "sha256": "7fc39729be5f8771892830f40b95f70d81e665c4f5b53653bd688d32f5c774a2",
+                  "minimum_os": ""
+                },
+                {
+                  "platform": "windows",
+                  "arch": "x86_64",
+                  "kind": "nsis",
+                  "file": "formtxt-0.32.1-windows-x64-setup.exe",
+                  "url": "https://dl.formai.studio/formtxt/0.32.1/formtxt-0.32.1-windows-x64-setup.exe",
+                  "bytes": 201423808,
+                  "sha256": "ed19daf075947feab7b03be941e182324745e2ea1e9175336264376fa73ef39c",
+                  "minimum_os": ""
+                },
+                {
+                  "platform": "windows",
+                  "arch": "x86_64",
+                  "kind": "msi",
+                  "file": "formtxt-0.32.1-windows-x64.msi",
+                  "url": "https://dl.formai.studio/formtxt/0.32.1/formtxt-0.32.1-windows-x64.msi",
+                  "bytes": 201564160,
+                  "sha256": "63ae3bf26328c424687a82b18591a07a7cdf98d048893c678360fc4fea943c6b",
+                  "minimum_os": ""
+                }
+              ],
+              "commit": "3a60b112e97a0216a71a3541ed0e00c828346236",
+              "agents": {
+                "manifest": {
+                  "file": "form-app.json",
+                  "url": "https://dl.formai.studio/formtxt/0.32.1/form-app.json",
+                  "bytes": 312,
+                  "sha256": "68ccbec6c8204de16873601ab5c082d3dd2155ce244e60f1f9a5cbc43569b327"
+                }
+              }
+            },
             {
               "version": "0.32.0",
               "published": "2026-11-13T19:44:44Z",
