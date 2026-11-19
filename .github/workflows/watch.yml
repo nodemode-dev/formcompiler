@@ -13,6 +13,10 @@ on:
         description: "Report what would start, start nothing"
         type: boolean
         default: false
+      again:
+        description: "Again: start this app's release once more, though an earlier run of the same commit failed, was cancelled or was deleted"
+        type: string
+        default: ""
 
 permissions:
   contents: write
@@ -34,14 +38,29 @@ jobs:
           persist-credentials: false
       - name: Registry
         run: python3 -I scripts/registry.py check
-      - name: Find compile branches and version tags and start their releases
+      - name: The record of every release run the watch has seen or started
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: .watch/record.json
+          key: watch-record-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: watch-record-
+      - id: watch
+        name: Find compile branches and version tags and start their releases
         env:
           GH_TOKEN: ${{ github.token }}
           FORMCOMPILER_APP_TOKEN: ${{ secrets.FORMCOMPILER_APP_TOKEN }}
           APP: ${{ inputs.app }}
           DRY_RUN: ${{ inputs.dry-run }}
+          AGAIN: ${{ inputs.again }}
         run: |
-          args=(--ref "$GITHUB_REF_NAME")
+          args=(--ref "$GITHUB_REF_NAME" --record .watch/record.json)
           if [ -n "$APP" ]; then args+=(--app "$APP"); fi
           if [ "$DRY_RUN" = "true" ]; then args+=(--dry-run); fi
+          if [ -n "$AGAIN" ]; then args+=(--again "$AGAIN"); fi
           python3 -I scripts/watch.py "${args[@]}"
+      - name: Keep the record when it changed
+        if: ${{ always() && steps.watch.outputs.record == 'changed' }}
+        uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: .watch/record.json
+          key: watch-record-${{ github.run_id }}-${{ github.run_attempt }}

@@ -5,9 +5,10 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import github_api as gh
+import ledger
 import readiness
 import versions
-from registry import all_entries, validate
+from registry import all_entries, validate, write_outputs
 
 UNREADABLE = (401, 403, 404)
 RELEASES_ON_APP_REPOS_SINCE = gh.RELEASES_ON_APP_REPOS_SINCE
@@ -20,9 +21,32 @@ def outage(unreadable):
     return f"::error::the FORMCOMPILER_APP_TOKEN secret cannot read {len(unreadable)} app repositories ({names}); renew it or give it read access to them"
 
 
+def held_reason(app, version, sha, held):
+    what = f"the release run for {app} {version} at {sha[:9]}"
+    run = f" (run {held['number']})" if held.get("number") else ""
+    again = f"run the watch with Again set to {app} to start it once more"
+    if held["state"] == ledger.SUCCEEDED:
+        return f"{what} succeeded{run}; to build this commit again, start release.yml by hand"
+    if held["state"] == ledger.WAITING:
+        return f"{what} is waiting for approval of its release{run}; approve or reject it in Actions"
+    if held["state"] == ledger.RUNNING:
+        return f"{what} is already running{run}"
+    if held["state"] == ledger.STARTED:
+        return (f"the watch started {what} on {held.get('at', 'an earlier pass')} and Actions lists no run for it now, "
+                f"so how it ended is not known; {again}")
+    if held["state"] == ledger.GONE:
+        return (f"{what} had not ended when the watch last saw it{run}, and Actions no longer lists it, "
+                f"so how it ended is not known; {again}")
+    ended = "was cancelled" if held["state"] == ledger.CANCELLED else "failed"
+    return (f"{what} {ended}{run}; the same commit would end the same way, so the watch does not start it again, "
+            f"also after its run is deleted from Actions; use Re-run failed jobs on the run, release a new version, or {again}")
+
+
 class Lazy:
-    def __init__(self, repo):
+    def __init__(self, repo, record=None):
         self.repo = repo
+        self.record = record
+        self._runs = None
         self._releases = {}
         self._active = None
         self._stopped = None
@@ -48,6 +72,22 @@ class Lazy:
             self._succeeded = gh.succeeded_release_runs(self.repo, RELEASES_ON_APP_REPOS_SINCE)
         return self._succeeded
 
+    def fold(self, app, refs):
+        if self.record is None:
+            return
+        if self._runs is None:
+            self._runs = gh.release_runs(self.repo)
+            ledger.fold(self.record, self._runs)
+            ledger.settle(self.record, self._runs)
+        ledger.fold(self.record, self._runs, app, dict(refs))
+
+    def known(self, app, sha):
+        return ledger.known(self.record, app, sha) if self.record is not None else None
+
+    def note_started(self, app, sha):
+        if self.record is not None:
+            ledger.started(self.record, app, sha)
+
 
 def newest_tags(entry, state):
     tags = [(name, sha, kind) for name, sha, kind in gh.version_tags(entry["repository"]) if gh.VERSION_TAG.match(name)]
@@ -72,20 +112,26 @@ def candidate_refs(entry, state):
 
 def watch_app(entry, refs, state, args):
     rows, started, ahead = [], 0, ""
+    again = args.again == entry["app"]
+    state.fold(entry["app"], refs)
     for ref, sha in refs:
         if ahead:
             rows.append((entry["app"], ref, readiness.SKIP, f"{ahead} is ahead; one release run per app at a time"))
             continue
         status, reason, version = readiness.evaluate(entry, ref, sha, state.releases(entry["repository"]), state.active(), built=state.succeeded())
         built = False
+        held = None if again else state.known(entry["app"], sha)
         if status == readiness.READY and gh.run_title(entry["app"], version, sha) in state.succeeded():
             status, built = readiness.SKIP, True
             reason = (f"the release run for {entry['app']} {version} at {sha[:9]} succeeded; its release is on "
                       f"{entry['repository']}, or was deleted there; to build this commit again, start release.yml by hand")
-        elif status == readiness.READY and gh.run_title(entry["app"], version, sha) in state.stopped():
+        elif status == readiness.READY and not again and gh.run_title(entry["app"], version, sha) in state.stopped():
             status = readiness.SKIP
             reason = (f"the release run for {entry['app']} {version} at {sha[:9]} failed or was cancelled; "
                       "open it in Actions and use Re-run failed jobs, or fix the app and release a new version")
+        elif status == readiness.READY and held:
+            status, built = readiness.SKIP, held["state"] == ledger.SUCCEEDED
+            reason = held_reason(entry["app"], version, sha, held)
         if status == readiness.READY:
             if args.dry_run:
                 reason += "; dry run, not started"
@@ -93,7 +139,8 @@ def watch_app(entry, refs, state, args):
                 gh.dispatch(args.repo, args.ref, {"app": entry["app"], "ref": sha, "version": version})
                 reason += "; release started"
                 started += 1
-        running = bool(version) and gh.run_title(entry["app"], version, sha) in state.active()
+                state.note_started(entry["app"], sha)
+        running = bool(version) and (gh.run_title(entry["app"], version, sha) in state.active() or bool(held) and held["state"] in ledger.LIVE)
         if status in (readiness.READY, readiness.WAIT) or running or built:
             ahead = ref
         rows.append((entry["app"], ref, status, reason))
@@ -106,12 +153,16 @@ def main():
     parser.add_argument("--ref", default="main")
     parser.add_argument("--app", default="")
     parser.add_argument("--dry-run", action="store_true")
+    parser.add_argument("--record", default="")
+    parser.add_argument("--again", default="")
     args = parser.parse_args()
 
     entries = [e for e in all_entries() if not args.app or e.get("app") == args.app]
     if args.app and not entries:
         sys.exit(f"::error::no registry entry for {args.app}")
-    state = Lazy(args.repo)
+    record = ledger.load(args.record) if args.record else None
+    before = ledger.text(record) if record is not None else ""
+    state = Lazy(args.repo, record)
     rows, started, problems, unreadable = [], 0, 0, []
     for entry in entries:
         if validate(entry, None):
@@ -139,6 +190,9 @@ def main():
         rows += app_rows
         started += app_started
         problems += sum(row[2] == readiness.REFUSE for row in app_rows)
+    if record is not None and not args.dry_run and ledger.text(record) != before:
+        ledger.save(args.record, record)
+        write_outputs({"record": "changed"})
     lines = ["### formcompiler watch\n", "", "| App | Branch | State | Why |", "| --- | --- | --- | --- |"]
     lines += [f"| {app} | {branch or '-'} | {state} | {reason.replace('|', '/')} |" for app, branch, state, reason in rows]
     lines += ["", f"{started} release run(s) started, {problems} refused.", ""]

@@ -179,6 +179,16 @@ def succeeded_release_runs(repo: str, since: str) -> set[str]:
     }
 
 
+def release_runs(repo, pages=3):
+    runs = []
+    for page in range(1, pages + 1):
+        found = get(f"/repos/{repo}/actions/workflows/release.yml/runs?per_page=100&page={page}").get("workflow_runs", [])
+        runs.extend(found)
+        if len(found) < 100:
+            break
+    return runs
+
+
 def run_title(app, version, sha):
     return f"{app} {version} at {sha}"
 

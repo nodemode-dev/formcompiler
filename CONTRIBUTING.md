@@ -31,7 +31,7 @@ The code lives in:
 | --- | --- |
 | `.github/workflows` | tick, watch, release, desktop-release, self-check and windows-signing-check |
 | `apps` | one registry file per app |
-| `scripts` | the Python the workflows and the private publishing pipeline run: registry, tick, watch, readiness, gate, versions, plan, run_build, build_cache, tauri_config, stage, windows_signing, release_assets, with_portal, notes, agents, catalog, public_urls, feed, yank and github_api, plus `release_credential.sh` |
+| `scripts` | the Python the workflows and the private publishing pipeline run: registry, tick, watch, ledger, readiness, gate, versions, plan, run_build, build_cache, tauri_config, stage, windows_signing, release_assets, with_portal, notes, agents, catalog, public_urls, feed, yank and github_api, plus `release_credential.sh` |
 | `tests` | the test suite |
 | `docs` | the registry contract (`REGISTRY.md`) and the accounts and tokens (`ACCOUNTS.md`) |
 | `releases.json`, `yanked.json` | the published catalogue and the yank list, changed only through the private publishing pipeline's pull requests |
