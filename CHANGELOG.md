@@ -1,5 +1,16 @@
 # Changelog
 
+## v0.17.0 · 2026-11-19
+
+- The gate keeps the family's version rule: `x.yy.z` with x from 0 to 9, yy from 0 to 99 and z from 0 to 9, and no zero padding. A release asked for with a version outside the rule is refused, and the message names the version to use instead: 0.15.10 is refused with 0.16.0 to use, 0.100.0 with 1.0.0, and past 9.99.9 it says to ask the owner. Prerelease versions (`-beta.N`, `-rc.N`) work as before. The watch refuses such a version too and goes on to the app's other versions. The 101 version tags in the family's public repositories, read on 2026-11-18, are all inside the rule.
+- A symbolic link that leaves an app's skills folder stops the release in every case: a linked file, a linked subfolder, or a skill folder that is itself a link. A link that stays inside the skills folder is not followed, as before.
+- FormCel and FormTxt declare their skills folder and their MCP server, so from its next release each carries a skills archive, and its `form-app.json` says an MCP server is available.
+- The catalogue names FormDeck by that name. Its id stays `formslide`, because installed copies of FormPortal know the app by that id.
+- FormPortal's catalogue identifier is `studio.formai.portal`, the app's real bundle identifier. `releases.json` keeps the old identifier and the name FormSlide until the publishing pipeline next writes it.
+- The owner notes in the registry entries of FormCut, FormDAM, FormTxt, FormAT, FormTray and FormWeb match the app repositories again. Nothing a build reads changed in them.
+- The documents say what the tree holds. The README's version badge, which had stayed at v0.14.5, shows the current version, and a test fails when it falls behind. The README no longer names a count of launch apps, and says the watch runs every hour and on demand and that the tick also starts it every 15 minutes. CONTRIBUTING names the six workflows, the scripts and the two documents that exist, and points at README sections that exist. `docs/ACCOUNTS.md` names the `nodemode-dev` organisation.
+- The README counts 495 tests in 23 files, and 32 registered apps, 31 of them enabled.
+
 ## v0.16.1 · 2026-11-19
 
 - FormCAD is registered (`apps/formCAD.json`): `contract` mode for Apple silicon, Intel Macs, Linux and Windows (Git Bash there), `apple` on macOS like every app since v0.16.0, rpm compression off, no updater. Its repository is private and its release stays a draft, so nothing reaches the catalogue or the download store. Its kernel and mesher workers are not in the build; the app downloads them from the `formcad/` releases of formai-binaries once the first is published.
