@@ -42,7 +42,7 @@
   "assets": "",
   "notes": "",
   "updater": {"tauri": false, "tag_json": false, "files": []},
-  "signing": {"macos": "developer-id", "windows": "certificate"},
+  "signing": {"macos": "apple", "windows": "certificate"},
   "agents": {"skills": "", "mcp": true},
   "catalog": {
     "id": "formbench",
