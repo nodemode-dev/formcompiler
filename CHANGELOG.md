@@ -1,5 +1,13 @@
 # Changelog
 
+## v0.19.0 · 2026-11-19
+
+- A new workflow, `binaries`, builds FormCAD's two worker programs, the OpenCascade kernel and the Netgen mesher, which the app downloads from `nodemode-dev/formai-binaries` and does not carry. It is started by hand with the worker, a release number and whether to release.
+- The workers are frozen on four runners (Apple silicon, Intel Mac, Linux, Windows), signed and notarized with the values the app builds already use, started once after signing, recorded and packed by FormCAD's own scripts. With `publish` checked a draft release `occt-<release>` or `mesher-<release>` opens in formai-binaries; a person publishes it. Without it the run is a full rehearsal that stops before the release.
+- Two short checks run before any Mac or Windows runner starts: every signing value is present, and, when releasing, the release credential can create a release in formai-binaries and the tag is free.
+- For the owner, once: the release GitHub App has to be installed on `formai-binaries` (docs/ACCOUNTS.md). Nothing is asked of FormCAD's repository.
+- The workflow has not run yet; its first run is its test. The README counts 7 workflows and 496 tests (the fork guard now covers the new workflow). No test was added.
+
 ## v0.18.0 · 2026-11-19
 
 - Every Windows build is tried on its runner before it is staged: the installer the build made is installed, the app is started, its window is looked for, it is closed, nothing of it may be left running, and it is started a second time. The second start is the case a tester hit, where a leftover engine kept an app from opening.
