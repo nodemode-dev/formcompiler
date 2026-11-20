@@ -1,0 +1,384 @@
+name: binaries
+
+run-name: binaries (${{ inputs.kind }} ${{ inputs.release }}${{ inputs.publish && ', draft release' || ', no release' }})
+
+on:
+  workflow_dispatch:
+    inputs:
+      kind:
+        description: "Which FormCAD worker to build: kernel (OpenCascade) or mesher (Netgen)"
+        type: choice
+        options: [kernel, mesher]
+        default: kernel
+      release:
+        description: "Release number, e.g. 8.0.1 or 8.0.1-2 (kernel), 6.2.2608 (mesher)"
+        type: string
+        required: true
+      publish:
+        description: "Create a draft release in nodemode-dev/formai-binaries"
+        type: boolean
+        default: false
+      ref:
+        description: "FormCAD branch, tag or commit to build from"
+        type: string
+        default: main
+
+permissions:
+  contents: read
+
+concurrency:
+  group: binaries-${{ inputs.kind }}-${{ inputs.release }}
+  cancel-in-progress: false
+
+env:
+  KIND: ${{ inputs.kind }}
+  RELEASE: ${{ inputs.release }}
+  SOURCE_DATE_EPOCH: "315532800"
+
+jobs:
+  ready:
+    name: signing values
+    if: github.repository == 'nodemode-dev/formcompiler'
+    runs-on: ubuntu-24.04
+    environment: signing
+    timeout-minutes: 5
+    steps:
+      - name: Every signing value is set before a runner builds
+        env:
+          HAVE: >-
+            APPLE_CERTIFICATE=${{ secrets.APPLE_CERTIFICATE != '' }}
+            APPLE_CERTIFICATE_PASSWORD=${{ secrets.APPLE_CERTIFICATE_PASSWORD != '' }}
+            APPLE_SIGNING_IDENTITY=${{ secrets.APPLE_SIGNING_IDENTITY != '' }}
+            APPLE_API_KEY=${{ secrets.APPLE_API_KEY != '' }}
+            APPLE_API_ISSUER=${{ secrets.APPLE_API_ISSUER != '' }}
+            APPLE_API_PRIVATE_KEY=${{ secrets.APPLE_API_PRIVATE_KEY != '' }}
+            AZURE_TENANT_ID=${{ secrets.AZURE_TENANT_ID != '' }}
+            AZURE_CLIENT_ID=${{ secrets.AZURE_CLIENT_ID != '' }}
+            AZURE_CLIENT_SECRET=${{ secrets.AZURE_CLIENT_SECRET != '' }}
+            ARTIFACT_SIGNING_ENDPOINT=${{ vars.ARTIFACT_SIGNING_ENDPOINT != '' }}
+            ARTIFACT_SIGNING_ACCOUNT=${{ vars.ARTIFACT_SIGNING_ACCOUNT != '' }}
+            ARTIFACT_SIGNING_PROFILE=${{ vars.ARTIFACT_SIGNING_PROFILE != '' }}
+            FORMCOMPILER_APP_TOKEN=${{ secrets.FORMCOMPILER_APP_TOKEN != '' }}
+        run: |
+          case "$RELEASE" in
+            ""|*[!0-9A-Za-z.-]*) echo "::error::the release number may hold digits, letters, dots and dashes only, e.g. 8.0.1"; exit 1 ;;
+          esac
+          missing=""
+          for pair in $HAVE; do
+            if [ "${pair#*=}" != true ]; then missing="$missing ${pair%%=*}"; fi
+          done
+          if [ -n "$missing" ]; then
+            echo "::error::not set for the signing environment:$missing; nothing was built"
+            exit 1
+          fi
+          echo "every signing value is set"
+
+  credential:
+    name: release credential
+    if: github.repository == 'nodemode-dev/formcompiler'
+    runs-on: ubuntu-24.04
+    environment: release
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        if: inputs.publish
+        with:
+          persist-credentials: false
+      - name: Release credential
+        id: credential
+        if: inputs.publish
+        env:
+          REPOSITORY: nodemode-dev/formai-binaries
+          HAS_APP: ${{ secrets.FORMCOMPILER_APP_ID != '' && secrets.FORMCOMPILER_APP_PRIVATE_KEY != '' }}
+          HAS_TOKEN: ${{ secrets.FORMCOMPILER_WRITE_TOKEN != '' }}
+        run: bash scripts/release_credential.sh
+      - name: App token for formai-binaries
+        id: app-token
+        if: inputs.publish && steps.credential.outputs.shape == 'app'
+        uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
+        with:
+          client-id: ${{ secrets.FORMCOMPILER_APP_ID }}
+          private-key: ${{ secrets.FORMCOMPILER_APP_PRIVATE_KEY }}
+          owner: nodemode-dev
+          repositories: formai-binaries
+          permission-contents: write
+      - name: The tag is free and a release can be created
+        if: inputs.publish
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token || secrets.FORMCOMPILER_WRITE_TOKEN }}
+          GH_REPO: nodemode-dev/formai-binaries
+        run: |
+          case "$KIND" in kernel) tag="occt-$RELEASE" ;; mesher) tag="mesher-$RELEASE" ;; esac
+          if gh release view "$tag" > /dev/null 2>&1; then
+            echo "::error::$GH_REPO already has a release $tag; a release is never replaced, pick a new release number; nothing was built"
+            exit 1
+          fi
+          probe="probe-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT"
+          if ! gh release create "$probe" --draft --title "$probe" --notes "write check of formcompiler's binaries workflow; safe to delete" > /dev/null; then
+            echo "::error::the release credential cannot create a release in $GH_REPO: add formai-binaries to the repositories of the release GitHub App, or to FORMCOMPILER_WRITE_TOKEN (docs/ACCOUNTS.md); nothing was built"
+            exit 1
+          fi
+          if ! gh release delete "$probe" --yes > /dev/null; then echo "::warning::the draft release $probe in $GH_REPO could not be deleted; delete it by hand"; fi
+          echo "the tag $tag is free and the credential can create a release in $GH_REPO"
+
+  build:
+    name: ${{ matrix.triple }}
+    needs: [ready, credential]
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - triple: aarch64-apple-darwin
+            runner: macos-15
+            minimum_os: macOS 15
+          - triple: x86_64-apple-darwin
+            runner: macos-15-intel
+            minimum_os: macOS 15
+          - triple: x86_64-unknown-linux-gnu
+            runner: ubuntu-22.04
+            minimum_os: glibc 2.35
+          - triple: x86_64-pc-windows-msvc
+            runner: windows-2025
+            minimum_os: Windows 10
+    runs-on: ${{ matrix.runner }}
+    environment: signing
+    timeout-minutes: 120
+    defaults:
+      run:
+        shell: bash
+    env:
+      TRIPLE: ${{ matrix.triple }}
+      MINIMUM_OS: ${{ matrix.minimum_os }}
+      RUNNER_LABEL: ${{ matrix.runner }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: nodemode-dev/formCAD
+          ref: ${{ inputs.ref }}
+          token: ${{ secrets.FORMCOMPILER_APP_TOKEN }}
+          persist-credentials: false
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          path: .formcompiler
+          persist-credentials: false
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: "3.12"
+      - name: Install from the lock and freeze the worker
+        run: |
+          python -m venv "$KIND/venv"
+          FORMCAD_LOCKED=1 "setup/install_$KIND"
+          "setup/freeze_$KIND"
+      - name: Stage the archive folder
+        run: |
+          case "$KIND" in kernel) tag=occt; prog=formcad-kernel ;; mesher) tag=mesher; prog=formcad-mesher ;; esac
+          folder="$tag-lgpl-$RELEASE-$TRIPLE"
+          mkdir -p "$RUNNER_TEMP/stage" "$RUNNER_TEMP/out"
+          cp -a "$KIND/dist/$prog" "$RUNNER_TEMP/stage/$folder"
+          echo "FOLDER=$folder" >> "$GITHUB_ENV"
+      - name: Apple signing keychain
+        if: runner.os == 'macOS'
+        env:
+          APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
+          APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
+          APPLE_SIGNING_IDENTITY: ${{ secrets.APPLE_SIGNING_IDENTITY }}
+        run: |
+          keychain="$RUNNER_TEMP/formcompiler-signing.keychain-db"
+          password="$(openssl rand -hex 24)"
+          echo "::add-mask::$password"
+          p12="$RUNNER_TEMP/formcompiler-signing.p12"
+          printf '%s' "$APPLE_CERTIFICATE" | base64 --decode > "$p12"
+          security create-keychain -p "$password" "$keychain"
+          security set-keychain-settings -lut 21600 "$keychain"
+          security unlock-keychain -p "$password" "$keychain"
+          security import "$p12" -k "$keychain" -P "$APPLE_CERTIFICATE_PASSWORD" -T /usr/bin/codesign -T /usr/bin/security
+          rm -f "$p12"
+          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "$password" "$keychain" >/dev/null
+          read -r -a existing <<< "$(security list-keychains -d user | tr -d '"' | tr '\n' ' ')"
+          security list-keychains -d user -s "$keychain" "${existing[@]}"
+          if ! security find-identity -v -p codesigning "$keychain" | grep -qF "$APPLE_SIGNING_IDENTITY"; then echo "::error::the Apple certificate does not hold the identity APPLE_SIGNING_IDENTITY names"; exit 1; fi
+          echo "Apple identity ready in the build keychain"
+      - name: Notary API key
+        if: runner.os == 'macOS'
+        env:
+          APPLE_API_PRIVATE_KEY: ${{ secrets.APPLE_API_PRIVATE_KEY }}
+          APPLE_API_KEY: ${{ secrets.APPLE_API_KEY }}
+        run: |
+          case "$APPLE_API_KEY" in *[!A-Za-z0-9]*) echo "::error::APPLE_API_KEY must be the key ID only (letters and digits)"; exit 1 ;; esac
+          dir="$RUNNER_TEMP/formcompiler-notary"
+          mkdir -p "$dir" && chmod 700 "$dir"
+          key="$dir/AuthKey_$APPLE_API_KEY.p8"
+          (umask 077 && printf '%s' "$APPLE_API_PRIVATE_KEY" | base64 --decode > "$key")
+          chmod 600 "$key"
+          while IFS= read -r line || [ -n "$line" ]; do if [ -n "$line" ]; then echo "::add-mask::$line"; fi; done < "$key"
+          if ! grep -q "BEGIN PRIVATE KEY" "$key"; then rm -f "$key"; echo "::error::APPLE_API_PRIVATE_KEY is not the base64 of a .p8 key"; exit 1; fi
+          echo "FORMCOMPILER_NOTARY_KEY=$key" >> "$GITHUB_ENV"
+          echo "App Store Connect API key ready for the notary"
+      - name: Sign the macOS worker
+        if: runner.os == 'macOS'
+        env:
+          APPLE_SIGNING_IDENTITY: ${{ secrets.APPLE_SIGNING_IDENTITY }}
+        run: release/sign/macos_sign.sh sign "$RUNNER_TEMP/stage/$FOLDER"
+      - name: Notarize the macOS worker
+        if: runner.os == 'macOS'
+        timeout-minutes: 45
+        env:
+          APPLE_API_KEY: ${{ secrets.APPLE_API_KEY }}
+          APPLE_API_ISSUER: ${{ secrets.APPLE_API_ISSUER }}
+        run: APPLE_API_KEY_PATH="$FORMCOMPILER_NOTARY_KEY" release/sign/macos_sign.sh notarize-folder "$RUNNER_TEMP/stage/$FOLDER"
+      - name: Windows signing tools
+        if: runner.os == 'Windows'
+        env:
+          ARTIFACT_SIGNING_ENDPOINT: ${{ vars.ARTIFACT_SIGNING_ENDPOINT }}
+          ARTIFACT_SIGNING_ACCOUNT: ${{ vars.ARTIFACT_SIGNING_ACCOUNT }}
+          ARTIFACT_SIGNING_PROFILE: ${{ vars.ARTIFACT_SIGNING_PROFILE }}
+          AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+          AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+          AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+        run: |
+          mkdir -p "$RUNNER_TEMP/no-app"
+          python -I .formcompiler/scripts/windows_signing.py prepare --app-dir "$RUNNER_TEMP/no-app" --tools "$RUNNER_TEMP/formcompiler-sign"
+      - name: Sign the Windows worker program
+        if: runner.os == 'Windows'
+        env:
+          ARTIFACT_SIGNING_ENDPOINT: ${{ vars.ARTIFACT_SIGNING_ENDPOINT }}
+          ARTIFACT_SIGNING_ACCOUNT: ${{ vars.ARTIFACT_SIGNING_ACCOUNT }}
+          ARTIFACT_SIGNING_PROFILE: ${{ vars.ARTIFACT_SIGNING_PROFILE }}
+          AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+          AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+          AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+        run: python -I .formcompiler/scripts/windows_signing.py sign --artifacts="$RUNNER_TEMP/stage/$FOLDER/*.exe"
+      - name: The Windows worker program carries a signature
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $files = Get-ChildItem "$env:RUNNER_TEMP/stage/$env:FOLDER" -File -Filter *.exe
+          if (-not $files) { throw "no program in the stage folder" }
+          foreach ($file in $files) {
+            $status = (Get-AuthenticodeSignature $file.FullName).Status
+            if ($status -in "NotSigned", "HashMismatch") { throw "$($file.Name) is $status" }
+            Write-Host "$($file.Name): $status"
+          }
+      - name: The staged worker still answers
+        run: |
+          case "$KIND" in kernel) prog=formcad-kernel ;; mesher) prog=formcad-mesher ;; esac
+          if [ "$RUNNER_OS" = Windows ]; then prog="$prog.exe"; fi
+          out="$(printf '{"id":1,"method":"hello","params":{}}\n{"id":2,"method":"shutdown","params":{}}\n' | "$RUNNER_TEMP/stage/$FOLDER/$prog" || true)"
+          reply="$(printf '%s\n' "$out" | head -n 1)"
+          if ! printf '%s\n' "$reply" | grep -q '"result"'; then echo "::error::the staged worker did not answer hello: $reply"; exit 1; fi
+          echo "the staged worker answers hello"
+      - name: Notices, lock, record and archive
+        run: |
+          T=release/formCAD-binaries/tools
+          case "$KIND" in kernel) rec=occt-licence.json ;; mesher) rec=mesher-licence.json ;; esac
+          python "$T/stage_notices.py" --kind "$KIND" --stage "$RUNNER_TEMP/stage/$FOLDER" --release "$RELEASE" --triple "$TRIPLE"
+          cp "$KIND/requirements_$KIND.lock" "$RUNNER_TEMP/out/requirements.lock"
+          mkdir -p "$RUNNER_TEMP/rec"
+          cp "release/formCAD-binaries/records/$rec" "$RUNNER_TEMP/rec/$rec"
+          python "$T/update_record.py" --kind "$KIND" --record "$RUNNER_TEMP/rec/$rec" --triple "$TRIPLE" \
+            --stage "$RUNNER_TEMP/stage/$FOLDER" --release "$RELEASE" --lock "$RUNNER_TEMP/out/requirements.lock" \
+            --minimum-os "$MINIMUM_OS" --toolchain "$RUNNER_LABEL, PyInstaller 6.22.3, Python 3.12" \
+            --verification "hello handshake of the frozen program in setup/freeze_$KIND, and of the signed program in formcompiler's binaries workflow"
+          python "$T/pack_release.py" pack --kind "$KIND" --record "$RUNNER_TEMP/rec/$rec" --out "$RUNNER_TEMP/out" \
+            --stage-root "$RUNNER_TEMP/stage" --lock "$RUNNER_TEMP/out/requirements.lock"
+          cp "$RUNNER_TEMP/rec/$rec" "$RUNNER_TEMP/out/$TRIPLE.record.json"
+          rm -f "$RUNNER_TEMP/out/$rec" "$RUNNER_TEMP/out/SHA256SUMS" "$RUNNER_TEMP/out/RELEASE_NOTES.md"
+      - name: SBOM of the worker (one platform is enough)
+        if: matrix.triple == 'x86_64-unknown-linux-gnu'
+        run: python release/sbom/formcad_sbom.py --out "$RUNNER_TEMP/out" --component "$KIND" --lock "$RUNNER_TEMP/out/requirements.lock"
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: binaries-${{ inputs.kind }}-${{ matrix.triple }}
+          path: |
+            ${{ runner.temp }}/out/*.tar.gz
+            ${{ runner.temp }}/out/*.record.json
+            ${{ runner.temp }}/out/requirements.lock
+            ${{ runner.temp }}/out/*.cdx.json
+          if-no-files-found: error
+          retention-days: 7
+
+  assemble:
+    name: release files
+    needs: build
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: nodemode-dev/formCAD
+          ref: ${{ inputs.ref }}
+          token: ${{ secrets.FORMCOMPILER_APP_TOKEN }}
+          persist-credentials: false
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: "3.12"
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          pattern: binaries-${{ inputs.kind }}-*
+          path: parts
+          merge-multiple: true
+      - name: Merge, check and write the release files
+        run: |
+          T=release/formCAD-binaries/tools
+          case "$KIND" in kernel) rec=occt-licence.json ;; mesher) rec=mesher-licence.json ;; esac
+          mkdir -p dist
+          mv parts/*.tar.gz parts/*.cdx.json dist/
+          python "$T/merge_records.py" --out "dist/$rec" parts/*.record.json
+          cp parts/requirements.lock dist/requirements.lock
+          python "$T/pack_release.py" finalize --kind "$KIND" --record "dist/$rec" --out dist --lock dist/requirements.lock \
+            --records-dir release/formCAD-binaries/records --fetch-sources --worker-src "$KIND"/*.py
+          python "$T/pack_release.py" check --kind "$KIND" --record "dist/$rec" --out dist
+          python "$T/pack_release.py" app-record --kind "$KIND" --record "dist/$rec" --out "dist/app-$rec"
+          cp "dist/$rec" "release/formCAD-binaries/records/$rec"
+          python "$T/preflight.py" --records release/formCAD-binaries/records --published --kind "$KIND"
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: binaries-release-${{ inputs.kind }}-${{ inputs.release }}
+          path: dist
+          if-no-files-found: error
+          retention-days: 30
+
+  publish:
+    name: draft release in formai-binaries
+    needs: assemble
+    if: inputs.publish
+    runs-on: ubuntu-24.04
+    environment: release
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Release credential
+        id: credential
+        env:
+          REPOSITORY: nodemode-dev/formai-binaries
+          HAS_APP: ${{ secrets.FORMCOMPILER_APP_ID != '' && secrets.FORMCOMPILER_APP_PRIVATE_KEY != '' }}
+          HAS_TOKEN: ${{ secrets.FORMCOMPILER_WRITE_TOKEN != '' }}
+        run: bash scripts/release_credential.sh
+      - name: App token for formai-binaries
+        id: app-token
+        if: steps.credential.outputs.shape == 'app'
+        uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
+        with:
+          client-id: ${{ secrets.FORMCOMPILER_APP_ID }}
+          private-key: ${{ secrets.FORMCOMPILER_APP_PRIVATE_KEY }}
+          owner: nodemode-dev
+          repositories: formai-binaries
+          permission-contents: write
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: binaries-release-${{ inputs.kind }}-${{ inputs.release }}
+          path: dist
+      - name: Create the draft release
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token || secrets.FORMCOMPILER_WRITE_TOKEN }}
+          GH_REPO: nodemode-dev/formai-binaries
+        run: |
+          case "$KIND" in kernel) tag="occt-$RELEASE" ;; mesher) tag="mesher-$RELEASE" ;; esac
+          if gh release view "$tag" > /dev/null 2>&1; then
+            echo "::error::$GH_REPO already has a release $tag; a release is never replaced. The release files are kept with this run as an artifact"
+            exit 1
+          fi
+          gh release create "$tag" --draft --title "$tag" --notes-file dist/RELEASE_NOTES.md dist/*.tar.gz dist/SHA256SUMS dist/requirements.lock dist/*licence.json dist/*.cdx.json
+          echo "- draft release \`$tag\` created in \`$GH_REPO\`; a person publishes it" >> "$GITHUB_STEP_SUMMARY"

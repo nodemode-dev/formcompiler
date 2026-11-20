@@ -11,7 +11,7 @@
 </p>
 
 <p align="center">
-  <img alt="version v0.18.0" src="https://img.shields.io/badge/version-v0.18.0-eef0f4?style=flat-square">
+  <img alt="version v0.19.0" src="https://img.shields.io/badge/version-v0.19.0-eef0f4?style=flat-square">
   <img alt="GitHub Actions" src="https://img.shields.io/badge/GitHub_Actions-watch_%C2%B7_release-2088FF?style=flat-square&logo=githubactions&logoColor=white">
   <img alt="Python 3.11+" src="https://img.shields.io/badge/Python-3.11%2B-3776AB?style=flat-square&logo=python&logoColor=white">
   <img alt="Builds for macOS, Windows and Linux" src="https://img.shields.io/badge/builds-macOS_%C2%B7_Windows_%C2%B7_Linux-2f7bf5?style=flat-square">
@@ -86,8 +86,8 @@
       One <code>apps/&lt;app&gt;.json</code> each: version source · checks · platforms · toolchain · build commands · extra jobs · assets · update files · catalogue entry
     </td>
     <td width="33%" valign="top">
-      <h4>6 workflows</h4>
-      tick · watch · release · desktop-release · self-check · windows signing check
+      <h4>7 workflows</h4>
+      tick · watch · release · desktop-release · binaries · self-check · windows signing check
     </td>
     <td width="33%" valign="top">
       <h4>Platforms</h4>
@@ -104,7 +104,8 @@
 - **One build per commit:** the watch keeps a record of every release run it has seen or started. A commit whose run failed, was cancelled, is running or waits for approval is not started a second time, also after its run is deleted from Actions; a new version or a new commit builds as before. A release started while the app's own checks still run waits for them at the gate, up to 45 minutes; a run that stopped at the gate is not a failed build and does not hold its commit.
 - **Channels:** `X.Y.Z` is stable; anything with `-beta.N` or `-rc.N` is beta and never touches `<app>-updates`.
 - **Publishing:** the download store, update feeds, catalogue signature and yanks run in a private companion pipeline.
-- **Tested:** 495 tests in 23 files (registry, versions, watch, triggers, tauri config, signing, notary key, app repository releases, GitHub binaries, workflow guards).
+- **Worker programs:** `binaries.yml`, started by hand, builds FormCAD's kernel and mesher workers on four runners, signs and notarizes them with the same values as the apps, and can open a draft release in `nodemode-dev/formai-binaries`, where the app downloads them from.
+- **Tested:** 496 tests in 23 files (registry, versions, watch, triggers, tauri config, signing, notary key, app repository releases, GitHub binaries, workflow guards).
 
 ## Where releases come from
 
@@ -154,7 +155,7 @@ Secrets (`FORMCOMPILER_APP_TOKEN`, `APPLE_*`, `AZURE_*`, `TAURI_SIGNING_PRIVATE_
 |---|---|
 | `apps/` | One registry file per app |
 | `scripts/` | The Python scripts the workflows run |
-| `.github/workflows/` | tick, watch, release, desktop-release, self-check, windows signing check |
+| `.github/workflows/` | tick, watch, release, desktop-release, binaries, self-check, windows signing check |
 | `docs/`, `tests/` | Registry contract and accounts notes; the pytest suite |
 | `releases.json`, `yanked.json` | The catalogue and the versions left out of it |
 
