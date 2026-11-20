@@ -6,7 +6,7 @@ OS = {"macos-arm64": "macos", "macos-x64": "macos", "macos-universal": "macos", 
 CACHE_WINDOW = 9
 NOTARIZE_STEP = 15
 EXPECTED = {"macos-x64": (100, 125), "macos-arm64": (60, 85), "macos-universal": (60, 85)}
-OTHER = (40, 49)
+OTHER = (40, 56)
 
 
 def limits(text: str) -> tuple[str, str]:

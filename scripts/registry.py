@@ -25,8 +25,9 @@ TOP = {
     "post_build": (OBJ, False), "artifacts": (LIST, False), "extras": (LIST, False), "image": (OBJ, False),
     "assets": (STR, False), "notes": (STR, False), "updater": (OBJ, True), "signing": (OBJ, True),
     "catalog": (OBJ, True), "agents": (OBJ, False), "notes_for_owner": (STR, False), "with_portal": (BOOL, False),
-    "tag_trigger": (BOOL, False), "file_names": (STR, False),
+    "tag_trigger": (BOOL, False), "file_names": (STR, False), "windows_start_check": (STR, False),
 }
+WINDOWS_START_CHECK = ("report", "gate", "off")
 AGENTS = {"skills": (STR, True), "mcp": (BOOL, True), "mcp_launch": (OBJ, False)}
 MCP_LAUNCH = {"command": (STR, True), "args": (LIST, False)}
 VERSION = {"file": (STR, True), "pattern": (STR, False)}
@@ -108,6 +109,8 @@ def validate(entry, filename):
         problems.append("release must be draft or publish")
     if entry.get("file_names", "formcompiler") not in ("formcompiler", "app"):
         problems.append("file_names must be formcompiler or app")
+    if entry.get("windows_start_check", "report") not in WINDOWS_START_CHECK:
+        problems.append("windows_start_check must be report, gate or off")
     if not entry["enabled"] and not entry.get("disabled_reason", "").strip():
         problems.append("a disabled entry needs disabled_reason")
     fields("version", entry["version"], VERSION, problems)
@@ -291,6 +294,7 @@ def config(entry):
         "has_assets": bool(entry.get("assets", "").strip()),
         "with_portal": bool(entry.get("with_portal", False)),
         "file_names": entry.get("file_names", "formcompiler"),
+        "windows_start_check": entry.get("windows_start_check", "report"),
     }
 
 
