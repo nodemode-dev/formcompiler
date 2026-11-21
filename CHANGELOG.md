@@ -1,5 +1,13 @@
 # Changelog
 
+## v0.20.0 · 2026-11-20
+
+- FormPortal's "What changed" on an Updates row, and the What's new tab of an app's page, can now show what a release brings. Until now both showed one line: the address of the release page.
+- The catalogue's `notes` for a release is the What's new part of its page, as plain text, when the page starts with the line `<!-- formai-notes -->` and a `## What's new` heading. A page without that keeps the address, so nothing changes for a release nobody has written notes for.
+- The text stops before the page's table of files and before formcompiler's own last lines, loses its heading marks, backticks and bold marks, and is cut at 4000 characters.
+- No app is rebuilt. The feed's next pass writes the text for every release whose page has it, older versions included. No workflow changed.
+- The README counts 497 tests: one new test for this.
+
 ## v0.19.0 · 2026-11-19
 
 - A new workflow, `binaries`, builds FormCAD's two worker programs, the OpenCascade kernel and the Netgen mesher, which the app downloads from `nodemode-dev/formai-binaries` and does not carry. It is started by hand with the worker, a release number and whether to release.

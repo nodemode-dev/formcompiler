@@ -2,7 +2,7 @@
 
 Living log of all comment content, explainers, rationale, TODOs and removed code for the pipeline (the scripts, the workflows and the caller template). The source files stay comment-free per dev-rules `sub-skills/hashout-log/SUB-SKILL.md`; everything they would have said lives here, indexed. Read this first, then edit code surgically.
 
-Current build version: v0.19.0
+Current build version: v0.20.0
 Last updated: 2026-11-20 · the catalogue's `notes` for a release is its What's new text when the release page has one, the page's address otherwise (v0.20.0, #notes-text)
 Last updated: 2026-11-19 · the binaries workflow builds, signs and drafts FormCAD's kernel and mesher workers here, with the signing values formcompiler already holds (v0.19.0, #binaries)
 Last updated: 2026-11-19 · v0.18.0 releases the two entries below headed "after v0.17.2" (headings left as written), and the Windows and Linux job limit is 56 minutes, was 49, so the 6-minute start check cannot run a full build out of time (#job-56)
