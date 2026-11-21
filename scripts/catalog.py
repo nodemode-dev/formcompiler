@@ -154,6 +154,21 @@ def download(url):
         return response.read()
 
 
+WHATS_NEW = re.compile(r"<!-- formai-notes -->\s*\n## What's new[^\n]*\n(.*?)(?=\n## |\n---[ \t]*\n|\Z)", re.S)
+NOTES_LIMIT = 4000
+
+
+def whats_new(body):
+    found = WHATS_NEW.search((body or "").replace("\r\n", "\n"))
+    if not found:
+        return ""
+    lines = [re.sub(r"^#{1,6}\s+", "", line.rstrip()).replace("`", "").replace("**", "") for line in found.group(1).strip().splitlines()]
+    text = re.sub(r"\n{3,}", "\n\n", "\n".join(lines)).strip()
+    if len(text) > NOTES_LIMIT:
+        text = text[:NOTES_LIMIT].rsplit("\n", 1)[0].rstrip() + "\n..."
+    return text
+
+
 def release_entry(release, version, entry, sums, base="", origin=STORE):
     minimum = entry["catalog"].get("minimum_os", {})
     artifacts = []
@@ -170,7 +185,7 @@ def release_entry(release, version, entry, sums, base="", origin=STORE):
     body = {
         "version": version,
         "published": release.get("published_at") or release.get("created_at"),
-        "notes": release["html_url"],
+        "notes": whats_new(release.get("body")) or release["html_url"],
         "origin": origin if base else GITHUB,
         "artifacts": artifacts,
     }
