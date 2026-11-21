@@ -253,6 +253,17 @@ def test_the_catalogue_reads_each_app_repository_own_releases(sums):
     assert stable["notes"] == "https://github.com/nodemode-dev/formvis/releases/tag/v1.2.0"
 
 
+def test_the_catalogue_carries_a_release_what_is_new_text_when_the_release_has_one(sums):
+    """A release page that starts with the formai-notes mark gives its What's new part, as plain text, and stops before the table of files and the build lines."""
+    written = gh_release("1.2.0")
+    written["body"] = ("<!-- formai-notes -->\n## What's new in FormVis 1.2.0\n\nA small release.\n\n### Fixed\n\n- The `Export` button works.\n\n"
+                       "## Which file is for my computer?\n\n| a | b |\n\n---\n\nBuilt by formcompiler from x.\n\n<!-- formcompiler-source: nodemode-dev/formvis@" + "a" * 40 + " -->\n")
+    document = catalog.build([load("formvis")], {"nodemode-dev/formvis": [written]})
+    assert channels(document, "formvis")["stable"]["notes"] == "A small release.\n\nFixed\n\n- The Export button works."
+    assert channels(document, "formvis")["stable"]["commit"] == "a" * 40
+    assert catalog.whats_new("## What's new\n\n- no mark, so the address stays") == ""
+
+
 def test_the_catalogue_reads_verified_sums_from_a_folder_and_never_downloads(tmp_path, monkeypatch):
     monkeypatch.setattr(catalog, "fetch_sums", lambda release: pytest.fail("downloaded SHA256SUMS.txt although --sums-dir was given"))
     releases = {"nodemode-dev/formvis": [gh_release("1.2.0"), gh_release("1.2.1")]}
