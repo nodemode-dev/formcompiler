@@ -1,5 +1,13 @@
 # Changelog
 
+## v0.21.0 · 2026-11-21
+
+- FormMorpheus is registered: `apps/formmorpheus.json` builds `nodemode-dev/formmorpheus` for Apple silicon and Intel Macs, Linux and Windows, as a draft release on its private repository. Its catalogue entry is `formmorpheus`, Apache-2.0, `.fmo`, macOS 11, in prelaunch.
+- FormPublisher is switched on. Its entry was drafted while the repository was blank; it now follows the repository at 0.3.3: licence GPL-3.0-only, a summary of what the build does, macOS 13, no Tauri updater, and a build that collects its bundles from `src-tauri/target`.
+- Both build in commands mode: neither launcher has the `install-desktop` command, and neither desktop build accepts `--config`, so contract mode would stop. formcompiler's Tauri settings reach both builds through the `tauri.<os>.conf.json` it merges before every build. Linux makes deb, AppImage and rpm; Windows runs each app's `build_app.bat` and prints its log when it fails.
+- For the owner, once: the read token needs access to both repositories before their first build. Neither build has run yet; the first run is the test.
+- The README counts 33 registered apps, all enabled, and 501 tests. No test was added; the test for disabled apps has none to check now and is reported skipped.
+
 ## v0.20.0 · 2026-11-20
 
 - FormPortal's "What changed" on an Updates row, and the What's new tab of an app's page, can now show what a release brings. Until now both showed one line: the address of the release page.
