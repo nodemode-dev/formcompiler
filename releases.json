@@ -1,7 +1,7 @@
 {
   "format": "formai-catalog",
   "format_version": 1,
-  "generated": "2026-11-22T06:46:06Z",
+  "generated": "2026-11-22T08:57:58Z",
   "origin": "https://github.com/nodemode-dev/formcompiler",
   "products": [
     {
@@ -19,128 +19,251 @@
       },
       "channels": {
         "stable": {
-          "version": "0.70.2",
-          "published": "2026-11-21T17:30:18Z",
-          "notes": "This release carries 0.70.1 as well, which was never published on its own.\n\nChanged\n\n- An extension package that reaches FormPortal from outside its window (a formai:// link, a .formpkg file opened with FormPortal, or another program) is no longer installed straight away. FormPortal shows a dialog with the file and its path, and installs only when you press Install. Cancel leaves nothing installed.\n- A file you drop on the window still installs at once, as before.\n\nFixed\n\n- Command line and agents: installing an extension from a package file now follows your choice for outside agents, as installing, updating, rolling back and removing an app already do. Under Ask and Blocked it is refused, under Allowed it goes on to the usual package checks. Installing by id from the signed index is unchanged.\n\nImproved\n\n- The pages for other Form apps name Claude Code, Codex, Cursor and Antigravity wherever the app itself offers all four, FormWav and FormRef included.\n- Three sentences on the pages for FormFabric, FormSculpt and FormTools have their missing space back.\n- The new dialog's sentences are in Spanish too, and the three browser demos are rebuilt with all of the above.",
+          "version": "0.71.3",
+          "published": "2026-11-22T08:45:18Z",
+          "notes": "https://github.com/nodemode-dev/formportal/releases/tag/v0.71.3",
           "origin": "store",
           "artifacts": [
             {
               "platform": "linux",
               "arch": "arm64",
               "kind": "appimage",
-              "file": "formportal-0.70.2-linux-arm64.AppImage",
-              "url": "https://dl.formai.studio/formportal/0.70.2/formportal-0.70.2-linux-arm64.AppImage",
-              "bytes": 107497992,
-              "sha256": "9209d00382a1b7250d35582ea33d734791d8dd2bad76d858b8812198f7b3ed84",
+              "file": "formportal-0.71.3-linux-arm64.AppImage",
+              "url": "https://dl.formai.studio/formportal/0.71.3/formportal-0.71.3-linux-arm64.AppImage",
+              "bytes": 108333576,
+              "sha256": "47f776f2fe51d3c4eb088b1e7b2fcf76bec4833428a3f0c76ad000d13c2143d5",
               "minimum_os": ""
             },
             {
               "platform": "linux",
               "arch": "arm64",
               "kind": "deb",
-              "file": "formportal-0.70.2-linux-arm64.deb",
-              "url": "https://dl.formai.studio/formportal/0.70.2/formportal-0.70.2-linux-arm64.deb",
-              "bytes": 31581242,
-              "sha256": "a3acba69adde07c5df5542175e436e2908ad1ebe23354c73d16c58f9eed7eaed",
+              "file": "formportal-0.71.3-linux-arm64.deb",
+              "url": "https://dl.formai.studio/formportal/0.71.3/formportal-0.71.3-linux-arm64.deb",
+              "bytes": 32448740,
+              "sha256": "36edc4018c4fa464542be43b0c2669e6738b1a46da9cf8f01afde67dc301d688",
               "minimum_os": ""
             },
             {
               "platform": "linux",
               "arch": "arm64",
               "kind": "rpm",
-              "file": "formportal-0.70.2-linux-arm64.rpm",
-              "url": "https://dl.formai.studio/formportal/0.70.2/formportal-0.70.2-linux-arm64.rpm",
-              "bytes": 31587375,
-              "sha256": "50b2a4d3bff4a86c87d1819f03d680baffe28fcd776b305b3113b8efac46bbc9",
+              "file": "formportal-0.71.3-linux-arm64.rpm",
+              "url": "https://dl.formai.studio/formportal/0.71.3/formportal-0.71.3-linux-arm64.rpm",
+              "bytes": 32455862,
+              "sha256": "8ef43e467d4cb2ff69520386dd59d79ad5513193d8f9d31b555aab9ce059a0c2",
               "minimum_os": ""
             },
             {
               "platform": "linux",
               "arch": "x86_64",
               "kind": "appimage",
-              "file": "formportal-0.70.2-linux-x86_64.AppImage",
-              "url": "https://dl.formai.studio/formportal/0.70.2/formportal-0.70.2-linux-x86_64.AppImage",
-              "bytes": 109910520,
-              "sha256": "14039331ac98e99a817c52fcc5b232f1e9d798ab7828dd1bc6b8d6304a2bcfaf",
+              "file": "formportal-0.71.3-linux-x86_64.AppImage",
+              "url": "https://dl.formai.studio/formportal/0.71.3/formportal-0.71.3-linux-x86_64.AppImage",
+              "bytes": 110754296,
+              "sha256": "5848672ca60eeb62c9d471f36a01cc36526eb2736d95afc080c57360dd707314",
               "minimum_os": ""
             },
             {
               "platform": "linux",
               "arch": "x86_64",
               "kind": "deb",
-              "file": "formportal-0.70.2-linux-x86_64.deb",
-              "url": "https://dl.formai.studio/formportal/0.70.2/formportal-0.70.2-linux-x86_64.deb",
-              "bytes": 32104078,
-              "sha256": "28992cc4dcb4591ed904dcadc17a8aabc2a670d47d64c41e9ee20ddc5fdf9ccd",
+              "file": "formportal-0.71.3-linux-x86_64.deb",
+              "url": "https://dl.formai.studio/formportal/0.71.3/formportal-0.71.3-linux-x86_64.deb",
+              "bytes": 32990742,
+              "sha256": "e6ae7c1a5834ff0fa68a4478958be4b3735e4668ac187ce0413209ca85977eb8",
               "minimum_os": ""
             },
             {
               "platform": "linux",
               "arch": "x86_64",
               "kind": "rpm",
-              "file": "formportal-0.70.2-linux-x86_64.rpm",
-              "url": "https://dl.formai.studio/formportal/0.70.2/formportal-0.70.2-linux-x86_64.rpm",
-              "bytes": 32109934,
-              "sha256": "7ce3495b79336d4cae4380136df4b23fc2b3eaefd74c495bc98b34aad9f6a0f6",
+              "file": "formportal-0.71.3-linux-x86_64.rpm",
+              "url": "https://dl.formai.studio/formportal/0.71.3/formportal-0.71.3-linux-x86_64.rpm",
+              "bytes": 32995248,
+              "sha256": "64d8acf9d9e56886f4eb3a6f6fdcdf9970584723b9c18cb8813cc26076afcc36",
               "minimum_os": ""
             },
             {
               "platform": "macos",
               "arch": "arm64",
               "kind": "dmg",
-              "file": "formportal-0.70.2-macos-arm64.dmg",
-              "url": "https://dl.formai.studio/formportal/0.70.2/formportal-0.70.2-macos-arm64.dmg",
-              "bytes": 31287919,
-              "sha256": "7c2ec6789b367b4a440a9a6e009013d0520cff5f05a77a2f73c769ff2ae98149",
+              "file": "formportal-0.71.3-macos-arm64.dmg",
+              "url": "https://dl.formai.studio/formportal/0.71.3/formportal-0.71.3-macos-arm64.dmg",
+              "bytes": 32136849,
+              "sha256": "90f51d3bda7d8890c541d3b69d8362b771995a067b961e0896b767305b9925af",
               "minimum_os": "macOS 12"
             },
             {
               "platform": "macos",
               "arch": "x86_64",
               "kind": "dmg",
-              "file": "formportal-0.70.2-macos-x86_64.dmg",
-              "url": "https://dl.formai.studio/formportal/0.70.2/formportal-0.70.2-macos-x86_64.dmg",
-              "bytes": 32006418,
-              "sha256": "c316b1d07f88bde5bfc2189cfe58b32da91f9b31f2bb06f104fb9e867b3d3d26",
+              "file": "formportal-0.71.3-macos-x86_64.dmg",
+              "url": "https://dl.formai.studio/formportal/0.71.3/formportal-0.71.3-macos-x86_64.dmg",
+              "bytes": 32962149,
+              "sha256": "5f9a4217be9ca5bdd2c4f54c0ef8d917e077ad325e3625c1d4747c3b5a89945f",
               "minimum_os": "macOS 12"
             },
             {
               "platform": "windows",
               "arch": "arm64",
               "kind": "nsis",
-              "file": "formportal-0.70.2-windows-arm64-setup.exe",
-              "url": "https://dl.formai.studio/formportal/0.70.2/formportal-0.70.2-windows-arm64-setup.exe",
-              "bytes": 27208752,
-              "sha256": "743dd4bcfc87f2b65472b0a95e01ec81989bb060e63979b274ccb7c78e32363d",
+              "file": "formportal-0.71.3-windows-arm64-setup.exe",
+              "url": "https://dl.formai.studio/formportal/0.71.3/formportal-0.71.3-windows-arm64-setup.exe",
+              "bytes": 28005680,
+              "sha256": "7d4cbb862a930f984ddb9a5e8f5f86fc2f9f5d265982a0ee71b79876d58fe4ff",
               "minimum_os": "Windows 10"
             },
             {
               "platform": "windows",
               "arch": "x86_64",
               "kind": "nsis",
-              "file": "formportal-0.70.2-windows-x86_64-setup.exe",
-              "url": "https://dl.formai.studio/formportal/0.70.2/formportal-0.70.2-windows-x86_64-setup.exe",
-              "bytes": 27762800,
-              "sha256": "e4cb6d2cb536c6c1f7ac417d04c0539eaaec729af25c5d2647b89c08946a7069",
+              "file": "formportal-0.71.3-windows-x86_64-setup.exe",
+              "url": "https://dl.formai.studio/formportal/0.71.3/formportal-0.71.3-windows-x86_64-setup.exe",
+              "bytes": 28603736,
+              "sha256": "678774e471fccd701294b1bf9bce471e129b1cbb3401d5f0a7412192b397afd4",
               "minimum_os": "Windows 10"
             }
           ],
-          "commit": "6cae2e9d04fef96073e64f8c7b9eaf19c42d88e9",
+          "commit": "9d87c92974d8c6278b3bb9324f41c45e9f2174a6",
           "agents": {
             "manifest": {
               "file": "form-app.json",
-              "url": "https://dl.formai.studio/formportal/0.70.2/form-app.json",
+              "url": "https://dl.formai.studio/formportal/0.71.3/form-app.json",
               "bytes": 2736,
-              "sha256": "65c28cc2640b1fa8a68c42c6f720d78da6dfedc10b6c75039f231a866d4ba5f1"
+              "sha256": "92b8db6298ff7cdfc60bd46d40f29f99f801b3b09a71b3006dd8556ba91e4011"
             },
             "skills": {
-              "file": "formportal-skills-v0.70.2.zip",
-              "url": "https://dl.formai.studio/formportal/0.70.2/formportal-skills-v0.70.2.zip",
-              "bytes": 43158,
-              "sha256": "2098269e125b40ab2cd48a22c1cc0e0a3b27c3357bf0c690ae1dc3ffe1daaa25"
+              "file": "formportal-skills-v0.71.3.zip",
+              "url": "https://dl.formai.studio/formportal/0.71.3/formportal-skills-v0.71.3.zip",
+              "bytes": 43313,
+              "sha256": "72b29574c0975f0ffc1f0e891a9aa68c977aae4c999ced5faf2d63f747083012"
             }
           },
           "history": [
+            {
+              "version": "0.70.2",
+              "published": "2026-11-21T17:30:18Z",
+              "notes": "This release carries 0.70.1 as well, which was never published on its own.\n\nChanged\n\n- An extension package that reaches FormPortal from outside its window (a formai:// link, a .formpkg file opened with FormPortal, or another program) is no longer installed straight away. FormPortal shows a dialog with the file and its path, and installs only when you press Install. Cancel leaves nothing installed.\n- A file you drop on the window still installs at once, as before.\n\nFixed\n\n- Command line and agents: installing an extension from a package file now follows your choice for outside agents, as installing, updating, rolling back and removing an app already do. Under Ask and Blocked it is refused, under Allowed it goes on to the usual package checks. Installing by id from the signed index is unchanged.\n\nImproved\n\n- The pages for other Form apps name Claude Code, Codex, Cursor and Antigravity wherever the app itself offers all four, FormWav and FormRef included.\n- Three sentences on the pages for FormFabric, FormSculpt and FormTools have their missing space back.\n- The new dialog's sentences are in Spanish too, and the three browser demos are rebuilt with all of the above.",
+              "origin": "store",
+              "artifacts": [
+                {
+                  "platform": "linux",
+                  "arch": "arm64",
+                  "kind": "appimage",
+                  "file": "formportal-0.70.2-linux-arm64.AppImage",
+                  "url": "https://dl.formai.studio/formportal/0.70.2/formportal-0.70.2-linux-arm64.AppImage",
+                  "bytes": 107497992,
+                  "sha256": "9209d00382a1b7250d35582ea33d734791d8dd2bad76d858b8812198f7b3ed84",
+                  "minimum_os": ""
+                },
+                {
+                  "platform": "linux",
+                  "arch": "arm64",
+                  "kind": "deb",
+                  "file": "formportal-0.70.2-linux-arm64.deb",
+                  "url": "https://dl.formai.studio/formportal/0.70.2/formportal-0.70.2-linux-arm64.deb",
+                  "bytes": 31581242,
+                  "sha256": "a3acba69adde07c5df5542175e436e2908ad1ebe23354c73d16c58f9eed7eaed",
+                  "minimum_os": ""
+                },
+                {
+                  "platform": "linux",
+                  "arch": "arm64",
+                  "kind": "rpm",
+                  "file": "formportal-0.70.2-linux-arm64.rpm",
+                  "url": "https://dl.formai.studio/formportal/0.70.2/formportal-0.70.2-linux-arm64.rpm",
+                  "bytes": 31587375,
+                  "sha256": "50b2a4d3bff4a86c87d1819f03d680baffe28fcd776b305b3113b8efac46bbc9",
+                  "minimum_os": ""
+                },
+                {
+                  "platform": "linux",
+                  "arch": "x86_64",
+                  "kind": "appimage",
+                  "file": "formportal-0.70.2-linux-x86_64.AppImage",
+                  "url": "https://dl.formai.studio/formportal/0.70.2/formportal-0.70.2-linux-x86_64.AppImage",
+                  "bytes": 109910520,
+                  "sha256": "14039331ac98e99a817c52fcc5b232f1e9d798ab7828dd1bc6b8d6304a2bcfaf",
+                  "minimum_os": ""
+                },
+                {
+                  "platform": "linux",
+                  "arch": "x86_64",
+                  "kind": "deb",
+                  "file": "formportal-0.70.2-linux-x86_64.deb",
+                  "url": "https://dl.formai.studio/formportal/0.70.2/formportal-0.70.2-linux-x86_64.deb",
+                  "bytes": 32104078,
+                  "sha256": "28992cc4dcb4591ed904dcadc17a8aabc2a670d47d64c41e9ee20ddc5fdf9ccd",
+                  "minimum_os": ""
+                },
+                {
+                  "platform": "linux",
+                  "arch": "x86_64",
+                  "kind": "rpm",
+                  "file": "formportal-0.70.2-linux-x86_64.rpm",
+                  "url": "https://dl.formai.studio/formportal/0.70.2/formportal-0.70.2-linux-x86_64.rpm",
+                  "bytes": 32109934,
+                  "sha256": "7ce3495b79336d4cae4380136df4b23fc2b3eaefd74c495bc98b34aad9f6a0f6",
+                  "minimum_os": ""
+                },
+                {
+                  "platform": "macos",
+                  "arch": "arm64",
+                  "kind": "dmg",
+                  "file": "formportal-0.70.2-macos-arm64.dmg",
+                  "url": "https://dl.formai.studio/formportal/0.70.2/formportal-0.70.2-macos-arm64.dmg",
+                  "bytes": 31287919,
+                  "sha256": "7c2ec6789b367b4a440a9a6e009013d0520cff5f05a77a2f73c769ff2ae98149",
+                  "minimum_os": "macOS 12"
+                },
+                {
+                  "platform": "macos",
+                  "arch": "x86_64",
+                  "kind": "dmg",
+                  "file": "formportal-0.70.2-macos-x86_64.dmg",
+                  "url": "https://dl.formai.studio/formportal/0.70.2/formportal-0.70.2-macos-x86_64.dmg",
+                  "bytes": 32006418,
+                  "sha256": "c316b1d07f88bde5bfc2189cfe58b32da91f9b31f2bb06f104fb9e867b3d3d26",
+                  "minimum_os": "macOS 12"
+                },
+                {
+                  "platform": "windows",
+                  "arch": "arm64",
+                  "kind": "nsis",
+                  "file": "formportal-0.70.2-windows-arm64-setup.exe",
+                  "url": "https://dl.formai.studio/formportal/0.70.2/formportal-0.70.2-windows-arm64-setup.exe",
+                  "bytes": 27208752,
+                  "sha256": "743dd4bcfc87f2b65472b0a95e01ec81989bb060e63979b274ccb7c78e32363d",
+                  "minimum_os": "Windows 10"
+                },
+                {
+                  "platform": "windows",
+                  "arch": "x86_64",
+                  "kind": "nsis",
+                  "file": "formportal-0.70.2-windows-x86_64-setup.exe",
+                  "url": "https://dl.formai.studio/formportal/0.70.2/formportal-0.70.2-windows-x86_64-setup.exe",
+                  "bytes": 27762800,
+                  "sha256": "e4cb6d2cb536c6c1f7ac417d04c0539eaaec729af25c5d2647b89c08946a7069",
+                  "minimum_os": "Windows 10"
+                }
+              ],
+              "commit": "6cae2e9d04fef96073e64f8c7b9eaf19c42d88e9",
+              "agents": {
+                "manifest": {
+                  "file": "form-app.json",
+                  "url": "https://dl.formai.studio/formportal/0.70.2/form-app.json",
+                  "bytes": 2736,
+                  "sha256": "65c28cc2640b1fa8a68c42c6f720d78da6dfedc10b6c75039f231a866d4ba5f1"
+                },
+                "skills": {
+                  "file": "formportal-skills-v0.70.2.zip",
+                  "url": "https://dl.formai.studio/formportal/0.70.2/formportal-skills-v0.70.2.zip",
+                  "bytes": 43158,
+                  "sha256": "2098269e125b40ab2cd48a22c1cc0e0a3b27c3357bf0c690ae1dc3ffe1daaa25"
+                }
+              }
+            },
             {
               "version": "0.70.0",
               "published": "2026-11-21T01:43:55Z",
@@ -12675,92 +12798,179 @@
       },
       "channels": {
         "stable": {
-          "version": "0.17.0",
-          "published": "2026-11-20T01:10:06Z",
-          "notes": "A small release about opening apps safely on Linux and Windows.\n\nImproved\n\n- Linux and Windows: FormTray opens an app installed by FormPortal only when the program on disk matches FormPortal's record of it. An app that does not match is not opened.\n\nChanged\n\n- The README and the security policy say how Open checks an installed app, and the list of command-line commands is complete.",
+          "version": "0.17.2",
+          "published": "2026-11-22T08:45:17Z",
+          "notes": "https://github.com/nodemode-dev/formtray/releases/tag/v0.17.2",
           "origin": "store",
           "artifacts": [
             {
               "platform": "linux",
               "arch": "x86_64",
               "kind": "appimage",
-              "file": "formtray-0.17.0-linux-x64.AppImage",
-              "url": "https://dl.formai.studio/formtray/0.17.0/formtray-0.17.0-linux-x64.AppImage",
-              "bytes": 85039608,
-              "sha256": "84729ed97c5d1901df51d6d23c410f112c217e285e9ce8248f8bc1ea0961864e",
+              "file": "formtray-0.17.2-linux-x64.AppImage",
+              "url": "https://dl.formai.studio/formtray/0.17.2/formtray-0.17.2-linux-x64.AppImage",
+              "bytes": 85068280,
+              "sha256": "2d28d38588df58d787d746b49e843b2e94da33a04572afeddc4f6e06376627a6",
               "minimum_os": ""
             },
             {
               "platform": "linux",
               "arch": "x86_64",
               "kind": "deb",
-              "file": "formtray-0.17.0-linux-x64.deb",
-              "url": "https://dl.formai.studio/formtray/0.17.0/formtray-0.17.0-linux-x64.deb",
-              "bytes": 6665194,
-              "sha256": "c0a8f625230aa42f6ba8fb744e78b2aebfb29400f729ee0d8acae46bbccf4c32",
+              "file": "formtray-0.17.2-linux-x64.deb",
+              "url": "https://dl.formai.studio/formtray/0.17.2/formtray-0.17.2-linux-x64.deb",
+              "bytes": 6686342,
+              "sha256": "100a27edfcb91023d9ca5a9946df5156a10a453a40fb0c21b7fa33c89ea3a7da",
               "minimum_os": ""
             },
             {
               "platform": "linux",
               "arch": "x86_64",
               "kind": "rpm",
-              "file": "formtray-0.17.0-linux-x64.rpm",
-              "url": "https://dl.formai.studio/formtray/0.17.0/formtray-0.17.0-linux-x64.rpm",
-              "bytes": 6665414,
-              "sha256": "b61db08ae588a1fe4a4230bbaae570784370b25116ee4bce9bb8221364fed284",
+              "file": "formtray-0.17.2-linux-x64.rpm",
+              "url": "https://dl.formai.studio/formtray/0.17.2/formtray-0.17.2-linux-x64.rpm",
+              "bytes": 6685752,
+              "sha256": "450f9c839825c4371af5f82366afbda439cc97bca03b601f3fdfa45667ff2827",
               "minimum_os": ""
             },
             {
               "platform": "macos",
               "arch": "arm64",
               "kind": "dmg",
-              "file": "formtray-0.17.0-macos-arm64.dmg",
-              "url": "https://dl.formai.studio/formtray/0.17.0/formtray-0.17.0-macos-arm64.dmg",
-              "bytes": 6353362,
-              "sha256": "281cd40f43a2261cb2038a1055441fa0566934af37573a9572909ba6e95a5b44",
+              "file": "formtray-0.17.2-macos-arm64.dmg",
+              "url": "https://dl.formai.studio/formtray/0.17.2/formtray-0.17.2-macos-arm64.dmg",
+              "bytes": 6374344,
+              "sha256": "1ed2a51bdaddcb4acca8115d3a3e5b0aeaa30e5a9f55bdc047878719a47d2a33",
               "minimum_os": "macOS 11"
             },
             {
               "platform": "macos",
               "arch": "x86_64",
               "kind": "dmg",
-              "file": "formtray-0.17.0-macos-x64.dmg",
-              "url": "https://dl.formai.studio/formtray/0.17.0/formtray-0.17.0-macos-x64.dmg",
-              "bytes": 6754978,
-              "sha256": "aaab361e14d131292143291a2e3bff83895b406016e17ce6c93e187d1b5de43a",
+              "file": "formtray-0.17.2-macos-x64.dmg",
+              "url": "https://dl.formai.studio/formtray/0.17.2/formtray-0.17.2-macos-x64.dmg",
+              "bytes": 6752212,
+              "sha256": "90f064e7e7065a852375f971dd61392750dedec7fb629fe4acd89debb76f004c",
               "minimum_os": "macOS 11"
             },
             {
               "platform": "windows",
               "arch": "x86_64",
               "kind": "nsis",
-              "file": "formtray-0.17.0-windows-x64-setup.exe",
-              "url": "https://dl.formai.studio/formtray/0.17.0/formtray-0.17.0-windows-x64-setup.exe",
-              "bytes": 4149400,
-              "sha256": "17bd21dcbc124a4f02d8325ef4e906955a665198c09b2d54b6a3ce7246b62199",
+              "file": "formtray-0.17.2-windows-x64-setup.exe",
+              "url": "https://dl.formai.studio/formtray/0.17.2/formtray-0.17.2-windows-x64-setup.exe",
+              "bytes": 4170696,
+              "sha256": "c86de9f6f30c53f1423cff3f62251f0e786ce5c85e3f389b7948bafa91437a67",
               "minimum_os": ""
             },
             {
               "platform": "windows",
               "arch": "x86_64",
               "kind": "msi",
-              "file": "formtray-0.17.0-windows-x64.msi",
-              "url": "https://dl.formai.studio/formtray/0.17.0/formtray-0.17.0-windows-x64.msi",
-              "bytes": 5365760,
-              "sha256": "969bee4b0da121da5510e792152a4c9fa8b8e3fde41db034def9c8a014407283",
+              "file": "formtray-0.17.2-windows-x64.msi",
+              "url": "https://dl.formai.studio/formtray/0.17.2/formtray-0.17.2-windows-x64.msi",
+              "bytes": 5386240,
+              "sha256": "8430abfa11333549a7d5eb2e5b5c7aa3d4fb62eb18f87d25713a0b6d556c2dac",
               "minimum_os": ""
             }
           ],
-          "commit": "6b38d525e7819252c9b138f00ccb5c5988594aa3",
+          "commit": "dad9d806af1c604a63473eb0315223521153cb92",
           "agents": {
             "manifest": {
               "file": "form-app.json",
-              "url": "https://dl.formai.studio/formtray/0.17.0/form-app.json",
+              "url": "https://dl.formai.studio/formtray/0.17.2/form-app.json",
               "bytes": 316,
-              "sha256": "7cf72106f8cf26240f855c421f3b8fb0e41901c2e752479f3e27c683b14310f4"
+              "sha256": "d71863a92c732ff4a778bf79492972e23ba6c0220a625033d8ad449b847c7aae"
             }
           },
           "history": [
+            {
+              "version": "0.17.0",
+              "published": "2026-11-20T01:10:06Z",
+              "notes": "A small release about opening apps safely on Linux and Windows.\n\nImproved\n\n- Linux and Windows: FormTray opens an app installed by FormPortal only when the program on disk matches FormPortal's record of it. An app that does not match is not opened.\n\nChanged\n\n- The README and the security policy say how Open checks an installed app, and the list of command-line commands is complete.",
+              "origin": "store",
+              "artifacts": [
+                {
+                  "platform": "linux",
+                  "arch": "x86_64",
+                  "kind": "appimage",
+                  "file": "formtray-0.17.0-linux-x64.AppImage",
+                  "url": "https://dl.formai.studio/formtray/0.17.0/formtray-0.17.0-linux-x64.AppImage",
+                  "bytes": 85039608,
+                  "sha256": "84729ed97c5d1901df51d6d23c410f112c217e285e9ce8248f8bc1ea0961864e",
+                  "minimum_os": ""
+                },
+                {
+                  "platform": "linux",
+                  "arch": "x86_64",
+                  "kind": "deb",
+                  "file": "formtray-0.17.0-linux-x64.deb",
+                  "url": "https://dl.formai.studio/formtray/0.17.0/formtray-0.17.0-linux-x64.deb",
+                  "bytes": 6665194,
+                  "sha256": "c0a8f625230aa42f6ba8fb744e78b2aebfb29400f729ee0d8acae46bbccf4c32",
+                  "minimum_os": ""
+                },
+                {
+                  "platform": "linux",
+                  "arch": "x86_64",
+                  "kind": "rpm",
+                  "file": "formtray-0.17.0-linux-x64.rpm",
+                  "url": "https://dl.formai.studio/formtray/0.17.0/formtray-0.17.0-linux-x64.rpm",
+                  "bytes": 6665414,
+                  "sha256": "b61db08ae588a1fe4a4230bbaae570784370b25116ee4bce9bb8221364fed284",
+                  "minimum_os": ""
+                },
+                {
+                  "platform": "macos",
+                  "arch": "arm64",
+                  "kind": "dmg",
+                  "file": "formtray-0.17.0-macos-arm64.dmg",
+                  "url": "https://dl.formai.studio/formtray/0.17.0/formtray-0.17.0-macos-arm64.dmg",
+                  "bytes": 6353362,
+                  "sha256": "281cd40f43a2261cb2038a1055441fa0566934af37573a9572909ba6e95a5b44",
+                  "minimum_os": "macOS 11"
+                },
+                {
+                  "platform": "macos",
+                  "arch": "x86_64",
+                  "kind": "dmg",
+                  "file": "formtray-0.17.0-macos-x64.dmg",
+                  "url": "https://dl.formai.studio/formtray/0.17.0/formtray-0.17.0-macos-x64.dmg",
+                  "bytes": 6754978,
+                  "sha256": "aaab361e14d131292143291a2e3bff83895b406016e17ce6c93e187d1b5de43a",
+                  "minimum_os": "macOS 11"
+                },
+                {
+                  "platform": "windows",
+                  "arch": "x86_64",
+                  "kind": "nsis",
+                  "file": "formtray-0.17.0-windows-x64-setup.exe",
+                  "url": "https://dl.formai.studio/formtray/0.17.0/formtray-0.17.0-windows-x64-setup.exe",
+                  "bytes": 4149400,
+                  "sha256": "17bd21dcbc124a4f02d8325ef4e906955a665198c09b2d54b6a3ce7246b62199",
+                  "minimum_os": ""
+                },
+                {
+                  "platform": "windows",
+                  "arch": "x86_64",
+                  "kind": "msi",
+                  "file": "formtray-0.17.0-windows-x64.msi",
+                  "url": "https://dl.formai.studio/formtray/0.17.0/formtray-0.17.0-windows-x64.msi",
+                  "bytes": 5365760,
+                  "sha256": "969bee4b0da121da5510e792152a4c9fa8b8e3fde41db034def9c8a014407283",
+                  "minimum_os": ""
+                }
+              ],
+              "commit": "6b38d525e7819252c9b138f00ccb5c5988594aa3",
+              "agents": {
+                "manifest": {
+                  "file": "form-app.json",
+                  "url": "https://dl.formai.studio/formtray/0.17.0/form-app.json",
+                  "bytes": 316,
+                  "sha256": "7cf72106f8cf26240f855c421f3b8fb0e41901c2e752479f3e27c683b14310f4"
+                }
+              }
+            },
             {
               "version": "0.16.4",
               "published": "2026-11-19T23:24:03Z",
