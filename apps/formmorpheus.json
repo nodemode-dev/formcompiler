@@ -1,0 +1,53 @@
+{
+  "app": "formmorpheus",
+  "repository": "nodemode-dev/formmorpheus",
+  "title": "formmorpheus",
+  "enabled": true,
+  "release": "draft",
+  "version": {"file": "src-tauri/tauri.conf.json", "pattern": ""},
+  "checks": ["ci.yml"],
+  "platforms": ["macos-arm64", "macos-x64", "linux-x64", "windows-x64"],
+  "toolchain": {
+    "node": "22",
+    "python": "3.12",
+    "rust": true,
+    "rust_targets": "",
+    "rust_cache": ["src-tauri"],
+    "go": "",
+    "linux_packages": "libwebkit2gtk-4.1-dev libgtk-3-dev libayatana-appindicator3-dev librsvg2-dev libsoup-3.0-dev libjavascriptcoregtk-4.1-dev libxdo-dev libssl-dev patchelf gstreamer1.0-plugins-base gstreamer1.0-plugins-good",
+    "windows_msvc": false
+  },
+  "build": {
+    "mode": "commands",
+    "cli": "formmorpheus",
+    "install": false,
+    "install_args": "",
+    "install_desktop": false,
+    "windows_shell": "cmd",
+    "macos": "./formmorpheus install\n./formmorpheus desktop build",
+    "linux": "./formmorpheus install\n./formmorpheus desktop build --bundles deb,appimage,rpm",
+    "windows": "call build_app.bat || (type build_app.log & exit /b 1)",
+    "tauri_config": "{\"bundle\":{\"linux\":{\"rpm\":{\"compression\":{\"type\":\"none\"}}}}}"
+  },
+  "setup": {"macos": "", "linux": "", "windows": ""},
+  "post_build": {"macos": "", "linux": "", "windows": ""},
+  "artifacts": [],
+  "extras": [],
+  "assets": "",
+  "notes": "",
+  "updater": {"tauri": false, "tag_json": false, "files": []},
+  "signing": {"macos": "apple", "windows": "certificate"},
+  "agents": {"skills": "", "mcp": false},
+  "catalog": {
+    "id": "formmorpheus",
+    "name": "FormMorpheus",
+    "kind": "animation",
+    "summary": "Animation studio: draw frame by frame, keyframe or perform live on a timeline.",
+    "identifier": "ai.nodemode.formmorpheus",
+    "licence": "Apache-2.0",
+    "state": "prelaunch",
+    "project_extensions": [".fmo"],
+    "minimum_os": {"macos": "macOS 11", "windows": "", "linux": ""}
+  },
+  "notes_for_owner": "The first formcompiler build of formmorpheus. The release stays a draft on the private repository. It builds in commands mode, not contract mode: ./formmorpheus has no install-desktop command and its desktop build (./build_app) refuses any argument it does not know, so the --config that contract mode passes would stop it; formcompiler's Tauri settings reach the build through the tauri.<os>.conf.json it merges before every build instead. macOS and Linux run ./formmorpheus install and then ./formmorpheus desktop build, which installs the desktop requirements, builds the interface, freezes the engine and runs tauri build. Windows runs build_app.bat under cmd, because formmorpheus.bat has no desktop build and the bash build does not run on Windows; build_app.bat writes everything to build_app.log, so the line prints that log when it fails. Linux builds deb, AppImage and rpm, with rpm compression off as FormVis does. The Mac engine is signed with the Developer ID while it is frozen; the first notarized build is the test of that. The repository has no CHANGELOG.md, so the release notes are a line naming the commit until it has one. updater.tauri is false and agents lists no skills and no MCP server: the app has neither yet. If tauri build stops on mismatched Tauri packages, the app's @tauri-apps/api and @tauri-apps/cli must move to the 2.12 line its Cargo.lock already uses. Add the read token's access to nodemode-dev/formmorpheus before the first run."
+}

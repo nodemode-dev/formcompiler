@@ -82,7 +82,7 @@
 <table>
   <tr>
     <td width="33%" valign="top">
-      <h4>32 registered apps, 31 enabled</h4>
+      <h4>33 registered apps, all enabled</h4>
       One <code>apps/&lt;app&gt;.json</code> each: version source · checks · platforms · toolchain · build commands · extra jobs · assets · update files · catalogue entry
     </td>
     <td width="33%" valign="top">
