@@ -1,7 +1,7 @@
 {
   "format": "formai-catalog",
   "format_version": 1,
-  "generated": "2026-11-22T08:57:58Z",
+  "generated": "2026-11-22T10:07:28Z",
   "origin": "https://github.com/nodemode-dev/formcompiler",
   "products": [
     {
@@ -21,7 +21,7 @@
         "stable": {
           "version": "0.71.3",
           "published": "2026-11-22T08:45:18Z",
-          "notes": "https://github.com/nodemode-dev/formportal/releases/tag/v0.71.3",
+          "notes": "This release carries 0.71.0, 0.71.1 and 0.71.2 as well, which were never published on their own.\n\nNew\n\n- Stock & templates searches Pexels, Pixabay, Openverse, Freesound and ccMixter for images, video and audio. Each result opens in a viewer with its licence, its credit line and Save. Openverse and ccMixter need no key; the other three use your own free API key.\n- Templates and demos for every public Form app, from the public repository nodemode-dev/formai-templates. Nothing is fetched until you choose Get the list, each file is downloaded only when you choose it, and it is kept only if its SHA-256 matches the list.\n- Fonts can come from Fontsource, with no account, and from Google Fonts, with your own API key. Nothing is asked of either until you press Browse. Your own font files can always be added.\n- Preferences has a Keys panel for your API keys. It shows what each key is for, whether one is kept, its last four characters and where it is kept. A source that needs a key has a chip that opens the panel.\n- An install or a going back shows a card under the app's row that ticks each check as it really happens: the catalogue's signature, the file for this computer, the download, the SHA-256, unpacking and moving into place.\n- Files: a project's name opens an inspector with its path, preview, size, kept versions and whether the file still matches its last kept SHA-256.\n- Profile can connect to GitHub and set up your own fork of the extension registry. Nothing is sent to GitHub until you press Connect to GitHub.\n- The sidebar carries the family's social links, with Help last.\n\nImproved\n\n- Every app row on Updates and Apps is one line high, with the installed version and the download size in a pill in the app's own colour.\n- What changed opens in place under the row without moving the rows above.\n- Notices show five lines at most, leave by themselves after 5 seconds, and are red only for a failure.\n- Every app page has its own text and a How it works section.\n- The three browser demos show this interface and ask nothing outside the page.\n\nChanged\n\n- FormPortal asks formai.studio nothing about what is on the way unless you turn on Preferences, General, Ask formai.studio what is on the way. It is off by default. When it is on, FormPortal asks once at each start.\n- The system keychain is asked only when you save or remove a key or use a feature that needs it. Where a computer has no keychain, a key is kept in a file only you can read, and the Keys panel says so.\n- Preferences, Account is now Profile. Version and Check & repair moved to General.\n- The Apps page is one section in ten categories, and each app's \"Instead of\" line follows what its repository says today. SubForm is now FormSubstrate.\n\nFixed\n\n- A file the download server does not have yet is reported as that, not as a file that does not match the catalogue. Nothing is written or installed in either case.\n\nKnown issues\n\n- The stock sources, Fontsource, Google Fonts, the templates download and GitHub's connect and fork were built to each service's documentation and have not yet been tried against the live services.\n- The Spanish has not been read by a native speaker.",
           "origin": "store",
           "artifacts": [
             {
@@ -12800,7 +12800,7 @@
         "stable": {
           "version": "0.17.2",
           "published": "2026-11-22T08:45:17Z",
-          "notes": "https://github.com/nodemode-dev/formtray/releases/tag/v0.17.2",
+          "notes": "This release carries 0.17.1 as well, which was never published on its own.\n\nNew\n\n- FormPublisher and FormREC are in the app list. Each appears on its release day.\n\nImproved\n\n- The three browser demos are rebuilt from this version, with the new names, lines and apps.\n\nChanged\n\n- SubForm is now FormSubstrate. FormTray finds, opens and quits it under its new names; the installed application is called Substrate.\n- Nine \"Instead of\" lines follow what each app's repository says today, so the Apps list and the widgets read the same as FormPortal.\n\nFixed\n\n- Three apps appear on the right day. Their opening dates had drifted from the family schedule, and an app stays hidden in FormTray until its day.",
           "origin": "store",
           "artifacts": [
             {
