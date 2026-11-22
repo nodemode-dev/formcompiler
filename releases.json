@@ -1,7 +1,7 @@
 {
   "format": "formai-catalog",
   "format_version": 1,
-  "generated": "2026-11-21T19:42:50Z",
+  "generated": "2026-11-22T06:46:06Z",
   "origin": "https://github.com/nodemode-dev/formcompiler",
   "products": [
     {
@@ -7698,6 +7698,24 @@
       }
     },
     {
+      "id": "formmorpheus",
+      "name": "FormMorpheus",
+      "kind": "animation",
+      "summary": "Animation studio: draw frame by frame, keyframe or perform live on a timeline.",
+      "identifier": "ai.nodemode.formmorpheus",
+      "repository": "https://github.com/nodemode-dev/formmorpheus",
+      "licence": "Apache-2.0",
+      "project_extensions": [
+        ".fmo"
+      ],
+      "state": "prelaunch",
+      "agents": {
+        "mcp": false,
+        "skills": false
+      },
+      "channels": {}
+    },
+    {
       "id": "formnet",
       "name": "FormNET",
       "kind": "network",
@@ -8838,6 +8856,21 @@
       "project_extensions": [
         ".fptemplate"
       ],
+      "state": "prelaunch",
+      "agents": {
+        "mcp": true,
+        "skills": true
+      },
+      "channels": {}
+    },
+    {
+      "id": "formpublisher",
+      "name": "FormPublisher",
+      "kind": "publisher",
+      "summary": "Open FormWeb sites, check every route, package them and prepare them for hosts.",
+      "identifier": "ai.nodemode.formpublisher",
+      "repository": "https://github.com/nodemode-dev/formpublisher",
+      "licence": "GPL-3.0-only",
       "state": "prelaunch",
       "agents": {
         "mcp": true,
