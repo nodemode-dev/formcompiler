@@ -1,5 +1,13 @@
 # Changelog
 
+## v0.22.0 · 2026-11-23
+
+- FormRig and FormCraft are registered for the Group 6 launch of 25 November: `apps/formrig.json` builds `nodemode-dev/formrig` and `apps/formcraft.json` builds `nodemode-dev/formcraft` for Apple silicon and Intel Macs, Linux and Windows, as draft releases on their private repositories. FormPromo was already registered.
+- Both build in contract mode: each launcher has `install`, `install-desktop` and a `desktop build` that passes `--config` on to Tauri, in bash and in its `.bat`. Each freezes a Python engine with PyInstaller, a signed one-folder engine on macOS and a one-file sidecar elsewhere.
+- Catalogue entries: `formrig`, rigging, Apache-2.0, `.frig` and `.frgreturn`, macOS 12; `formcraft`, generation, Apache-2.0, `.fcrft`, macOS 14. Both in prelaunch. FormCraft has the Tauri updater; FormRig has none yet.
+- For the owner, once: the read token needs access to both repositories before their first build. FormCraft's own `ci.yml` has not run on main since 6 November (a job-level `runner.temp` GitHub refuses); its fix is a separate pull request in that repository and must merge before FormCraft's first build.
+- Neither build has run yet; the first run is the test. The README counts 35 registered apps, all enabled, and 506 tests. No test was added.
+
 ## v0.21.0 · 2026-11-21
 
 - FormMorpheus is registered: `apps/formmorpheus.json` builds `nodemode-dev/formmorpheus` for Apple silicon and Intel Macs, Linux and Windows, as a draft release on its private repository. Its catalogue entry is `formmorpheus`, Apache-2.0, `.fmo`, macOS 11, in prelaunch.

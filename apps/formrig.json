@@ -1,0 +1,53 @@
+{
+  "app": "formrig",
+  "repository": "nodemode-dev/formrig",
+  "title": "FormRig",
+  "enabled": true,
+  "release": "draft",
+  "version": {"file": "src-tauri/tauri.conf.json", "pattern": ""},
+  "checks": ["ci.yml"],
+  "platforms": ["macos-arm64", "macos-x64", "linux-x64", "windows-x64"],
+  "toolchain": {
+    "node": "22",
+    "python": "3.12",
+    "rust": true,
+    "rust_targets": "",
+    "rust_cache": ["src-tauri", "native"],
+    "go": "",
+    "linux_packages": "libwebkit2gtk-4.1-dev build-essential curl wget file libxdo-dev libssl-dev libayatana-appindicator3-dev librsvg2-dev patchelf xdg-utils libfuse2",
+    "windows_msvc": false
+  },
+  "build": {
+    "mode": "contract",
+    "cli": "formrig",
+    "install": true,
+    "install_args": "",
+    "install_desktop": true,
+    "windows_shell": "cmd",
+    "macos": "",
+    "linux": "",
+    "windows": "",
+    "tauri_config": ""
+  },
+  "setup": {"macos": "", "linux": "", "windows": ""},
+  "post_build": {"macos": "", "linux": "", "windows": ""},
+  "artifacts": [],
+  "extras": [],
+  "assets": "",
+  "notes": "",
+  "updater": {"tauri": false, "tag_json": false, "files": []},
+  "signing": {"macos": "apple", "windows": "certificate"},
+  "agents": {"skills": ".claude/skills", "mcp": true},
+  "catalog": {
+    "id": "formrig",
+    "name": "FormRig",
+    "kind": "rigging",
+    "summary": "Character rigging: skeleton, skin, controls, face and retargeting from any mesh.",
+    "identifier": "ai.nodemode.formrig",
+    "licence": "Apache-2.0",
+    "state": "prelaunch",
+    "project_extensions": [".frig", ".frgreturn"],
+    "minimum_os": {"macos": "macOS 12", "windows": "", "linux": ""}
+  },
+  "notes_for_owner": "Written from formrig 0.13.2 (main 912c356, CI green on 2026-11-17). Contract mode: ./formrig install runs setup/install_all (the engine venv, the Rust engine module frg_engine built with maturin, the frontend), install-desktop installs PyInstaller and the desktop requirements, and desktop build passes --config FILE on to tauri build after building the frontend and freezing the engine; formrig.bat has the same three commands under cmd and its desktop build forwards every argument. The Rust toolchain is pinned to 1.99.1 by rust-toolchain.toml, which rustup honours on every runner. The engine is native code, so every platform builds on its own runner (no macos-x64=cross). On macOS the engine is a PyInstaller one-folder copied to src-tauri/engine and shipped as Resources/engine by src-tauri/tauri.macos.conf.json; with APPLE_SIGNING_IDENTITY set, setup/freeze_backend signs every Mach-O in it with hardened runtime, a timestamp and src-tauri/entitlements.plist, so notarization should pass; the first notarized build is the test. On Windows and Linux it is the one-file sidecar src-tauri/binaries/formrig-engine-<triple>. Linux packages are the list the app's own release-build.yml installed. No Tauri updater plugin and createUpdaterArtifacts false, so updater.tauri is false. Skills are .claude/skills (formrig-harness, formrig-rigging); the app has an MCP server (./formrig mcp). Catalogue: id, name, kind and summary follow formai.studio's catalog/products.json; identifier, .frig and .frgreturn come from tauri.conf.json; macOS 12 is its minimumSystemVersion. The app's old .github/workflows/release-build.yml still exists; formcompiler is the only builder, so the owner may remove it. Before the first run, give the read token access to nodemode-dev/formrig."
+}

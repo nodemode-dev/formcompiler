@@ -1,0 +1,53 @@
+{
+  "app": "formcraft",
+  "repository": "nodemode-dev/formcraft",
+  "title": "FormCraft",
+  "enabled": true,
+  "release": "draft",
+  "version": {"file": "src-tauri/tauri.conf.json", "pattern": ""},
+  "checks": ["ci.yml"],
+  "platforms": ["macos-arm64", "macos-x64", "linux-x64", "windows-x64"],
+  "toolchain": {
+    "node": "22",
+    "python": "3.12",
+    "rust": true,
+    "rust_targets": "",
+    "rust_cache": ["src-tauri"],
+    "go": "",
+    "linux_packages": "libwebkit2gtk-4.1-dev build-essential curl wget file libxdo-dev libssl-dev libayatana-appindicator3-dev librsvg2-dev patchelf pkg-config",
+    "windows_msvc": false
+  },
+  "build": {
+    "mode": "contract",
+    "cli": "formcraft",
+    "install": true,
+    "install_args": "",
+    "install_desktop": true,
+    "windows_shell": "cmd",
+    "macos": "",
+    "linux": "",
+    "windows": "",
+    "tauri_config": ""
+  },
+  "setup": {"macos": "", "linux": "", "windows": ""},
+  "post_build": {"macos": "", "linux": "", "windows": ""},
+  "artifacts": [],
+  "extras": [],
+  "assets": "",
+  "notes": "",
+  "updater": {"tauri": true, "tag_json": false, "files": []},
+  "signing": {"macos": "apple", "windows": "certificate"},
+  "agents": {"skills": ".claude/skills", "mcp": true},
+  "catalog": {
+    "id": "formcraft",
+    "name": "FormCraft",
+    "kind": "generation",
+    "summary": "Images, video, audio, 3D and worlds from models you choose, on your own keys and your own computer.",
+    "identifier": "ai.nodemode.formcraft",
+    "licence": "Apache-2.0",
+    "state": "prelaunch",
+    "project_extensions": [".fcrft"],
+    "minimum_os": {"macos": "macOS 14", "windows": "", "linux": ""}
+  },
+  "notes_for_owner": "Written from formcraft 0.8.3 (main b501e31). Its CI has not run on main since 2026-11-06: ci.yml sets FORMCRAFT_DATA_DIR from runner.temp at job level, where GitHub does not allow the runner context, so every push fails before a job starts. formcompiler releases a commit only when ci.yml passed on it, so the formcraft fix (a separate pull request in that repository) must merge, and its CI pass on main, before the first build. Contract mode: ./formcraft install runs setup/install_all, install-desktop checks Rust, installs PyInstaller and adds the Tauri CLI when missing, and desktop build [--config FILE] builds the frontend, freezes the engine and runs tauri build; formcraft.bat has the same commands under cmd and forwards the rest of the line. The engine is pure Python (no native code). On macOS it is a PyInstaller one-folder signed with APPLE_SIGNING_IDENTITY, hardened runtime and src-tauri/entitlements.plist when that is set; the first notarized build is the test. Linux packages are FORMCRAFT_APT_PACKAGES from setup/lib.sh. The app has the Tauri updater plugin and createUpdaterArtifacts true, so updater.tauri is true; its tauri.conf.json still points the endpoint at the old nodemode-ai/formcompiler and has no pubkey, and formcompiler's merged config replaces both at build time. setup/versions.py accepts only one digit in the patch part, so 0.8.9 is followed by 0.9.0. Skills are .claude/skills (formcraft-driving, formcraft-harness) and the app has an MCP server (./formcraft mcp); setup/mcpb.py can build a Claude Desktop bundle, which is not released here. Catalogue: id, name, kind and summary follow formai.studio's catalog/products.json; identifier and .fcrft come from tauri.conf.json; macOS 14 is its minimumSystemVersion. Before the first run, give the read token access to nodemode-dev/formcraft."
+}
