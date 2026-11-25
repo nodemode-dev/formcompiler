@@ -1,7 +1,7 @@
 {
   "format": "formai-catalog",
   "format_version": 1,
-  "generated": "2026-11-23T00:01:02Z",
+  "generated": "2026-11-23T20:09:38Z",
   "origin": "https://github.com/nodemode-dev/formcompiler",
   "products": [
     {
@@ -19,128 +19,251 @@
       },
       "channels": {
         "stable": {
-          "version": "0.71.3",
-          "published": "2026-11-22T08:45:18Z",
-          "notes": "This release carries 0.71.0, 0.71.1 and 0.71.2 as well, which were never published on their own.\n\nNew\n\n- Stock & templates searches Pexels, Pixabay, Openverse, Freesound and ccMixter for images, video and audio. Each result opens in a viewer with its licence, its credit line and Save. Openverse and ccMixter need no key; the other three use your own free API key.\n- Templates and demos for every public Form app, from the public repository nodemode-dev/formai-templates. Nothing is fetched until you choose Get the list, each file is downloaded only when you choose it, and it is kept only if its SHA-256 matches the list.\n- Fonts can come from Fontsource, with no account, and from Google Fonts, with your own API key. Nothing is asked of either until you press Browse. Your own font files can always be added.\n- Preferences has a Keys panel for your API keys. It shows what each key is for, whether one is kept, its last four characters and where it is kept. A source that needs a key has a chip that opens the panel.\n- An install or a going back shows a card under the app's row that ticks each check as it really happens: the catalogue's signature, the file for this computer, the download, the SHA-256, unpacking and moving into place.\n- Files: a project's name opens an inspector with its path, preview, size, kept versions and whether the file still matches its last kept SHA-256.\n- Profile can connect to GitHub and set up your own fork of the extension registry. Nothing is sent to GitHub until you press Connect to GitHub.\n- The sidebar carries the family's social links, with Help last.\n\nImproved\n\n- Every app row on Updates and Apps is one line high, with the installed version and the download size in a pill in the app's own colour.\n- What changed opens in place under the row without moving the rows above.\n- Notices show five lines at most, leave by themselves after 5 seconds, and are red only for a failure.\n- Every app page has its own text and a How it works section.\n- The three browser demos show this interface and ask nothing outside the page.\n\nChanged\n\n- FormPortal asks formai.studio nothing about what is on the way unless you turn on Preferences, General, Ask formai.studio what is on the way. It is off by default. When it is on, FormPortal asks once at each start.\n- The system keychain is asked only when you save or remove a key or use a feature that needs it. Where a computer has no keychain, a key is kept in a file only you can read, and the Keys panel says so.\n- Preferences, Account is now Profile. Version and Check & repair moved to General.\n- The Apps page is one section in ten categories, and each app's \"Instead of\" line follows what its repository says today. SubForm is now FormSubstrate.\n\nFixed\n\n- A file the download server does not have yet is reported as that, not as a file that does not match the catalogue. Nothing is written or installed in either case.\n\nKnown issues\n\n- The stock sources, Fontsource, Google Fonts, the templates download and GitHub's connect and fork were built to each service's documentation and have not yet been tried against the live services.\n- The Spanish has not been read by a native speaker.",
+          "version": "0.71.4",
+          "published": "2026-11-23T19:58:48Z",
+          "notes": "https://github.com/nodemode-dev/formportal/releases/tag/v0.71.4",
           "origin": "store",
           "artifacts": [
             {
               "platform": "linux",
               "arch": "arm64",
               "kind": "appimage",
-              "file": "formportal-0.71.3-linux-arm64.AppImage",
-              "url": "https://dl.formai.studio/formportal/0.71.3/formportal-0.71.3-linux-arm64.AppImage",
-              "bytes": 108333576,
-              "sha256": "47f776f2fe51d3c4eb088b1e7b2fcf76bec4833428a3f0c76ad000d13c2143d5",
+              "file": "formportal-0.71.4-linux-arm64.AppImage",
+              "url": "https://dl.formai.studio/formportal/0.71.4/formportal-0.71.4-linux-arm64.AppImage",
+              "bytes": 108440072,
+              "sha256": "a5e2a37cb71ce31bccc75262c1ca5d9484dfe78b447b6d7c44d418f101465e99",
               "minimum_os": ""
             },
             {
               "platform": "linux",
               "arch": "arm64",
               "kind": "deb",
-              "file": "formportal-0.71.3-linux-arm64.deb",
-              "url": "https://dl.formai.studio/formportal/0.71.3/formportal-0.71.3-linux-arm64.deb",
-              "bytes": 32448740,
-              "sha256": "36edc4018c4fa464542be43b0c2669e6738b1a46da9cf8f01afde67dc301d688",
+              "file": "formportal-0.71.4-linux-arm64.deb",
+              "url": "https://dl.formai.studio/formportal/0.71.4/formportal-0.71.4-linux-arm64.deb",
+              "bytes": 32560860,
+              "sha256": "4bec95a57202612db2155c6c4310a125d14c312e53f53dfed6436c4079ea67c1",
               "minimum_os": ""
             },
             {
               "platform": "linux",
               "arch": "arm64",
               "kind": "rpm",
-              "file": "formportal-0.71.3-linux-arm64.rpm",
-              "url": "https://dl.formai.studio/formportal/0.71.3/formportal-0.71.3-linux-arm64.rpm",
-              "bytes": 32455862,
-              "sha256": "8ef43e467d4cb2ff69520386dd59d79ad5513193d8f9d31b555aab9ce059a0c2",
+              "file": "formportal-0.71.4-linux-arm64.rpm",
+              "url": "https://dl.formai.studio/formportal/0.71.4/formportal-0.71.4-linux-arm64.rpm",
+              "bytes": 32565829,
+              "sha256": "b4debab309872c1fb4210272e90ed0483c1126a45c01230a7749cc1df4823fed",
               "minimum_os": ""
             },
             {
               "platform": "linux",
               "arch": "x86_64",
               "kind": "appimage",
-              "file": "formportal-0.71.3-linux-x86_64.AppImage",
-              "url": "https://dl.formai.studio/formportal/0.71.3/formportal-0.71.3-linux-x86_64.AppImage",
-              "bytes": 110754296,
-              "sha256": "5848672ca60eeb62c9d471f36a01cc36526eb2736d95afc080c57360dd707314",
+              "file": "formportal-0.71.4-linux-x86_64.AppImage",
+              "url": "https://dl.formai.studio/formportal/0.71.4/formportal-0.71.4-linux-x86_64.AppImage",
+              "bytes": 110864888,
+              "sha256": "960feec8a650a9e65748e0c0e31949f2e1506752235dbf8f752f5182906dbfd9",
               "minimum_os": ""
             },
             {
               "platform": "linux",
               "arch": "x86_64",
               "kind": "deb",
-              "file": "formportal-0.71.3-linux-x86_64.deb",
-              "url": "https://dl.formai.studio/formportal/0.71.3/formportal-0.71.3-linux-x86_64.deb",
-              "bytes": 32990742,
-              "sha256": "e6ae7c1a5834ff0fa68a4478958be4b3735e4668ac187ce0413209ca85977eb8",
+              "file": "formportal-0.71.4-linux-x86_64.deb",
+              "url": "https://dl.formai.studio/formportal/0.71.4/formportal-0.71.4-linux-x86_64.deb",
+              "bytes": 33099824,
+              "sha256": "7c8c6389699f85b082d2848fd8ddbb4fa32472870a4fb152da9c7425e50e2c2c",
               "minimum_os": ""
             },
             {
               "platform": "linux",
               "arch": "x86_64",
               "kind": "rpm",
-              "file": "formportal-0.71.3-linux-x86_64.rpm",
-              "url": "https://dl.formai.studio/formportal/0.71.3/formportal-0.71.3-linux-x86_64.rpm",
-              "bytes": 32995248,
-              "sha256": "64d8acf9d9e56886f4eb3a6f6fdcdf9970584723b9c18cb8813cc26076afcc36",
+              "file": "formportal-0.71.4-linux-x86_64.rpm",
+              "url": "https://dl.formai.studio/formportal/0.71.4/formportal-0.71.4-linux-x86_64.rpm",
+              "bytes": 33105252,
+              "sha256": "124bfcf103e8ecb78068050f9b7e7d46217068877e6ab52d7de76026ef85b3d6",
               "minimum_os": ""
             },
             {
               "platform": "macos",
               "arch": "arm64",
               "kind": "dmg",
-              "file": "formportal-0.71.3-macos-arm64.dmg",
-              "url": "https://dl.formai.studio/formportal/0.71.3/formportal-0.71.3-macos-arm64.dmg",
-              "bytes": 32136849,
-              "sha256": "90f51d3bda7d8890c541d3b69d8362b771995a067b961e0896b767305b9925af",
+              "file": "formportal-0.71.4-macos-arm64.dmg",
+              "url": "https://dl.formai.studio/formportal/0.71.4/formportal-0.71.4-macos-arm64.dmg",
+              "bytes": 32256388,
+              "sha256": "82f8b1403734a1c041d412f60cc075b7ccdadaa3eebefbeb49961ba23b172f4d",
               "minimum_os": "macOS 12"
             },
             {
               "platform": "macos",
               "arch": "x86_64",
               "kind": "dmg",
-              "file": "formportal-0.71.3-macos-x86_64.dmg",
-              "url": "https://dl.formai.studio/formportal/0.71.3/formportal-0.71.3-macos-x86_64.dmg",
-              "bytes": 32962149,
-              "sha256": "5f9a4217be9ca5bdd2c4f54c0ef8d917e077ad325e3625c1d4747c3b5a89945f",
+              "file": "formportal-0.71.4-macos-x86_64.dmg",
+              "url": "https://dl.formai.studio/formportal/0.71.4/formportal-0.71.4-macos-x86_64.dmg",
+              "bytes": 33065573,
+              "sha256": "710860448f6e5aa3d84061cb3d567213753942405b3d160d813e2a9eb570ab8a",
               "minimum_os": "macOS 12"
             },
             {
               "platform": "windows",
               "arch": "arm64",
               "kind": "nsis",
-              "file": "formportal-0.71.3-windows-arm64-setup.exe",
-              "url": "https://dl.formai.studio/formportal/0.71.3/formportal-0.71.3-windows-arm64-setup.exe",
-              "bytes": 28005680,
-              "sha256": "7d4cbb862a930f984ddb9a5e8f5f86fc2f9f5d265982a0ee71b79876d58fe4ff",
+              "file": "formportal-0.71.4-windows-arm64-setup.exe",
+              "url": "https://dl.formai.studio/formportal/0.71.4/formportal-0.71.4-windows-arm64-setup.exe",
+              "bytes": 28069424,
+              "sha256": "66e1832104b55610093fd30c52ec48a20137e39346d5ce6ab66920543765046f",
               "minimum_os": "Windows 10"
             },
             {
               "platform": "windows",
               "arch": "x86_64",
               "kind": "nsis",
-              "file": "formportal-0.71.3-windows-x86_64-setup.exe",
-              "url": "https://dl.formai.studio/formportal/0.71.3/formportal-0.71.3-windows-x86_64-setup.exe",
-              "bytes": 28603736,
-              "sha256": "678774e471fccd701294b1bf9bce471e129b1cbb3401d5f0a7412192b397afd4",
+              "file": "formportal-0.71.4-windows-x86_64-setup.exe",
+              "url": "https://dl.formai.studio/formportal/0.71.4/formportal-0.71.4-windows-x86_64-setup.exe",
+              "bytes": 28676896,
+              "sha256": "e110883ae89de3090962a247fe3dddda5421de48d11d8d708dccdec82e54c59b",
               "minimum_os": "Windows 10"
             }
           ],
-          "commit": "9d87c92974d8c6278b3bb9324f41c45e9f2174a6",
+          "commit": "eb605ad00a4a09332b4a8f32cc1bcd63da44e3a4",
           "agents": {
             "manifest": {
               "file": "form-app.json",
-              "url": "https://dl.formai.studio/formportal/0.71.3/form-app.json",
+              "url": "https://dl.formai.studio/formportal/0.71.4/form-app.json",
               "bytes": 2736,
-              "sha256": "92b8db6298ff7cdfc60bd46d40f29f99f801b3b09a71b3006dd8556ba91e4011"
+              "sha256": "6c4286e27f59d8452461c33445957a2d2038c97f880e64f51e1d495feebe862e"
             },
             "skills": {
-              "file": "formportal-skills-v0.71.3.zip",
-              "url": "https://dl.formai.studio/formportal/0.71.3/formportal-skills-v0.71.3.zip",
+              "file": "formportal-skills-v0.71.4.zip",
+              "url": "https://dl.formai.studio/formportal/0.71.4/formportal-skills-v0.71.4.zip",
               "bytes": 43313,
               "sha256": "72b29574c0975f0ffc1f0e891a9aa68c977aae4c999ced5faf2d63f747083012"
             }
           },
           "history": [
+            {
+              "version": "0.71.3",
+              "published": "2026-11-22T08:45:18Z",
+              "notes": "This release carries 0.71.0, 0.71.1 and 0.71.2 as well, which were never published on their own.\n\nNew\n\n- Stock & templates searches Pexels, Pixabay, Openverse, Freesound and ccMixter for images, video and audio. Each result opens in a viewer with its licence, its credit line and Save. Openverse and ccMixter need no key; the other three use your own free API key.\n- Templates and demos for every public Form app, from the public repository nodemode-dev/formai-templates. Nothing is fetched until you choose Get the list, each file is downloaded only when you choose it, and it is kept only if its SHA-256 matches the list.\n- Fonts can come from Fontsource, with no account, and from Google Fonts, with your own API key. Nothing is asked of either until you press Browse. Your own font files can always be added.\n- Preferences has a Keys panel for your API keys. It shows what each key is for, whether one is kept, its last four characters and where it is kept. A source that needs a key has a chip that opens the panel.\n- An install or a going back shows a card under the app's row that ticks each check as it really happens: the catalogue's signature, the file for this computer, the download, the SHA-256, unpacking and moving into place.\n- Files: a project's name opens an inspector with its path, preview, size, kept versions and whether the file still matches its last kept SHA-256.\n- Profile can connect to GitHub and set up your own fork of the extension registry. Nothing is sent to GitHub until you press Connect to GitHub.\n- The sidebar carries the family's social links, with Help last.\n\nImproved\n\n- Every app row on Updates and Apps is one line high, with the installed version and the download size in a pill in the app's own colour.\n- What changed opens in place under the row without moving the rows above.\n- Notices show five lines at most, leave by themselves after 5 seconds, and are red only for a failure.\n- Every app page has its own text and a How it works section.\n- The three browser demos show this interface and ask nothing outside the page.\n\nChanged\n\n- FormPortal asks formai.studio nothing about what is on the way unless you turn on Preferences, General, Ask formai.studio what is on the way. It is off by default. When it is on, FormPortal asks once at each start.\n- The system keychain is asked only when you save or remove a key or use a feature that needs it. Where a computer has no keychain, a key is kept in a file only you can read, and the Keys panel says so.\n- Preferences, Account is now Profile. Version and Check & repair moved to General.\n- The Apps page is one section in ten categories, and each app's \"Instead of\" line follows what its repository says today. SubForm is now FormSubstrate.\n\nFixed\n\n- A file the download server does not have yet is reported as that, not as a file that does not match the catalogue. Nothing is written or installed in either case.\n\nKnown issues\n\n- The stock sources, Fontsource, Google Fonts, the templates download and GitHub's connect and fork were built to each service's documentation and have not yet been tried against the live services.\n- The Spanish has not been read by a native speaker.",
+              "origin": "store",
+              "artifacts": [
+                {
+                  "platform": "linux",
+                  "arch": "arm64",
+                  "kind": "appimage",
+                  "file": "formportal-0.71.3-linux-arm64.AppImage",
+                  "url": "https://dl.formai.studio/formportal/0.71.3/formportal-0.71.3-linux-arm64.AppImage",
+                  "bytes": 108333576,
+                  "sha256": "47f776f2fe51d3c4eb088b1e7b2fcf76bec4833428a3f0c76ad000d13c2143d5",
+                  "minimum_os": ""
+                },
+                {
+                  "platform": "linux",
+                  "arch": "arm64",
+                  "kind": "deb",
+                  "file": "formportal-0.71.3-linux-arm64.deb",
+                  "url": "https://dl.formai.studio/formportal/0.71.3/formportal-0.71.3-linux-arm64.deb",
+                  "bytes": 32448740,
+                  "sha256": "36edc4018c4fa464542be43b0c2669e6738b1a46da9cf8f01afde67dc301d688",
+                  "minimum_os": ""
+                },
+                {
+                  "platform": "linux",
+                  "arch": "arm64",
+                  "kind": "rpm",
+                  "file": "formportal-0.71.3-linux-arm64.rpm",
+                  "url": "https://dl.formai.studio/formportal/0.71.3/formportal-0.71.3-linux-arm64.rpm",
+                  "bytes": 32455862,
+                  "sha256": "8ef43e467d4cb2ff69520386dd59d79ad5513193d8f9d31b555aab9ce059a0c2",
+                  "minimum_os": ""
+                },
+                {
+                  "platform": "linux",
+                  "arch": "x86_64",
+                  "kind": "appimage",
+                  "file": "formportal-0.71.3-linux-x86_64.AppImage",
+                  "url": "https://dl.formai.studio/formportal/0.71.3/formportal-0.71.3-linux-x86_64.AppImage",
+                  "bytes": 110754296,
+                  "sha256": "5848672ca60eeb62c9d471f36a01cc36526eb2736d95afc080c57360dd707314",
+                  "minimum_os": ""
+                },
+                {
+                  "platform": "linux",
+                  "arch": "x86_64",
+                  "kind": "deb",
+                  "file": "formportal-0.71.3-linux-x86_64.deb",
+                  "url": "https://dl.formai.studio/formportal/0.71.3/formportal-0.71.3-linux-x86_64.deb",
+                  "bytes": 32990742,
+                  "sha256": "e6ae7c1a5834ff0fa68a4478958be4b3735e4668ac187ce0413209ca85977eb8",
+                  "minimum_os": ""
+                },
+                {
+                  "platform": "linux",
+                  "arch": "x86_64",
+                  "kind": "rpm",
+                  "file": "formportal-0.71.3-linux-x86_64.rpm",
+                  "url": "https://dl.formai.studio/formportal/0.71.3/formportal-0.71.3-linux-x86_64.rpm",
+                  "bytes": 32995248,
+                  "sha256": "64d8acf9d9e56886f4eb3a6f6fdcdf9970584723b9c18cb8813cc26076afcc36",
+                  "minimum_os": ""
+                },
+                {
+                  "platform": "macos",
+                  "arch": "arm64",
+                  "kind": "dmg",
+                  "file": "formportal-0.71.3-macos-arm64.dmg",
+                  "url": "https://dl.formai.studio/formportal/0.71.3/formportal-0.71.3-macos-arm64.dmg",
+                  "bytes": 32136849,
+                  "sha256": "90f51d3bda7d8890c541d3b69d8362b771995a067b961e0896b767305b9925af",
+                  "minimum_os": "macOS 12"
+                },
+                {
+                  "platform": "macos",
+                  "arch": "x86_64",
+                  "kind": "dmg",
+                  "file": "formportal-0.71.3-macos-x86_64.dmg",
+                  "url": "https://dl.formai.studio/formportal/0.71.3/formportal-0.71.3-macos-x86_64.dmg",
+                  "bytes": 32962149,
+                  "sha256": "5f9a4217be9ca5bdd2c4f54c0ef8d917e077ad325e3625c1d4747c3b5a89945f",
+                  "minimum_os": "macOS 12"
+                },
+                {
+                  "platform": "windows",
+                  "arch": "arm64",
+                  "kind": "nsis",
+                  "file": "formportal-0.71.3-windows-arm64-setup.exe",
+                  "url": "https://dl.formai.studio/formportal/0.71.3/formportal-0.71.3-windows-arm64-setup.exe",
+                  "bytes": 28005680,
+                  "sha256": "7d4cbb862a930f984ddb9a5e8f5f86fc2f9f5d265982a0ee71b79876d58fe4ff",
+                  "minimum_os": "Windows 10"
+                },
+                {
+                  "platform": "windows",
+                  "arch": "x86_64",
+                  "kind": "nsis",
+                  "file": "formportal-0.71.3-windows-x86_64-setup.exe",
+                  "url": "https://dl.formai.studio/formportal/0.71.3/formportal-0.71.3-windows-x86_64-setup.exe",
+                  "bytes": 28603736,
+                  "sha256": "678774e471fccd701294b1bf9bce471e129b1cbb3401d5f0a7412192b397afd4",
+                  "minimum_os": "Windows 10"
+                }
+              ],
+              "commit": "9d87c92974d8c6278b3bb9324f41c45e9f2174a6",
+              "agents": {
+                "manifest": {
+                  "file": "form-app.json",
+                  "url": "https://dl.formai.studio/formportal/0.71.3/form-app.json",
+                  "bytes": 2736,
+                  "sha256": "92b8db6298ff7cdfc60bd46d40f29f99f801b3b09a71b3006dd8556ba91e4011"
+                },
+                "skills": {
+                  "file": "formportal-skills-v0.71.3.zip",
+                  "url": "https://dl.formai.studio/formportal/0.71.3/formportal-skills-v0.71.3.zip",
+                  "bytes": 43313,
+                  "sha256": "72b29574c0975f0ffc1f0e891a9aa68c977aae4c999ced5faf2d63f747083012"
+                }
+              }
+            },
             {
               "version": "0.70.2",
               "published": "2026-11-21T17:30:18Z",
@@ -1798,97 +1921,192 @@
       },
       "channels": {
         "stable": {
-          "version": "0.28.0",
-          "published": "2026-11-22T23:39:47Z",
-          "notes": "https://github.com/nodemode-dev/formCAD/releases/tag/v0.28.0",
+          "version": "0.30.0",
+          "published": "2026-11-23T02:07:56Z",
+          "notes": "Surface work. This release carries 0.29.0 as well, which was never published on its own.\n\nNew\n\n- Surfaces: fillet, chamfer and variable-radius fillet between two surfaces that share an edge or cross, trimmed back and joined (srffillet, srfchamfer, srfvarfillet).\n- Drag the control points of a surface in the 3D view. The surface follows live with zebra stripes, and each drag is one undo step.\n- Untrim gives a trimmed surface back its whole surface or removes only its holes. Shrink Trimmed cuts the underlying surface down to its trim.\n- Curves from surfaces: project curves onto surfaces, pull them on along the surface normal, cut contours at even spacing, and extract isocurves (crvproject, crvpull, srfcontour, srfisocurve).\n- Deform solids and surfaces: Bend, Flow along Curve, Flow along Surface and Cage Edit under Modify, Deform. A closed solid stays closed, and resetting a cage returns the original.\n\nImproved\n\n- 3DM export writes each body as one trimmed, joined polysurface, so a solid opens as a closed solid in the receiving program. A body that cannot be written this way falls back to separate faces, and the export report says why.\n- The seam continuity check measures G3, and the seam badge in the 3D view shows it.\n- The new labels are translated in every language.\n\nFixed\n\n- Surface match and extend work on surfaces shown in the 3D view. Before, they failed there with \"could not be converted to a B-spline surface\".\n\nKnown issues\n\n- The new tools need the 3D kernel released with this version. An older kernel says so.\n- The cage has no handles in the 3D view yet. Its points are moved from the command line.",
           "origin": "store",
           "artifacts": [
             {
               "platform": "linux",
               "arch": "x86_64",
               "kind": "appimage",
-              "file": "formCAD-0.28.0-linux-x64.AppImage",
-              "url": "https://dl.formai.studio/formCAD/0.28.0/formCAD-0.28.0-linux-x64.AppImage",
-              "bytes": 211671544,
-              "sha256": "bda2ad5d4515a12e3a183206de9d3bad826c5fd74a6262e17ef239b792c472e2",
+              "file": "formCAD-0.30.0-linux-x64.AppImage",
+              "url": "https://dl.formai.studio/formCAD/0.30.0/formCAD-0.30.0-linux-x64.AppImage",
+              "bytes": 211782136,
+              "sha256": "129dd80ec428782983f8b710200959b3defa0a06ff72ce7dad4318c303b79c86",
               "minimum_os": "glibc 2.35"
             },
             {
               "platform": "linux",
               "arch": "x86_64",
               "kind": "deb",
-              "file": "formCAD-0.28.0-linux-x64.deb",
-              "url": "https://dl.formai.studio/formCAD/0.28.0/formCAD-0.28.0-linux-x64.deb",
-              "bytes": 165822898,
-              "sha256": "ce55583ed330fa77ede3d744138f62dfe07904fdf530595df15372ff67a9900a",
+              "file": "formCAD-0.30.0-linux-x64.deb",
+              "url": "https://dl.formai.studio/formCAD/0.30.0/formCAD-0.30.0-linux-x64.deb",
+              "bytes": 165965576,
+              "sha256": "563cf1a6a92c3e681befd35e655c00729686e0b99b8c5d99cfaaf5a5e5dd4c17",
               "minimum_os": "glibc 2.35"
             },
             {
               "platform": "linux",
               "arch": "x86_64",
               "kind": "rpm",
-              "file": "formCAD-0.28.0-linux-x64.rpm",
-              "url": "https://dl.formai.studio/formCAD/0.28.0/formCAD-0.28.0-linux-x64.rpm",
-              "bytes": 424590077,
-              "sha256": "b213d84a1990fa368bedb5b0b8597c1e464b73fb457cea8b433546ce740ccf32",
+              "file": "formCAD-0.30.0-linux-x64.rpm",
+              "url": "https://dl.formai.studio/formCAD/0.30.0/formCAD-0.30.0-linux-x64.rpm",
+              "bytes": 424821405,
+              "sha256": "d6924a4bef0273f8d373e0110d64761cee4bfc1d2cdf190f524a9df07b02a309",
               "minimum_os": "glibc 2.35"
             },
             {
               "platform": "macos",
               "arch": "arm64",
               "kind": "dmg",
-              "file": "formCAD-0.28.0-macos-arm64.dmg",
-              "url": "https://dl.formai.studio/formCAD/0.28.0/formCAD-0.28.0-macos-arm64.dmg",
-              "bytes": 86810535,
-              "sha256": "877e0f6b697b7b6de5cc71eb6a4daf09828e958a4dd6d4bd3b3294dc065a5bcc",
+              "file": "formCAD-0.30.0-macos-arm64.dmg",
+              "url": "https://dl.formai.studio/formCAD/0.30.0/formCAD-0.30.0-macos-arm64.dmg",
+              "bytes": 86926913,
+              "sha256": "501f0d5f09911b8b7ad4f607a9c2abe0f2b86418c8584bd5b998c1e81ec52ff5",
               "minimum_os": "macOS 14"
             },
             {
               "platform": "macos",
               "arch": "x86_64",
               "kind": "dmg",
-              "file": "formCAD-0.28.0-macos-x64.dmg",
-              "url": "https://dl.formai.studio/formCAD/0.28.0/formCAD-0.28.0-macos-x64.dmg",
-              "bytes": 84041451,
-              "sha256": "d0b28daf9fb429909d06d23bc84b98baadc2f600baf6ebaf2016a8d8dde19826",
+              "file": "formCAD-0.30.0-macos-x64.dmg",
+              "url": "https://dl.formai.studio/formCAD/0.30.0/formCAD-0.30.0-macos-x64.dmg",
+              "bytes": 84177553,
+              "sha256": "f3e0197ee40ffc9861997dc1cf37328d4d4250a4d727c55f0d69f849f670a8c7",
               "minimum_os": "macOS 14"
             },
             {
               "platform": "windows",
               "arch": "x86_64",
               "kind": "nsis",
-              "file": "formCAD-0.28.0-windows-x64-setup.exe",
-              "url": "https://dl.formai.studio/formCAD/0.28.0/formCAD-0.28.0-windows-x64-setup.exe",
-              "bytes": 78065112,
-              "sha256": "9d24b953783b9f9a17c623396caa996f022df691894f39e069ec26bb59b15491",
+              "file": "formCAD-0.30.0-windows-x64-setup.exe",
+              "url": "https://dl.formai.studio/formCAD/0.30.0/formCAD-0.30.0-windows-x64-setup.exe",
+              "bytes": 78171296,
+              "sha256": "4cdeee217fedaed04738f8f3c1f98560bf900695216f8b79d158331298208568",
               "minimum_os": ""
             },
             {
               "platform": "windows",
               "arch": "x86_64",
               "kind": "msi",
-              "file": "formCAD-0.28.0-windows-x64.msi",
-              "url": "https://dl.formai.studio/formCAD/0.28.0/formCAD-0.28.0-windows-x64.msi",
-              "bytes": 105398272,
-              "sha256": "7cc9ce0ad5d493aab4eccd11a352ad28388d4e2d155bc0726ac21b5741cb5c63",
+              "file": "formCAD-0.30.0-windows-x64.msi",
+              "url": "https://dl.formai.studio/formCAD/0.30.0/formCAD-0.30.0-windows-x64.msi",
+              "bytes": 105500672,
+              "sha256": "1b7e89c353221639ac537adb3f6dfe692eba80f51f3f5178e66b8f9269d12355",
               "minimum_os": ""
             }
           ],
-          "commit": "7eb968f6db596c6f358268c2a07d9143e6566438",
+          "commit": "e356994fb988968c6fcd840e912c3e7b4a1eca9b",
           "agents": {
             "manifest": {
               "file": "form-app.json",
-              "url": "https://dl.formai.studio/formCAD/0.28.0/form-app.json",
+              "url": "https://dl.formai.studio/formCAD/0.30.0/form-app.json",
               "bytes": 2047,
-              "sha256": "2bd18d08ddba58783e87cec89399273a1576fcde6f724d115880d3f6573575da"
+              "sha256": "ee7b1e57a6f0b8c7810b1b3b48d6091a35184dce0f428c9743c8ed237ebf0a90"
             },
             "skills": {
-              "file": "formCAD-skills-v0.28.0.zip",
-              "url": "https://dl.formai.studio/formCAD/0.28.0/formCAD-skills-v0.28.0.zip",
-              "bytes": 46513,
-              "sha256": "f0d2423b5fd267ace1d4c2faf15b6ef92e34829e646a6da5e5c0584466815da8"
+              "file": "formCAD-skills-v0.30.0.zip",
+              "url": "https://dl.formai.studio/formCAD/0.30.0/formCAD-skills-v0.30.0.zip",
+              "bytes": 46649,
+              "sha256": "20858bef24e43b0f74f586a58f28b775c7d266b1cc77b65e9484268bf3289ad2"
             }
-          }
+          },
+          "history": [
+            {
+              "version": "0.28.0",
+              "published": "2026-11-22T23:39:47Z",
+              "notes": "The first public release of FormCAD. It carries everything from 0.20.1 to 0.28.0.\n\nNew\n\n- Drawings: a hole table lists the holes seen in a view, with a tag beside each hole, and follows the part when it changes. A revision table lists the drawing's revisions.\n- Parts: modelled threads, Thicken for faces and sheet bodies, and Delete Face that heals or patches the gap. They need the 3D kernel released with this version; an older kernel says so.\n- Assemblies open with lightweight components that load in full only when a command needs them, and have five new mates: symmetric, width, path, slot and cam.\n- Sketches: a midpoint relation, splines in relations, and a status bar chip that shows the state of what you selected. Fillets, chamfers and face sketches stay where they were when you edit an early sketch.\n- Hole and fastener sizes come from published standards, each with its source. A value that could not be read is left for you to type.\n- DWG has two routes. A converter you install yourself works as before. New are the DWG tools, a separate program FormCAD downloads and checks file by file: with them it opens DWG and saves DWG in the 2000 format only, and the save dialog says so. They appear in Preferences once they are published.\n- Images and PDF pages can be placed under a drawing, clipped and faded. Publish takes sheets from several drawings into one PDF. A table can link to an Excel workbook as well as to CSV.\n- The interface speaks 29 languages besides English and starts in your system's language. In Arabic the window mirrors.\n- Agents: the MCP server describes the whole studio, formcad_status says whether the 3D kernel and the mesher are installed, and an agent can open and export STEP, IGES, 3DM and mesh files and follow a simulation study or a toolpath run to its end. The server offers a short list of tools by default; every command stays reachable.\n\nImproved\n\n- FormCAD has its own accent, a violet. An accent you chose yourself is kept.\n- Panels in the side column can be moved and given a height of their own. Reset Panels puts everything back.\n- Nothing jumps when a drawing or a graph opens from Home.\n- The README and SECURITY.md say what FormCAD sends over the network: the kernel and mesher downloads, a render environment when you ask for one, and nothing else. Render environment downloads are checked with SHA-256.\n- DXF: what could not be kept on import is listed in the import notes instead of being dropped silently.\n\nFixed\n\n- Windows: closing or ending FormCAD also ends its engine. Before, the engine could stay behind.\n- An engine that cannot be started shows a message and exits. Before, the window vanished without a word.\n- Drawings: dimension and balloon commands work on drawing views, and dimensions on a view follow a model change at once.\n\nKnown issues\n\n- Home, the menus, Preferences, the agent dock and the Studies panel are translated. Other panels and the engine's messages are still in English, and the translations have not been read by native speakers.\n- A drawing with multiline text or angular dimensions does not save through the DWG tools yet: the save stops with a message and writes no file.",
+              "origin": "store",
+              "artifacts": [
+                {
+                  "platform": "linux",
+                  "arch": "x86_64",
+                  "kind": "appimage",
+                  "file": "formCAD-0.28.0-linux-x64.AppImage",
+                  "url": "https://dl.formai.studio/formCAD/0.28.0/formCAD-0.28.0-linux-x64.AppImage",
+                  "bytes": 211671544,
+                  "sha256": "bda2ad5d4515a12e3a183206de9d3bad826c5fd74a6262e17ef239b792c472e2",
+                  "minimum_os": "glibc 2.35"
+                },
+                {
+                  "platform": "linux",
+                  "arch": "x86_64",
+                  "kind": "deb",
+                  "file": "formCAD-0.28.0-linux-x64.deb",
+                  "url": "https://dl.formai.studio/formCAD/0.28.0/formCAD-0.28.0-linux-x64.deb",
+                  "bytes": 165822898,
+                  "sha256": "ce55583ed330fa77ede3d744138f62dfe07904fdf530595df15372ff67a9900a",
+                  "minimum_os": "glibc 2.35"
+                },
+                {
+                  "platform": "linux",
+                  "arch": "x86_64",
+                  "kind": "rpm",
+                  "file": "formCAD-0.28.0-linux-x64.rpm",
+                  "url": "https://dl.formai.studio/formCAD/0.28.0/formCAD-0.28.0-linux-x64.rpm",
+                  "bytes": 424590077,
+                  "sha256": "b213d84a1990fa368bedb5b0b8597c1e464b73fb457cea8b433546ce740ccf32",
+                  "minimum_os": "glibc 2.35"
+                },
+                {
+                  "platform": "macos",
+                  "arch": "arm64",
+                  "kind": "dmg",
+                  "file": "formCAD-0.28.0-macos-arm64.dmg",
+                  "url": "https://dl.formai.studio/formCAD/0.28.0/formCAD-0.28.0-macos-arm64.dmg",
+                  "bytes": 86810535,
+                  "sha256": "877e0f6b697b7b6de5cc71eb6a4daf09828e958a4dd6d4bd3b3294dc065a5bcc",
+                  "minimum_os": "macOS 14"
+                },
+                {
+                  "platform": "macos",
+                  "arch": "x86_64",
+                  "kind": "dmg",
+                  "file": "formCAD-0.28.0-macos-x64.dmg",
+                  "url": "https://dl.formai.studio/formCAD/0.28.0/formCAD-0.28.0-macos-x64.dmg",
+                  "bytes": 84041451,
+                  "sha256": "d0b28daf9fb429909d06d23bc84b98baadc2f600baf6ebaf2016a8d8dde19826",
+                  "minimum_os": "macOS 14"
+                },
+                {
+                  "platform": "windows",
+                  "arch": "x86_64",
+                  "kind": "nsis",
+                  "file": "formCAD-0.28.0-windows-x64-setup.exe",
+                  "url": "https://dl.formai.studio/formCAD/0.28.0/formCAD-0.28.0-windows-x64-setup.exe",
+                  "bytes": 78065112,
+                  "sha256": "9d24b953783b9f9a17c623396caa996f022df691894f39e069ec26bb59b15491",
+                  "minimum_os": ""
+                },
+                {
+                  "platform": "windows",
+                  "arch": "x86_64",
+                  "kind": "msi",
+                  "file": "formCAD-0.28.0-windows-x64.msi",
+                  "url": "https://dl.formai.studio/formCAD/0.28.0/formCAD-0.28.0-windows-x64.msi",
+                  "bytes": 105398272,
+                  "sha256": "7cc9ce0ad5d493aab4eccd11a352ad28388d4e2d155bc0726ac21b5741cb5c63",
+                  "minimum_os": ""
+                }
+              ],
+              "commit": "7eb968f6db596c6f358268c2a07d9143e6566438",
+              "agents": {
+                "manifest": {
+                  "file": "form-app.json",
+                  "url": "https://dl.formai.studio/formCAD/0.28.0/form-app.json",
+                  "bytes": 2047,
+                  "sha256": "2bd18d08ddba58783e87cec89399273a1576fcde6f724d115880d3f6573575da"
+                },
+                "skills": {
+                  "file": "formCAD-skills-v0.28.0.zip",
+                  "url": "https://dl.formai.studio/formCAD/0.28.0/formCAD-skills-v0.28.0.zip",
+                  "bytes": 46513,
+                  "sha256": "f0d2423b5fd267ace1d4c2faf15b6ef92e34829e646a6da5e5c0584466815da8"
+                }
+              }
+            }
+          ]
         }
       }
     },
@@ -8053,7 +8271,95 @@
         "mcp": false,
         "skills": false
       },
-      "channels": {}
+      "channels": {
+        "stable": {
+          "version": "0.23.3",
+          "published": "2026-11-23T02:07:58Z",
+          "notes": "The first public release of FormMorpheus. It carries everything from 0.18.4 to 0.23.3.\n\nNew\n\n- A terminal panel beside the Stage and the Timeline: View, Terminal. It runs a shell, and Claude Code, Codex, Cursor and Antigravity when they are installed on your computer. FormMorpheus does not install them or sign you in.\n- An MCP server, so an agent can read your library, create, rename, duplicate, delete and restore movies, and export or import.\n- Agents ask first. Preferences, Agents has Outside agents: Ask (the default), Allowed or Blocked. An export or an import always asks, whatever you chose.\n- Preferences, Video Tools shows where ffmpeg was found and what it can make, with a button that downloads the family's ffmpeg build, checks every file and can remove it again. An ffmpeg already on your computer is used.\n- Home opens with a side column: Movies, Recent, Start, Exports and Recently Deleted with their counts, and Preferences and Help at the foot. The poster wall is still there under Preferences, General.\n- A violet accent, FormMorpheus's own, and AMOLED Black among the themes. An accent you picked yourself is kept.\n- New Movie: 25 fps joins the frame rates.\n\nImproved\n\n- Colours, corner sizes and text sizes are the family's across the whole interface, so every theme recolours every part of it.\n- All 30 languages have every string. Nothing falls back to English.\n- Only the FormMorpheus window can talk to its engine, and the engine listens on this computer only.\n- When the app cannot start, a message says why and where the engine's log is. Before, the app closed without a word.\n- Your theme, language and preferences are kept from one launch to the next on every system.\n- Help: every button in the Help Center opens something. The Manual opens inside the app and works offline.\n\nChanged\n\n- Frame rates have FormMorpheus's own labels: On twos, Web and GIF, Film, Video, Smooth (Europe), Smooth and Extra smooth. Movies keep their rate.\n- Brush sets have FormMorpheus's own names and order. Brushes you chose, sets you renamed and your own order are kept.\n- macOS: the installer asks for macOS 13 or later, which the app needs.\n\nFixed\n\n- Windows: closing the app, or ending it in Task Manager, also ends its engine, and no console window opens beside the app.\n- macOS: FormMorpheus opened from Finder or the Dock finds an ffmpeg installed with Homebrew or MacPorts, so ProRes, HEVC and MP3 export are offered.\n- The export progress and the Close button no longer move while an export runs, and the status bar no longer shifts when a movie opens.\n\nUnder the hood\n\n- The Linux AppImage carries only GStreamer's core, base, good and gl plug-ins, and NOTICE.md lists every third-party part the app carries.",
+          "origin": "store",
+          "artifacts": [
+            {
+              "platform": "linux",
+              "arch": "x86_64",
+              "kind": "appimage",
+              "file": "formmorpheus-0.23.3-linux-x64.AppImage",
+              "url": "https://dl.formai.studio/formmorpheus/0.23.3/formmorpheus-0.23.3-linux-x64.AppImage",
+              "bytes": 222128632,
+              "sha256": "a58899ed4c06f2512e86beffc4658a67cd96d75a9cb411b3b72de07ad4ea06b4",
+              "minimum_os": ""
+            },
+            {
+              "platform": "linux",
+              "arch": "x86_64",
+              "kind": "deb",
+              "file": "formmorpheus-0.23.3-linux-x64.deb",
+              "url": "https://dl.formai.studio/formmorpheus/0.23.3/formmorpheus-0.23.3-linux-x64.deb",
+              "bytes": 133708268,
+              "sha256": "58cd9746e4739acf42197d7a5749485cda10905c0c64709ad15354673faaa745",
+              "minimum_os": ""
+            },
+            {
+              "platform": "linux",
+              "arch": "x86_64",
+              "kind": "rpm",
+              "file": "formmorpheus-0.23.3-linux-x64.rpm",
+              "url": "https://dl.formai.studio/formmorpheus/0.23.3/formmorpheus-0.23.3-linux-x64.rpm",
+              "bytes": 141368453,
+              "sha256": "02b5bed02edbcd140ad049c9c604e8072de7580b1e01f5da38e9db01496d1bc8",
+              "minimum_os": ""
+            },
+            {
+              "platform": "macos",
+              "arch": "arm64",
+              "kind": "dmg",
+              "file": "formmorpheus-0.23.3-macos-arm64.dmg",
+              "url": "https://dl.formai.studio/formmorpheus/0.23.3/formmorpheus-0.23.3-macos-arm64.dmg",
+              "bytes": 111308735,
+              "sha256": "cddfac27dc4857729c419c98787037c100fc522816988988ac96167c4bf1db93",
+              "minimum_os": "macOS 11"
+            },
+            {
+              "platform": "macos",
+              "arch": "x86_64",
+              "kind": "dmg",
+              "file": "formmorpheus-0.23.3-macos-x64.dmg",
+              "url": "https://dl.formai.studio/formmorpheus/0.23.3/formmorpheus-0.23.3-macos-x64.dmg",
+              "bytes": 112726676,
+              "sha256": "48b729f0a002a2a3af68723c7c55608f71324a141878716796b5b44f25ebbdc7",
+              "minimum_os": "macOS 11"
+            },
+            {
+              "platform": "windows",
+              "arch": "x86_64",
+              "kind": "nsis",
+              "file": "formmorpheus-0.23.3-windows-x64-setup.exe",
+              "url": "https://dl.formai.studio/formmorpheus/0.23.3/formmorpheus-0.23.3-windows-x64-setup.exe",
+              "bytes": 104224128,
+              "sha256": "594cfece728fb67960a7d4b7f98e2bcb1b2fe4cf0df88c477bba7c2a64411ff7",
+              "minimum_os": ""
+            },
+            {
+              "platform": "windows",
+              "arch": "x86_64",
+              "kind": "msi",
+              "file": "formmorpheus-0.23.3-windows-x64.msi",
+              "url": "https://dl.formai.studio/formmorpheus/0.23.3/formmorpheus-0.23.3-windows-x64.msi",
+              "bytes": 111935488,
+              "sha256": "4b077efa66345fddf3312f28e87359b3ea6f34cb0c0063106bd0c0174c21bd4b",
+              "minimum_os": ""
+            }
+          ],
+          "commit": "1c80d4bc542134d78c8f1b8a22a3501925542649",
+          "agents": {
+            "manifest": {
+              "file": "form-app.json",
+              "url": "https://dl.formai.studio/formmorpheus/0.23.3/form-app.json",
+              "bytes": 332,
+              "sha256": "789e7c2992bce5c81ffcf963a01b8b6e4a3c8251babd695d82e6848a6fab4f6a"
+            }
+          }
+        }
+      }
     },
     {
       "id": "formnet",
@@ -9216,7 +9522,101 @@
         "mcp": true,
         "skills": true
       },
-      "channels": {}
+      "channels": {
+        "stable": {
+          "version": "0.10.1",
+          "published": "2026-11-23T02:07:57Z",
+          "notes": "The first public release of FormPublisher. It carries everything from 0.4.0 to 0.10.1.\n\nNew\n\n- Eight whole sites to start from: three demo sites and a business, a portfolio, a blog, an event and a shop window. Each card shows its site type, and chips filter the list. Nothing is fetched until you ask, and a file is kept only if its SHA-256 matches the list.\n- A guide for hosting a site yourself, in the window under Help and on each prepared host's card, with parts on forms and on analytics and search engines.\n- Forms that work on a static host. A form with nowhere to send its data is an error that names the Forms part of the guide.\n- A live-site check, in Publish and on the command line. After you deploy, it reads your own public address only when you press the button and confirm.\n- Checks for search and sharing: one canonical link per page, the four Open Graph tags, structured data that parses, and each language version naming the others. The deep check measures text contrast and reports the largest contentful paint and the layout shift for each route and width.\n- The agent dock: View, Agent Dock opens a terminal panel with a shell and a tab for each of Claude Code, Codex, Cursor and Antigravity that is on your computer.\n- Agents can do everything the window does, through 29 tools and 27 commands. Each tool says what it may change.\n- Verify tells you who signed. A signature made with one of your keys says so with the key's name; a valid signature from a key you do not have is a warning.\n- Export and Import for signing keys: a key leaves as a PEM file encrypted with a passphrase you choose.\n\nImproved\n\n- FormPublisher looks like the rest of the FormAI family, in its own green. An accent you picked yourself is kept.\n- The routes column, the inspector and the bottom panel can be resized and remember their size.\n- Signing keys are kept in your system's password store, which is opened only to create, sign, export, import or remove a key.\n- When the engine cannot start, the app says why, with the engine's last lines and the path of its log.\n- Deep checks work in the installed app with the Chrome or Edge you already have. Nothing is downloaded.\n- Help, Documentation opens the manual that ships inside the app, with the network off too.\n- The check messages, Prepare notes and live-check findings are translated in all 26 languages.\n\nChanged\n\n- Only the FormPublisher window, its command line and its MCP server can change anything. A site you preview cannot reach the app.\n- The Intel Mac build needs macOS 14. Apple silicon stays at macOS 13.\n\nFixed\n\n- Windows: ending the app by any means ends its engine, and the engine has no console window.\n- A deep check that fails shows an error in Problems with the reason. Before, it ended as if it had passed.",
+          "origin": "store",
+          "artifacts": [
+            {
+              "platform": "linux",
+              "arch": "x86_64",
+              "kind": "appimage",
+              "file": "formpublisher-0.10.1-linux-x64.AppImage",
+              "url": "https://dl.formai.studio/formpublisher/0.10.1/formpublisher-0.10.1-linux-x64.AppImage",
+              "bytes": 182479352,
+              "sha256": "019319cf8f6ce84ce1410a113316a2ab1074d6f9198a3d140eccb404698e0b94",
+              "minimum_os": ""
+            },
+            {
+              "platform": "linux",
+              "arch": "x86_64",
+              "kind": "deb",
+              "file": "formpublisher-0.10.1-linux-x64.deb",
+              "url": "https://dl.formai.studio/formpublisher/0.10.1/formpublisher-0.10.1-linux-x64.deb",
+              "bytes": 115950852,
+              "sha256": "146102376e57f152a3f4fb300ee2f641cac226063f89e933dc5dc6eb459a90bb",
+              "minimum_os": ""
+            },
+            {
+              "platform": "linux",
+              "arch": "x86_64",
+              "kind": "rpm",
+              "file": "formpublisher-0.10.1-linux-x64.rpm",
+              "url": "https://dl.formai.studio/formpublisher/0.10.1/formpublisher-0.10.1-linux-x64.rpm",
+              "bytes": 307719661,
+              "sha256": "be3e4f2ac010bba13568d577dd8433e32d8274298e84115430198c674119545b",
+              "minimum_os": ""
+            },
+            {
+              "platform": "macos",
+              "arch": "arm64",
+              "kind": "dmg",
+              "file": "formpublisher-0.10.1-macos-arm64.dmg",
+              "url": "https://dl.formai.studio/formpublisher/0.10.1/formpublisher-0.10.1-macos-arm64.dmg",
+              "bytes": 104247587,
+              "sha256": "e452168d8c710ec28d8b799824296abebc666736862fb4f7012ae611cf3307cb",
+              "minimum_os": "macOS 13"
+            },
+            {
+              "platform": "macos",
+              "arch": "x86_64",
+              "kind": "dmg",
+              "file": "formpublisher-0.10.1-macos-x64.dmg",
+              "url": "https://dl.formai.studio/formpublisher/0.10.1/formpublisher-0.10.1-macos-x64.dmg",
+              "bytes": 106282350,
+              "sha256": "877d67c3dcd6d8fbef32e0ae55e0484339214d0041948096a7d824300f6220ed",
+              "minimum_os": "macOS 13"
+            },
+            {
+              "platform": "windows",
+              "arch": "x86_64",
+              "kind": "nsis",
+              "file": "formpublisher-0.10.1-windows-x64-setup.exe",
+              "url": "https://dl.formai.studio/formpublisher/0.10.1/formpublisher-0.10.1-windows-x64-setup.exe",
+              "bytes": 61350344,
+              "sha256": "f99f36adfe74772724b2c63eda7e5838bd690268b48cedcd613a6c4a9bacabdf",
+              "minimum_os": ""
+            },
+            {
+              "platform": "windows",
+              "arch": "x86_64",
+              "kind": "msi",
+              "file": "formpublisher-0.10.1-windows-x64.msi",
+              "url": "https://dl.formai.studio/formpublisher/0.10.1/formpublisher-0.10.1-windows-x64.msi",
+              "bytes": 82878464,
+              "sha256": "f221e354fe73ecb162129a0701a1244d0862e789d0cb716650d60eae9421c82f",
+              "minimum_os": ""
+            }
+          ],
+          "commit": "cfe50a531d81652c5d6a58c19220ac9597b9e506",
+          "agents": {
+            "manifest": {
+              "file": "form-app.json",
+              "url": "https://dl.formai.studio/formpublisher/0.10.1/form-app.json",
+              "bytes": 2842,
+              "sha256": "b0e7f97a681aa7f1ec858811f51515b2e95727b6cef932562a0885394f5c6b62"
+            },
+            "skills": {
+              "file": "formpublisher-skills-v0.10.1.zip",
+              "url": "https://dl.formai.studio/formpublisher/0.10.1/formpublisher-skills-v0.10.1.zip",
+              "bytes": 17691,
+              "sha256": "db1436e16b3b9fd40e6b0c3eb0f30d4ff086f1bc6c48b4a4dc0aa6f63165dfe5"
+            }
+          }
+        }
+      }
     },
     {
       "id": "formrec",
@@ -16627,98 +17027,191 @@
       },
       "channels": {
         "stable": {
-          "version": "0.27.0",
-          "published": "2026-11-21T01:44:08Z",
-          "notes": "This release carries 0.26.0 as well, which was never published on its own.\n\nNew\n\n- On Windows the engine now closes when you close FormWeb, and a start that fails says why.\n- The agent panel is the Form family's shared panel, and its guide covers Codex, Cursor and Antigravity beside Claude Code.\n\nImproved\n\n- Agent Connect says how each agent program gets FormWeb's tools. With Agents off, the note says that Chat and the Claude Code, Codex, Cursor and Antigravity tabs opened from FormWeb still work, and that turning Agents on lets a program you start yourself connect.\n- The note under the program cards says what each tab reads, and that a program started outside FormWeb reads its project file (Antigravity: its account file) and needs Agents on. Before, the notes named only Codex and Cursor.\n- FormWeb's style sheet now defines every design name of the Form family, so shared parts from the other apps find the values they expect. Nothing on screen changes, in dark or in light.\n\nFixed\n\n- macOS: an engine that had just ended could still be counted as running, which could hold up the next start.\n\nUnder the hood\n\n- For people who build FormWeb on Windows: FORMWEB_ENGINE_WINDOWED=0 builds an engine with a console, for debugging.",
+          "version": "0.28.0",
+          "published": "2026-11-23T02:08:00Z",
+          "notes": "Five whole-site starters, one for each common kind of site.\n\nNew\n\n- Five starters join the demos: Coldmere Plumbing (a local business with services and prices), Northfold Studio (a designer's portfolio with project pages), The Slow Allotment (a blog with a post archive), Wenlow Type Day (a one-day event with programme, speakers, venue and tickets) and Fernhollow Pottery (a shop window whose orders go by email). Each is a complete site you can edit.\n- In the starters, project, post, speaker and product pages are CMS collections, so adding a project or a post is adding an item.\n- Each demo has a site type (business, portfolio, blog, event or shop), in the app and in a demo.json beside its file, so tools that offer the demos can sort them.\n\nImproved\n\n- Preview shows all eight demos, and its bar scrolls sideways when the window is narrow.\n- The five new demo descriptions are in all 23 translated languages.\n\nKnown issues\n\n- The share picture's address is written into each starter's head code. Change it by hand along with the base URL.\n- No starter has a form: people get in touch by email.\n- The new translations have not been read by a native speaker.",
           "origin": "store",
           "artifacts": [
             {
               "platform": "linux",
               "arch": "x86_64",
               "kind": "appimage",
-              "file": "formweb-0.27.0-linux-x64.AppImage",
-              "url": "https://dl.formai.studio/formweb/0.27.0/formweb-0.27.0-linux-x64.AppImage",
-              "bytes": 157878776,
-              "sha256": "fb2cb79a6c17591dd6a300f051b1c247add309baef9db389bb81175c84b6e7a2",
+              "file": "formweb-0.28.0-linux-x64.AppImage",
+              "url": "https://dl.formai.studio/formweb/0.28.0/formweb-0.28.0-linux-x64.AppImage",
+              "bytes": 160958968,
+              "sha256": "9817e4efd2feae53ad6dff7f651ec1e954a16adfd650872d5f0de34c38a75a7f",
               "minimum_os": ""
             },
             {
               "platform": "linux",
               "arch": "x86_64",
               "kind": "deb",
-              "file": "formweb-0.27.0-linux-x64.deb",
-              "url": "https://dl.formai.studio/formweb/0.27.0/formweb-0.27.0-linux-x64.deb",
-              "bytes": 79680304,
-              "sha256": "1a2fabe590321f94ca0bcf48e12e33768e041cf87d5e186de8808e673f300f41",
+              "file": "formweb-0.28.0-linux-x64.deb",
+              "url": "https://dl.formai.studio/formweb/0.28.0/formweb-0.28.0-linux-x64.deb",
+              "bytes": 82743072,
+              "sha256": "3e4cec738126dbe042a13b18aa7e660ac65fb4698405d1053c622d7101d71db5",
               "minimum_os": ""
             },
             {
               "platform": "linux",
               "arch": "x86_64",
               "kind": "rpm",
-              "file": "formweb-0.27.0-linux-x64.rpm",
-              "url": "https://dl.formai.studio/formweb/0.27.0/formweb-0.27.0-linux-x64.rpm",
-              "bytes": 79696078,
-              "sha256": "8fdf06c516fb8c5d12407f886e1a41951ffdd70d9500e95b65c57820634d0dca",
+              "file": "formweb-0.28.0-linux-x64.rpm",
+              "url": "https://dl.formai.studio/formweb/0.28.0/formweb-0.28.0-linux-x64.rpm",
+              "bytes": 82761297,
+              "sha256": "82d1862e487a53f50ce49def0feba480789a18389335a40658544b2fb9051c59",
               "minimum_os": ""
             },
             {
               "platform": "macos",
               "arch": "arm64",
               "kind": "dmg",
-              "file": "formweb-0.27.0-macos-arm64.dmg",
-              "url": "https://dl.formai.studio/formweb/0.27.0/formweb-0.27.0-macos-arm64.dmg",
-              "bytes": 56689196,
-              "sha256": "00a5e248c09e0e5d3aca31d8a698735777bd5dec42edd4f320002660d973cccc",
+              "file": "formweb-0.28.0-macos-arm64.dmg",
+              "url": "https://dl.formai.studio/formweb/0.28.0/formweb-0.28.0-macos-arm64.dmg",
+              "bytes": 59769613,
+              "sha256": "64f85c3b64b93cf984d5e1cdc2c271c82ac89c0dbde42771c0de78e6aefcf395",
               "minimum_os": ""
             },
             {
               "platform": "macos",
               "arch": "x86_64",
               "kind": "dmg",
-              "file": "formweb-0.27.0-macos-x64.dmg",
-              "url": "https://dl.formai.studio/formweb/0.27.0/formweb-0.27.0-macos-x64.dmg",
-              "bytes": 59396314,
-              "sha256": "42d834150af8fd04bc7f77c6cbb625165ed49ba71306c8a5697c2366e1e61e41",
+              "file": "formweb-0.28.0-macos-x64.dmg",
+              "url": "https://dl.formai.studio/formweb/0.28.0/formweb-0.28.0-macos-x64.dmg",
+              "bytes": 62416961,
+              "sha256": "c192a74fc8d1bc80b0e2db49ee548cdb3617a52a9a868bc6d40484b1fd1e0558",
               "minimum_os": ""
             },
             {
               "platform": "windows",
               "arch": "x86_64",
               "kind": "nsis",
-              "file": "formweb-0.27.0-windows-x64-setup.exe",
-              "url": "https://dl.formai.studio/formweb/0.27.0/formweb-0.27.0-windows-x64-setup.exe",
-              "bytes": 58021152,
-              "sha256": "8aedcc98465bd19c0e1c3ccb717b660d55afb3fbc9485b8bf84493e9484b3efe",
+              "file": "formweb-0.28.0-windows-x64-setup.exe",
+              "url": "https://dl.formai.studio/formweb/0.28.0/formweb-0.28.0-windows-x64-setup.exe",
+              "bytes": 60942264,
+              "sha256": "cf9cff0228ab303b7e41f985c2476fc70ea7b2c833d4fe90a086becb782302ab",
               "minimum_os": ""
             },
             {
               "platform": "windows",
               "arch": "x86_64",
               "kind": "msi",
-              "file": "formweb-0.27.0-windows-x64.msi",
-              "url": "https://dl.formai.studio/formweb/0.27.0/formweb-0.27.0-windows-x64.msi",
-              "bytes": 59035648,
-              "sha256": "afd3fc5db89a8fbb6df0c2ac2d6634639822fe7f690d2b168eb9b3a4cb476a32",
+              "file": "formweb-0.28.0-windows-x64.msi",
+              "url": "https://dl.formai.studio/formweb/0.28.0/formweb-0.28.0-windows-x64.msi",
+              "bytes": 62058496,
+              "sha256": "f2a4dc769f70030ed5779dff9abeabedea824beaa9eb313df03217a7348def23",
               "minimum_os": ""
             }
           ],
-          "commit": "a2018337a09a9d5f508cb6a165258576579c61c1",
+          "commit": "dfb8d1df232e6e5098569c062c41c54cfc260c10",
           "agents": {
             "manifest": {
               "file": "form-app.json",
-              "url": "https://dl.formai.studio/formweb/0.27.0/form-app.json",
+              "url": "https://dl.formai.studio/formweb/0.28.0/form-app.json",
               "bytes": 3200,
-              "sha256": "e9d39d523cfc89a8041b14bee962560c6226a36f2b4a2aad85cabd0212a403f3"
+              "sha256": "f407fee3079b72c80f220c4cd7c80d7ed079f581df344eed15d0b44947a9a52a"
             },
             "skills": {
-              "file": "formweb-skills-v0.27.0.zip",
-              "url": "https://dl.formai.studio/formweb/0.27.0/formweb-skills-v0.27.0.zip",
-              "bytes": 85351,
-              "sha256": "6bf2e08b2eb48b8196df99ce90c68dd6a8f94aa93580540427631a130a884735"
+              "file": "formweb-skills-v0.28.0.zip",
+              "url": "https://dl.formai.studio/formweb/0.28.0/formweb-skills-v0.28.0.zip",
+              "bytes": 85350,
+              "sha256": "9421a1abb6b41c404e608e82a221c0da11fe0ec459b9b34233d8c3312b7d91e7"
             }
           },
           "history": [
+            {
+              "version": "0.27.0",
+              "published": "2026-11-21T01:44:08Z",
+              "notes": "This release carries 0.26.0 as well, which was never published on its own.\n\nNew\n\n- On Windows the engine now closes when you close FormWeb, and a start that fails says why.\n- The agent panel is the Form family's shared panel, and its guide covers Codex, Cursor and Antigravity beside Claude Code.\n\nImproved\n\n- Agent Connect says how each agent program gets FormWeb's tools. With Agents off, the note says that Chat and the Claude Code, Codex, Cursor and Antigravity tabs opened from FormWeb still work, and that turning Agents on lets a program you start yourself connect.\n- The note under the program cards says what each tab reads, and that a program started outside FormWeb reads its project file (Antigravity: its account file) and needs Agents on. Before, the notes named only Codex and Cursor.\n- FormWeb's style sheet now defines every design name of the Form family, so shared parts from the other apps find the values they expect. Nothing on screen changes, in dark or in light.\n\nFixed\n\n- macOS: an engine that had just ended could still be counted as running, which could hold up the next start.\n\nUnder the hood\n\n- For people who build FormWeb on Windows: FORMWEB_ENGINE_WINDOWED=0 builds an engine with a console, for debugging.",
+              "origin": "store",
+              "artifacts": [
+                {
+                  "platform": "linux",
+                  "arch": "x86_64",
+                  "kind": "appimage",
+                  "file": "formweb-0.27.0-linux-x64.AppImage",
+                  "url": "https://dl.formai.studio/formweb/0.27.0/formweb-0.27.0-linux-x64.AppImage",
+                  "bytes": 157878776,
+                  "sha256": "fb2cb79a6c17591dd6a300f051b1c247add309baef9db389bb81175c84b6e7a2",
+                  "minimum_os": ""
+                },
+                {
+                  "platform": "linux",
+                  "arch": "x86_64",
+                  "kind": "deb",
+                  "file": "formweb-0.27.0-linux-x64.deb",
+                  "url": "https://dl.formai.studio/formweb/0.27.0/formweb-0.27.0-linux-x64.deb",
+                  "bytes": 79680304,
+                  "sha256": "1a2fabe590321f94ca0bcf48e12e33768e041cf87d5e186de8808e673f300f41",
+                  "minimum_os": ""
+                },
+                {
+                  "platform": "linux",
+                  "arch": "x86_64",
+                  "kind": "rpm",
+                  "file": "formweb-0.27.0-linux-x64.rpm",
+                  "url": "https://dl.formai.studio/formweb/0.27.0/formweb-0.27.0-linux-x64.rpm",
+                  "bytes": 79696078,
+                  "sha256": "8fdf06c516fb8c5d12407f886e1a41951ffdd70d9500e95b65c57820634d0dca",
+                  "minimum_os": ""
+                },
+                {
+                  "platform": "macos",
+                  "arch": "arm64",
+                  "kind": "dmg",
+                  "file": "formweb-0.27.0-macos-arm64.dmg",
+                  "url": "https://dl.formai.studio/formweb/0.27.0/formweb-0.27.0-macos-arm64.dmg",
+                  "bytes": 56689196,
+                  "sha256": "00a5e248c09e0e5d3aca31d8a698735777bd5dec42edd4f320002660d973cccc",
+                  "minimum_os": ""
+                },
+                {
+                  "platform": "macos",
+                  "arch": "x86_64",
+                  "kind": "dmg",
+                  "file": "formweb-0.27.0-macos-x64.dmg",
+                  "url": "https://dl.formai.studio/formweb/0.27.0/formweb-0.27.0-macos-x64.dmg",
+                  "bytes": 59396314,
+                  "sha256": "42d834150af8fd04bc7f77c6cbb625165ed49ba71306c8a5697c2366e1e61e41",
+                  "minimum_os": ""
+                },
+                {
+                  "platform": "windows",
+                  "arch": "x86_64",
+                  "kind": "nsis",
+                  "file": "formweb-0.27.0-windows-x64-setup.exe",
+                  "url": "https://dl.formai.studio/formweb/0.27.0/formweb-0.27.0-windows-x64-setup.exe",
+                  "bytes": 58021152,
+                  "sha256": "8aedcc98465bd19c0e1c3ccb717b660d55afb3fbc9485b8bf84493e9484b3efe",
+                  "minimum_os": ""
+                },
+                {
+                  "platform": "windows",
+                  "arch": "x86_64",
+                  "kind": "msi",
+                  "file": "formweb-0.27.0-windows-x64.msi",
+                  "url": "https://dl.formai.studio/formweb/0.27.0/formweb-0.27.0-windows-x64.msi",
+                  "bytes": 59035648,
+                  "sha256": "afd3fc5db89a8fbb6df0c2ac2d6634639822fe7f690d2b168eb9b3a4cb476a32",
+                  "minimum_os": ""
+                }
+              ],
+              "commit": "a2018337a09a9d5f508cb6a165258576579c61c1",
+              "agents": {
+                "manifest": {
+                  "file": "form-app.json",
+                  "url": "https://dl.formai.studio/formweb/0.27.0/form-app.json",
+                  "bytes": 3200,
+                  "sha256": "e9d39d523cfc89a8041b14bee962560c6226a36f2b4a2aad85cabd0212a403f3"
+                },
+                "skills": {
+                  "file": "formweb-skills-v0.27.0.zip",
+                  "url": "https://dl.formai.studio/formweb/0.27.0/formweb-skills-v0.27.0.zip",
+                  "bytes": 85351,
+                  "sha256": "6bf2e08b2eb48b8196df99ce90c68dd6a8f94aa93580540427631a130a884735"
+                }
+              }
+            },
             {
               "version": "0.25.1",
               "published": "2026-11-20T10:44:14Z",
