@@ -2,7 +2,8 @@
 
 Living log of all comment content, explainers, rationale, TODOs and removed code for the pipeline (the scripts, the workflows and the caller template). The source files stay comment-free per dev-rules `sub-skills/hashout-log/SUB-SKILL.md`; everything they would have said lives here, indexed. Read this first, then edit code surgically.
 
-Current build version: v0.22.0
+Current build version: v0.23.0
+Last updated: 2026-11-25 · v0.23.0 releases the three entries headed "after v0.22.0" (headings left as written): FormSubstrate and FormSlot are registered and switched on, and FormNET's entry names its skills and MCP server (#formsubstrate, #formslot, #formnet-agents)
 Last updated: 2026-11-23 · FormRig and FormCraft are registered in contract mode for all four platforms, drafts on their private repositories (v0.22.0, #formrig, #formcraft)
 Last updated: 2026-11-21 · FormMorpheus is registered and FormPublisher is switched on, both in commands mode for all four platforms, drafts on their private repositories (v0.21.0, #formmorpheus, #formpublisher-on)
 Last updated: 2026-11-20 · the catalogue's `notes` for a release is its What's new text when the release page has one, the page's address otherwise (v0.20.0, #notes-text)
