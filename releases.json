@@ -1,7 +1,7 @@
 {
   "format": "formai-catalog",
   "format_version": 1,
-  "generated": "2026-11-25T22:38:59Z",
+  "generated": "2026-11-25T23:32:47Z",
   "origin": "https://github.com/nodemode-dev/formcompiler",
   "products": [
     {
@@ -2044,98 +2044,191 @@
       },
       "channels": {
         "stable": {
-          "version": "0.30.0",
-          "published": "2026-11-23T02:07:56Z",
-          "notes": "Surface work. This release carries 0.29.0 as well, which was never published on its own.\n\nNew\n\n- Surfaces: fillet, chamfer and variable-radius fillet between two surfaces that share an edge or cross, trimmed back and joined (srffillet, srfchamfer, srfvarfillet).\n- Drag the control points of a surface in the 3D view. The surface follows live with zebra stripes, and each drag is one undo step.\n- Untrim gives a trimmed surface back its whole surface or removes only its holes. Shrink Trimmed cuts the underlying surface down to its trim.\n- Curves from surfaces: project curves onto surfaces, pull them on along the surface normal, cut contours at even spacing, and extract isocurves (crvproject, crvpull, srfcontour, srfisocurve).\n- Deform solids and surfaces: Bend, Flow along Curve, Flow along Surface and Cage Edit under Modify, Deform. A closed solid stays closed, and resetting a cage returns the original.\n\nImproved\n\n- 3DM export writes each body as one trimmed, joined polysurface, so a solid opens as a closed solid in the receiving program. A body that cannot be written this way falls back to separate faces, and the export report says why.\n- The seam continuity check measures G3, and the seam badge in the 3D view shows it.\n- The new labels are translated in every language.\n\nFixed\n\n- Surface match and extend work on surfaces shown in the 3D view. Before, they failed there with \"could not be converted to a B-spline surface\".\n\nKnown issues\n\n- The new tools need the 3D kernel released with this version. An older kernel says so.\n- The cage has no handles in the 3D view yet. Its points are moved from the command line.",
+          "version": "0.31.0",
+          "published": "2026-11-25T23:18:56Z",
+          "notes": "A release with no change to the app itself: FormCAD 0.31.0 works exactly as 0.30.0 does.\n\nKnown issues\n\n- 3D roughing and waterline toolpaths can cut into the part. Check such a toolpath before you run it on a machine.\n- The Properties panel is hidden when it sits in the dock.\n- FEATEXTRUDE typed at the command line ends without making a feature.\n- Solids in 3DM files and the surface control net, both new in 0.30.0, need a newer geometry kernel than the published one. The app says so when you use them.\n\nUnder the hood\n\n- FormCAD has a test suite: ./formCAD test runs the interface, the engine, the kernel and mesher workers, the app in a browser and the setup scripts, and docs/TESTING.md says how to run them and what a test must do. It found 12 faults in all; the most visible are the known issues above.",
           "origin": "store",
           "artifacts": [
             {
               "platform": "linux",
               "arch": "x86_64",
               "kind": "appimage",
-              "file": "formCAD-0.30.0-linux-x64.AppImage",
-              "url": "https://dl.formai.studio/formCAD/0.30.0/formCAD-0.30.0-linux-x64.AppImage",
-              "bytes": 211782136,
-              "sha256": "129dd80ec428782983f8b710200959b3defa0a06ff72ce7dad4318c303b79c86",
+              "file": "formCAD-0.31.0-linux-x64.AppImage",
+              "url": "https://dl.formai.studio/formCAD/0.31.0/formCAD-0.31.0-linux-x64.AppImage",
+              "bytes": 211802616,
+              "sha256": "c2e03cd2935d8817c8c155bc6bf6b636f59659093384cf627f9e505bfca34886",
               "minimum_os": "glibc 2.35"
             },
             {
               "platform": "linux",
               "arch": "x86_64",
               "kind": "deb",
-              "file": "formCAD-0.30.0-linux-x64.deb",
-              "url": "https://dl.formai.studio/formCAD/0.30.0/formCAD-0.30.0-linux-x64.deb",
-              "bytes": 165965576,
-              "sha256": "563cf1a6a92c3e681befd35e655c00729686e0b99b8c5d99cfaaf5a5e5dd4c17",
+              "file": "formCAD-0.31.0-linux-x64.deb",
+              "url": "https://dl.formai.studio/formCAD/0.31.0/formCAD-0.31.0-linux-x64.deb",
+              "bytes": 165979698,
+              "sha256": "35a0b728c4649bbab1db8915a621ce5a82a1ad2a12227ebf995cc53d577d9d7f",
               "minimum_os": "glibc 2.35"
             },
             {
               "platform": "linux",
               "arch": "x86_64",
               "kind": "rpm",
-              "file": "formCAD-0.30.0-linux-x64.rpm",
-              "url": "https://dl.formai.studio/formCAD/0.30.0/formCAD-0.30.0-linux-x64.rpm",
-              "bytes": 424821405,
-              "sha256": "d6924a4bef0273f8d373e0110d64761cee4bfc1d2cdf190f524a9df07b02a309",
+              "file": "formCAD-0.31.0-linux-x64.rpm",
+              "url": "https://dl.formai.studio/formCAD/0.31.0/formCAD-0.31.0-linux-x64.rpm",
+              "bytes": 424839141,
+              "sha256": "5888a8a8efc779e3376d84dbc6c1136494c3535722a87d9e179ff09231b6eba5",
               "minimum_os": "glibc 2.35"
             },
             {
               "platform": "macos",
               "arch": "arm64",
               "kind": "dmg",
-              "file": "formCAD-0.30.0-macos-arm64.dmg",
-              "url": "https://dl.formai.studio/formCAD/0.30.0/formCAD-0.30.0-macos-arm64.dmg",
-              "bytes": 86926913,
-              "sha256": "501f0d5f09911b8b7ad4f607a9c2abe0f2b86418c8584bd5b998c1e81ec52ff5",
+              "file": "formCAD-0.31.0-macos-arm64.dmg",
+              "url": "https://dl.formai.studio/formCAD/0.31.0/formCAD-0.31.0-macos-arm64.dmg",
+              "bytes": 86952264,
+              "sha256": "f14fd82781a665d29c3a05d556e860a6c2e0801059090c127892edc8f0603dac",
               "minimum_os": "macOS 14"
             },
             {
               "platform": "macos",
               "arch": "x86_64",
               "kind": "dmg",
-              "file": "formCAD-0.30.0-macos-x64.dmg",
-              "url": "https://dl.formai.studio/formCAD/0.30.0/formCAD-0.30.0-macos-x64.dmg",
-              "bytes": 84177553,
-              "sha256": "f3e0197ee40ffc9861997dc1cf37328d4d4250a4d727c55f0d69f849f670a8c7",
+              "file": "formCAD-0.31.0-macos-x64.dmg",
+              "url": "https://dl.formai.studio/formCAD/0.31.0/formCAD-0.31.0-macos-x64.dmg",
+              "bytes": 84195000,
+              "sha256": "7ea0e81c6bbebf77f59d9411f3e9020f5d09893387cfc753af0b30b307101fb2",
               "minimum_os": "macOS 14"
             },
             {
               "platform": "windows",
               "arch": "x86_64",
               "kind": "nsis",
-              "file": "formCAD-0.30.0-windows-x64-setup.exe",
-              "url": "https://dl.formai.studio/formCAD/0.30.0/formCAD-0.30.0-windows-x64-setup.exe",
-              "bytes": 78171296,
-              "sha256": "4cdeee217fedaed04738f8f3c1f98560bf900695216f8b79d158331298208568",
+              "file": "formCAD-0.31.0-windows-x64-setup.exe",
+              "url": "https://dl.formai.studio/formCAD/0.31.0/formCAD-0.31.0-windows-x64-setup.exe",
+              "bytes": 78212320,
+              "sha256": "e8018d5388a38a2e092ef4e6bb9933c27aec0dd0e8f6e8b1b7c6dac984bcf836",
               "minimum_os": ""
             },
             {
               "platform": "windows",
               "arch": "x86_64",
               "kind": "msi",
-              "file": "formCAD-0.30.0-windows-x64.msi",
-              "url": "https://dl.formai.studio/formCAD/0.30.0/formCAD-0.30.0-windows-x64.msi",
-              "bytes": 105500672,
-              "sha256": "1b7e89c353221639ac537adb3f6dfe692eba80f51f3f5178e66b8f9269d12355",
+              "file": "formCAD-0.31.0-windows-x64.msi",
+              "url": "https://dl.formai.studio/formCAD/0.31.0/formCAD-0.31.0-windows-x64.msi",
+              "bytes": 105521152,
+              "sha256": "8544e017ee980992a9a1b2e2f4f0ad5a1e37882397c561ed35fef65c57421d29",
               "minimum_os": ""
             }
           ],
-          "commit": "e356994fb988968c6fcd840e912c3e7b4a1eca9b",
+          "commit": "6d3375da5d64896bbd9218de68d188f2e644fb49",
           "agents": {
             "manifest": {
               "file": "form-app.json",
-              "url": "https://dl.formai.studio/formCAD/0.30.0/form-app.json",
+              "url": "https://dl.formai.studio/formCAD/0.31.0/form-app.json",
               "bytes": 2047,
-              "sha256": "ee7b1e57a6f0b8c7810b1b3b48d6091a35184dce0f428c9743c8ed237ebf0a90"
+              "sha256": "087c94cb96c338844751b3792e52f25f5f96f303f1df7bad891119332f2f5f70"
             },
             "skills": {
-              "file": "formCAD-skills-v0.30.0.zip",
-              "url": "https://dl.formai.studio/formCAD/0.30.0/formCAD-skills-v0.30.0.zip",
-              "bytes": 46649,
-              "sha256": "20858bef24e43b0f74f586a58f28b775c7d266b1cc77b65e9484268bf3289ad2"
+              "file": "formCAD-skills-v0.31.0.zip",
+              "url": "https://dl.formai.studio/formCAD/0.31.0/formCAD-skills-v0.31.0.zip",
+              "bytes": 46650,
+              "sha256": "e4e4dfc579f94c4b2cc32e878b015f76d83d676a346c19cca69d1a8a382a763c"
             }
           },
           "history": [
+            {
+              "version": "0.30.0",
+              "published": "2026-11-23T02:07:56Z",
+              "notes": "Surface work. This release carries 0.29.0 as well, which was never published on its own.\n\nNew\n\n- Surfaces: fillet, chamfer and variable-radius fillet between two surfaces that share an edge or cross, trimmed back and joined (srffillet, srfchamfer, srfvarfillet).\n- Drag the control points of a surface in the 3D view. The surface follows live with zebra stripes, and each drag is one undo step.\n- Untrim gives a trimmed surface back its whole surface or removes only its holes. Shrink Trimmed cuts the underlying surface down to its trim.\n- Curves from surfaces: project curves onto surfaces, pull them on along the surface normal, cut contours at even spacing, and extract isocurves (crvproject, crvpull, srfcontour, srfisocurve).\n- Deform solids and surfaces: Bend, Flow along Curve, Flow along Surface and Cage Edit under Modify, Deform. A closed solid stays closed, and resetting a cage returns the original.\n\nImproved\n\n- 3DM export writes each body as one trimmed, joined polysurface, so a solid opens as a closed solid in the receiving program. A body that cannot be written this way falls back to separate faces, and the export report says why.\n- The seam continuity check measures G3, and the seam badge in the 3D view shows it.\n- The new labels are translated in every language.\n\nFixed\n\n- Surface match and extend work on surfaces shown in the 3D view. Before, they failed there with \"could not be converted to a B-spline surface\".\n\nKnown issues\n\n- The new tools need the 3D kernel released with this version. An older kernel says so.\n- The cage has no handles in the 3D view yet. Its points are moved from the command line.",
+              "origin": "store",
+              "artifacts": [
+                {
+                  "platform": "linux",
+                  "arch": "x86_64",
+                  "kind": "appimage",
+                  "file": "formCAD-0.30.0-linux-x64.AppImage",
+                  "url": "https://dl.formai.studio/formCAD/0.30.0/formCAD-0.30.0-linux-x64.AppImage",
+                  "bytes": 211782136,
+                  "sha256": "129dd80ec428782983f8b710200959b3defa0a06ff72ce7dad4318c303b79c86",
+                  "minimum_os": "glibc 2.35"
+                },
+                {
+                  "platform": "linux",
+                  "arch": "x86_64",
+                  "kind": "deb",
+                  "file": "formCAD-0.30.0-linux-x64.deb",
+                  "url": "https://dl.formai.studio/formCAD/0.30.0/formCAD-0.30.0-linux-x64.deb",
+                  "bytes": 165965576,
+                  "sha256": "563cf1a6a92c3e681befd35e655c00729686e0b99b8c5d99cfaaf5a5e5dd4c17",
+                  "minimum_os": "glibc 2.35"
+                },
+                {
+                  "platform": "linux",
+                  "arch": "x86_64",
+                  "kind": "rpm",
+                  "file": "formCAD-0.30.0-linux-x64.rpm",
+                  "url": "https://dl.formai.studio/formCAD/0.30.0/formCAD-0.30.0-linux-x64.rpm",
+                  "bytes": 424821405,
+                  "sha256": "d6924a4bef0273f8d373e0110d64761cee4bfc1d2cdf190f524a9df07b02a309",
+                  "minimum_os": "glibc 2.35"
+                },
+                {
+                  "platform": "macos",
+                  "arch": "arm64",
+                  "kind": "dmg",
+                  "file": "formCAD-0.30.0-macos-arm64.dmg",
+                  "url": "https://dl.formai.studio/formCAD/0.30.0/formCAD-0.30.0-macos-arm64.dmg",
+                  "bytes": 86926913,
+                  "sha256": "501f0d5f09911b8b7ad4f607a9c2abe0f2b86418c8584bd5b998c1e81ec52ff5",
+                  "minimum_os": "macOS 14"
+                },
+                {
+                  "platform": "macos",
+                  "arch": "x86_64",
+                  "kind": "dmg",
+                  "file": "formCAD-0.30.0-macos-x64.dmg",
+                  "url": "https://dl.formai.studio/formCAD/0.30.0/formCAD-0.30.0-macos-x64.dmg",
+                  "bytes": 84177553,
+                  "sha256": "f3e0197ee40ffc9861997dc1cf37328d4d4250a4d727c55f0d69f849f670a8c7",
+                  "minimum_os": "macOS 14"
+                },
+                {
+                  "platform": "windows",
+                  "arch": "x86_64",
+                  "kind": "nsis",
+                  "file": "formCAD-0.30.0-windows-x64-setup.exe",
+                  "url": "https://dl.formai.studio/formCAD/0.30.0/formCAD-0.30.0-windows-x64-setup.exe",
+                  "bytes": 78171296,
+                  "sha256": "4cdeee217fedaed04738f8f3c1f98560bf900695216f8b79d158331298208568",
+                  "minimum_os": ""
+                },
+                {
+                  "platform": "windows",
+                  "arch": "x86_64",
+                  "kind": "msi",
+                  "file": "formCAD-0.30.0-windows-x64.msi",
+                  "url": "https://dl.formai.studio/formCAD/0.30.0/formCAD-0.30.0-windows-x64.msi",
+                  "bytes": 105500672,
+                  "sha256": "1b7e89c353221639ac537adb3f6dfe692eba80f51f3f5178e66b8f9269d12355",
+                  "minimum_os": ""
+                }
+              ],
+              "commit": "e356994fb988968c6fcd840e912c3e7b4a1eca9b",
+              "agents": {
+                "manifest": {
+                  "file": "form-app.json",
+                  "url": "https://dl.formai.studio/formCAD/0.30.0/form-app.json",
+                  "bytes": 2047,
+                  "sha256": "ee7b1e57a6f0b8c7810b1b3b48d6091a35184dce0f428c9743c8ed237ebf0a90"
+                },
+                "skills": {
+                  "file": "formCAD-skills-v0.30.0.zip",
+                  "url": "https://dl.formai.studio/formCAD/0.30.0/formCAD-skills-v0.30.0.zip",
+                  "bytes": 46649,
+                  "sha256": "20858bef24e43b0f74f586a58f28b775c7d266b1cc77b65e9484268bf3289ad2"
+                }
+              }
+            },
             {
               "version": "0.28.0",
               "published": "2026-11-22T23:39:47Z",
@@ -5678,98 +5771,191 @@
       },
       "channels": {
         "stable": {
-          "version": "0.30.0",
-          "published": "2026-11-21T17:30:17Z",
-          "notes": "This release carries 0.29.1 as well, which was never published on its own.\n\nNew\n\n- AMOLED Black, a true-black theme for OLED screens, as in the other Form apps. Pick it in the theme list.\n\nFixed\n\n- At each start the window asked the engine for live updates a moment too early, was refused once and asked again a second and a half later. It now waits until it is signed in, so live updates arrive from the first try.",
+          "version": "0.31.0",
+          "published": "2026-11-25T23:18:57Z",
+          "notes": "A release with no change to the app itself: FormFabric 0.31.0 works exactly as 0.30.0 does.\n\nKnown issues\n\n- Agents: the MCP server answers a message with no method, or with a method that is not text, with error -32601 where -32600 is meant, and over stdio it answers array parameters with -32603 where -32602 is meant.\n- The Python package passes a width that is not a number on to the engine, although its README says arguments are checked against their minimum and maximum.\n\nUnder the hood\n\n- FormFabric has a test suite: ./formfabric test runs the interface tests and the service tests, and docs/TESTING.md says how to run them and what a test must do. The known issues above were found by it.",
           "origin": "store",
           "artifacts": [
             {
               "platform": "linux",
               "arch": "x86_64",
               "kind": "appimage",
-              "file": "formfabric-0.30.0-linux-x64.AppImage",
-              "url": "https://dl.formai.studio/formfabric/0.30.0/formfabric-0.30.0-linux-x64.AppImage",
-              "bytes": 142768632,
-              "sha256": "1fa751124a2779ce56a5d34879cd5824ef14a118c9dde0d82d7049bd1baa11c7",
+              "file": "formfabric-0.31.0-linux-x64.AppImage",
+              "url": "https://dl.formai.studio/formfabric/0.31.0/formfabric-0.31.0-linux-x64.AppImage",
+              "bytes": 142780920,
+              "sha256": "4d90644c75a17b29e9a8d8b071108d73991a33ac2f0dc4478960f6cdb993234c",
               "minimum_os": ""
             },
             {
               "platform": "linux",
               "arch": "x86_64",
               "kind": "deb",
-              "file": "formfabric-0.30.0-linux-x64.deb",
-              "url": "https://dl.formai.studio/formfabric/0.30.0/formfabric-0.30.0-linux-x64.deb",
-              "bytes": 64496498,
-              "sha256": "b44d1420c02b19a0ee6f3bc531151736ea005f229f731a9442f6ae1b29234aad",
+              "file": "formfabric-0.31.0-linux-x64.deb",
+              "url": "https://dl.formai.studio/formfabric/0.31.0/formfabric-0.31.0-linux-x64.deb",
+              "bytes": 64512316,
+              "sha256": "1c8cf7ef324c2b5353e7e7bdd49e74ee9df04554ac1417c0326a73441acd9767",
               "minimum_os": ""
             },
             {
               "platform": "linux",
               "arch": "x86_64",
               "kind": "rpm",
-              "file": "formfabric-0.30.0-linux-x64.rpm",
-              "url": "https://dl.formai.studio/formfabric/0.30.0/formfabric-0.30.0-linux-x64.rpm",
-              "bytes": 64499651,
-              "sha256": "aad5a9b5b95d7326f8aba1bae53549fc25690b640581d17d9e4383e6eeaf62e2",
+              "file": "formfabric-0.31.0-linux-x64.rpm",
+              "url": "https://dl.formai.studio/formfabric/0.31.0/formfabric-0.31.0-linux-x64.rpm",
+              "bytes": 64516229,
+              "sha256": "136a5bb3cb53885b5968b1ea54906690457b237652761a25f058e7f282b047b6",
               "minimum_os": ""
             },
             {
               "platform": "macos",
               "arch": "arm64",
               "kind": "dmg",
-              "file": "formfabric-0.30.0-macos-arm64.dmg",
-              "url": "https://dl.formai.studio/formfabric/0.30.0/formfabric-0.30.0-macos-arm64.dmg",
-              "bytes": 43825110,
-              "sha256": "7d0372d3fb5c59e1dd80fea0bc8655b397adb351e296161f20dac18cd5973269",
+              "file": "formfabric-0.31.0-macos-arm64.dmg",
+              "url": "https://dl.formai.studio/formfabric/0.31.0/formfabric-0.31.0-macos-arm64.dmg",
+              "bytes": 43841011,
+              "sha256": "310c9046e25c0605302b77932ef12aba3c2847f56a891d9c159a471e73451a4d",
               "minimum_os": "macOS 12"
             },
             {
               "platform": "macos",
               "arch": "x86_64",
               "kind": "dmg",
-              "file": "formfabric-0.30.0-macos-x64.dmg",
-              "url": "https://dl.formai.studio/formfabric/0.30.0/formfabric-0.30.0-macos-x64.dmg",
-              "bytes": 45256144,
-              "sha256": "f7a85d00945e567e8249369b1338b1c886a660666464a6423c488ea7d8fcd2d7",
+              "file": "formfabric-0.31.0-macos-x64.dmg",
+              "url": "https://dl.formai.studio/formfabric/0.31.0/formfabric-0.31.0-macos-x64.dmg",
+              "bytes": 45282188,
+              "sha256": "34d7f3767bdfc23dfc0c8851c9ccff9ec3d3ac23258f752616552491e880faff",
               "minimum_os": "macOS 12"
             },
             {
               "platform": "windows",
               "arch": "x86_64",
               "kind": "nsis",
-              "file": "formfabric-0.30.0-windows-x64-setup.exe",
-              "url": "https://dl.formai.studio/formfabric/0.30.0/formfabric-0.30.0-windows-x64-setup.exe",
-              "bytes": 39096944,
-              "sha256": "70c93aad03fb8196947534846588b272a8a4d722ac23fa7e4b6a7e69d2bb5060",
+              "file": "formfabric-0.31.0-windows-x64-setup.exe",
+              "url": "https://dl.formai.studio/formfabric/0.31.0/formfabric-0.31.0-windows-x64-setup.exe",
+              "bytes": 39138968,
+              "sha256": "47737fe253aaa156e4a139b4e4f2069a303faa8f1a3bd47522cc776e31b6cb27",
               "minimum_os": "Windows 10"
             },
             {
               "platform": "windows",
               "arch": "x86_64",
               "kind": "msi",
-              "file": "formfabric-0.30.0-windows-x64.msi",
-              "url": "https://dl.formai.studio/formfabric/0.30.0/formfabric-0.30.0-windows-x64.msi",
-              "bytes": 40292352,
-              "sha256": "6a309c1c0ff25afce17a9c30dfd98ec69a699fe5f92f7018c33ac59b21fa3cf2",
+              "file": "formfabric-0.31.0-windows-x64.msi",
+              "url": "https://dl.formai.studio/formfabric/0.31.0/formfabric-0.31.0-windows-x64.msi",
+              "bytes": 40308736,
+              "sha256": "2c3237b731e4b4a32e9efe341b00d297b4945efb5af036181523b7ee1c437f3d",
               "minimum_os": "Windows 10"
             }
           ],
-          "commit": "d9c3bbb38251a6769e2743921ea43d4aa82b3df4",
+          "commit": "535cb41643e2c124af4131cef86ce3e0088f5aef",
           "agents": {
             "manifest": {
               "file": "form-app.json",
-              "url": "https://dl.formai.studio/formfabric/0.30.0/form-app.json",
+              "url": "https://dl.formai.studio/formfabric/0.31.0/form-app.json",
               "bytes": 2600,
-              "sha256": "451e18d3690b37b8cd5998fd463cd6802d64a36044442fcda986ce408396ba68"
+              "sha256": "0e06ed9d0eefb1d848440cae607de1aa165286b459b471ebc44ea410d5045f28"
             },
             "skills": {
-              "file": "formfabric-skills-v0.30.0.zip",
-              "url": "https://dl.formai.studio/formfabric/0.30.0/formfabric-skills-v0.30.0.zip",
+              "file": "formfabric-skills-v0.31.0.zip",
+              "url": "https://dl.formai.studio/formfabric/0.31.0/formfabric-skills-v0.31.0.zip",
               "bytes": 56759,
-              "sha256": "6d6938a4ad7b0a5dee211c1910433070a4c7bde683b86b6ac7691e1b73fcfd5b"
+              "sha256": "8747e5d2a5773fc15be8b426587d01150776cf802d0cac0ed3cafbffe4e23ca7"
             }
           },
           "history": [
+            {
+              "version": "0.30.0",
+              "published": "2026-11-21T17:30:17Z",
+              "notes": "This release carries 0.29.1 as well, which was never published on its own.\n\nNew\n\n- AMOLED Black, a true-black theme for OLED screens, as in the other Form apps. Pick it in the theme list.\n\nFixed\n\n- At each start the window asked the engine for live updates a moment too early, was refused once and asked again a second and a half later. It now waits until it is signed in, so live updates arrive from the first try.",
+              "origin": "store",
+              "artifacts": [
+                {
+                  "platform": "linux",
+                  "arch": "x86_64",
+                  "kind": "appimage",
+                  "file": "formfabric-0.30.0-linux-x64.AppImage",
+                  "url": "https://dl.formai.studio/formfabric/0.30.0/formfabric-0.30.0-linux-x64.AppImage",
+                  "bytes": 142768632,
+                  "sha256": "1fa751124a2779ce56a5d34879cd5824ef14a118c9dde0d82d7049bd1baa11c7",
+                  "minimum_os": ""
+                },
+                {
+                  "platform": "linux",
+                  "arch": "x86_64",
+                  "kind": "deb",
+                  "file": "formfabric-0.30.0-linux-x64.deb",
+                  "url": "https://dl.formai.studio/formfabric/0.30.0/formfabric-0.30.0-linux-x64.deb",
+                  "bytes": 64496498,
+                  "sha256": "b44d1420c02b19a0ee6f3bc531151736ea005f229f731a9442f6ae1b29234aad",
+                  "minimum_os": ""
+                },
+                {
+                  "platform": "linux",
+                  "arch": "x86_64",
+                  "kind": "rpm",
+                  "file": "formfabric-0.30.0-linux-x64.rpm",
+                  "url": "https://dl.formai.studio/formfabric/0.30.0/formfabric-0.30.0-linux-x64.rpm",
+                  "bytes": 64499651,
+                  "sha256": "aad5a9b5b95d7326f8aba1bae53549fc25690b640581d17d9e4383e6eeaf62e2",
+                  "minimum_os": ""
+                },
+                {
+                  "platform": "macos",
+                  "arch": "arm64",
+                  "kind": "dmg",
+                  "file": "formfabric-0.30.0-macos-arm64.dmg",
+                  "url": "https://dl.formai.studio/formfabric/0.30.0/formfabric-0.30.0-macos-arm64.dmg",
+                  "bytes": 43825110,
+                  "sha256": "7d0372d3fb5c59e1dd80fea0bc8655b397adb351e296161f20dac18cd5973269",
+                  "minimum_os": "macOS 12"
+                },
+                {
+                  "platform": "macos",
+                  "arch": "x86_64",
+                  "kind": "dmg",
+                  "file": "formfabric-0.30.0-macos-x64.dmg",
+                  "url": "https://dl.formai.studio/formfabric/0.30.0/formfabric-0.30.0-macos-x64.dmg",
+                  "bytes": 45256144,
+                  "sha256": "f7a85d00945e567e8249369b1338b1c886a660666464a6423c488ea7d8fcd2d7",
+                  "minimum_os": "macOS 12"
+                },
+                {
+                  "platform": "windows",
+                  "arch": "x86_64",
+                  "kind": "nsis",
+                  "file": "formfabric-0.30.0-windows-x64-setup.exe",
+                  "url": "https://dl.formai.studio/formfabric/0.30.0/formfabric-0.30.0-windows-x64-setup.exe",
+                  "bytes": 39096944,
+                  "sha256": "70c93aad03fb8196947534846588b272a8a4d722ac23fa7e4b6a7e69d2bb5060",
+                  "minimum_os": "Windows 10"
+                },
+                {
+                  "platform": "windows",
+                  "arch": "x86_64",
+                  "kind": "msi",
+                  "file": "formfabric-0.30.0-windows-x64.msi",
+                  "url": "https://dl.formai.studio/formfabric/0.30.0/formfabric-0.30.0-windows-x64.msi",
+                  "bytes": 40292352,
+                  "sha256": "6a309c1c0ff25afce17a9c30dfd98ec69a699fe5f92f7018c33ac59b21fa3cf2",
+                  "minimum_os": "Windows 10"
+                }
+              ],
+              "commit": "d9c3bbb38251a6769e2743921ea43d4aa82b3df4",
+              "agents": {
+                "manifest": {
+                  "file": "form-app.json",
+                  "url": "https://dl.formai.studio/formfabric/0.30.0/form-app.json",
+                  "bytes": 2600,
+                  "sha256": "451e18d3690b37b8cd5998fd463cd6802d64a36044442fcda986ce408396ba68"
+                },
+                "skills": {
+                  "file": "formfabric-skills-v0.30.0.zip",
+                  "url": "https://dl.formai.studio/formfabric/0.30.0/formfabric-skills-v0.30.0.zip",
+                  "bytes": 56759,
+                  "sha256": "6d6938a4ad7b0a5dee211c1910433070a4c7bde683b86b6ac7691e1b73fcfd5b"
+                }
+              }
+            },
             {
               "version": "0.29.0",
               "published": "2026-11-21T01:44:03Z",
@@ -17942,7 +18128,7 @@
         "stable": {
           "version": "0.31.2",
           "published": "2026-11-25T21:09:51Z",
-          "notes": "https://github.com/nodemode-dev/formweb/releases/tag/v0.31.2",
+          "notes": "Fixed\n\n- The editor no longer falls back to an older state of your site. When a change from outside the window (the assistant, the command line, another window) arrived just after one of your own, the window could show the site as it was before that change, and stay that way until the next change. It now keeps the newest state it has received.",
           "origin": "store",
           "artifacts": [
             {
