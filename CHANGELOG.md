@@ -1,5 +1,15 @@
 # Changelog
 
+## v0.23.0 · 2026-11-25
+
+- The launch dates of two groups changed places. FormNET, FormSlot and FormSubstrate go out on 25 November; FormPromo, FormRig and FormCraft on 28 November. The v0.22.0 entry below names 25 November for FormRig and FormCraft: that is now 28 November. No entry carries a date, so nothing in a build changes with this; an app is built when its release is started.
+- FormSlot is registered: `apps/formslot.json` builds `nodemode-dev/formslot` for Apple silicon and Intel Macs, Linux and Windows, as a draft release. It is a command line program with no window, so its release files are the archives its own `setup/build_release` packs, with a disk image on macOS for notarization, and the Windows start check is off.
+- FormSubstrate is registered: `apps/formsubstrate.json` builds `nodemode-dev/formsubstrate` for the same four platforms, as a draft release, in commands mode. The application is Substrate. Linux makes deb, AppImage and rpm.
+- Catalogue entries: `formslot`, memory, GPL-3.0-only; `formsubstrate`, workbench, GPL-3.0-only, macOS 11. Both in prelaunch. Neither has a Tauri updater.
+- FormNET's entry names its skills folder and its MCP server, so its releases carry `form-app.json` and a skills zip like the other apps that have them.
+- For the owner, once: the read token needs access to `formslot` and `formsubstrate` before their first build. None of the three builds has run yet; the first run is the test.
+- The README counts 37 registered apps, all enabled, and 512 tests. No test was added; the count rose because several tests run once per registered app.
+
 ## v0.22.0 · 2026-11-23
 
 - FormRig and FormCraft are registered for the Group 6 launch of 25 November: `apps/formrig.json` builds `nodemode-dev/formrig` and `apps/formcraft.json` builds `nodemode-dev/formcraft` for Apple silicon and Intel Macs, Linux and Windows, as draft releases on their private repositories. FormPromo was already registered.

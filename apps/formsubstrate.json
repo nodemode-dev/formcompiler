@@ -1,0 +1,53 @@
+{
+  "app": "formsubstrate",
+  "repository": "nodemode-dev/formsubstrate",
+  "title": "formsubstrate",
+  "enabled": true,
+  "release": "draft",
+  "version": {"file": "src-tauri/tauri.conf.json", "pattern": ""},
+  "checks": ["ci.yml"],
+  "platforms": ["macos-arm64", "macos-x64", "linux-x64", "windows-x64"],
+  "toolchain": {
+    "node": "22",
+    "python": "3.13",
+    "rust": true,
+    "rust_targets": "",
+    "rust_cache": ["src-tauri"],
+    "go": "",
+    "linux_packages": "libwebkit2gtk-4.1-dev libayatana-appindicator3-dev librsvg2-dev libxdo-dev libssl-dev patchelf build-essential file",
+    "windows_msvc": false
+  },
+  "build": {
+    "mode": "commands",
+    "cli": "formsubstrate",
+    "install": false,
+    "install_args": "",
+    "install_desktop": false,
+    "windows_shell": "cmd",
+    "macos": "./build_app --no-install",
+    "linux": "FORMSUBSTRATE_BUNDLES=deb,appimage,rpm ./build_app",
+    "windows": "call build_app.bat",
+    "tauri_config": "{\"bundle\":{\"linux\":{\"rpm\":{\"compression\":{\"type\":\"none\"}}}}}"
+  },
+  "setup": {"macos": "", "linux": "", "windows": ""},
+  "post_build": {"macos": "", "linux": "", "windows": ""},
+  "artifacts": [],
+  "extras": [],
+  "assets": "",
+  "notes": "",
+  "updater": {"tauri": false, "tag_json": false, "files": []},
+  "signing": {"macos": "apple", "windows": "certificate"},
+  "agents": {"skills": ".claude/skills", "mcp": true},
+  "catalog": {
+    "id": "formsubstrate",
+    "name": "FormSubstrate",
+    "kind": "workbench",
+    "summary": "A code and text editor that runs Claude Code agents, each in its own git worktree.",
+    "identifier": "ai.nodemode.formsubstrate",
+    "licence": "GPL-3.0-only",
+    "state": "prelaunch",
+    "project_extensions": [],
+    "minimum_os": {"macos": "macOS 11", "windows": "", "linux": ""}
+  },
+  "notes_for_owner": "Written from formsubstrate 0.25.3. The first formcompiler build of formsubstrate; the application is Substrate (Substrate.app) and its program is formsubstrate, with the engine beside it as formsubstrate-engine. It builds in commands mode: ./build_app and build_app.bat take no --config, so formcompiler's Tauri settings reach the build through the tauri.<os>.conf.json it merges before every build. Each build freezes the Python engine into one folder with PyInstaller. Linux builds deb, AppImage and rpm, with rpm compression off as FormVis does. updater.tauri is false: the app has no updater of its own and is updated through FormPortal. The engine also runs as an MCP server (formsubstrate-engine --mcp); mcp_launch is left out, because it cannot yet name a program other than the app's own, so FormPortal does not start that server from an installed copy. Before its first build: main must hold the version being released, ci.yml must have passed on the compile commit, and the read token must be able to read nodemode-dev/formsubstrate (the feed plan fails naming any enabled repository it cannot read)."
+}

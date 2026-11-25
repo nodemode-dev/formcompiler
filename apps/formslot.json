@@ -1,0 +1,59 @@
+{
+  "app": "formslot",
+  "repository": "nodemode-dev/formslot",
+  "title": "formslot",
+  "enabled": true,
+  "release": "draft",
+  "version": {"file": "Cargo.toml", "pattern": ""},
+  "checks": ["ci.yml"],
+  "platforms": ["macos-arm64", "macos-x64", "linux-x64", "windows-x64"],
+  "toolchain": {
+    "node": "",
+    "python": "",
+    "rust": true,
+    "rust_targets": "",
+    "rust_cache": ["."],
+    "go": "",
+    "linux_packages": "build-essential pkg-config",
+    "windows_msvc": false
+  },
+  "build": {
+    "mode": "commands",
+    "cli": "formslot",
+    "install": false,
+    "install_args": "",
+    "install_desktop": false,
+    "windows_shell": "cmd",
+    "macos": "setup/build_release --dmg",
+    "linux": "setup/build_release",
+    "windows": "call setup\\build_release.bat --no-sums",
+    "tauri_config": ""
+  },
+  "setup": {"macos": "", "linux": "", "windows": ""},
+  "post_build": {"macos": "", "linux": "", "windows": ""},
+  "artifacts": [
+    "dist/formslot-v*-macos-*.dmg",
+    "dist/formslot-v*-macos-*.tar.gz",
+    "dist/formslot-v*-linux-*.tar.gz",
+    "dist/formslot-v*-windows-*.zip"
+  ],
+  "extras": [],
+  "assets": "",
+  "notes": "",
+  "updater": {"tauri": false, "tag_json": false, "files": []},
+  "signing": {"macos": "apple", "windows": "certificate"},
+  "agents": {"skills": "plugin/formslot/skills", "mcp": true},
+  "windows_start_check": "off",
+  "catalog": {
+    "id": "formslot",
+    "name": "FormSlot",
+    "kind": "memory",
+    "summary": "Codebase memory for coding agents: what is built, where it lives and the rules it follows.",
+    "identifier": "ai.nodemode.formslot",
+    "licence": "GPL-3.0-only",
+    "state": "prelaunch",
+    "project_extensions": [],
+    "minimum_os": {"macos": "", "windows": "", "linux": ""}
+  },
+  "notes_for_owner": "Written from formslot 0.18.3. The first formcompiler build of formslot. FormSlot is a command line program with no window and no Tauri bundle: the version is the workspace version in Cargo.toml, and setup/build_release (setup\\build_release.bat on Windows) builds the release binary and packs it with its plugin and data into a .tar.gz on macOS and Linux and a .zip on Windows, which are the release files. windows_start_check is off, because there is no window to wait for. formcompiler signs the .exe inside the Windows .zip after the build and publishes its own checksums, so the Windows build passes --no-sums and the zip carries no checksum file of its own. formcompiler signs and notarizes disk images only, so the macOS build passes --dmg: the script signs the program and also packs the folder into a disk image, which is notarized and stapled; the .tar.gz beside it holds the same signed program. pkg-config stays in linux_packages: the SQLite build crate asks for it, though SQLite itself is compiled in. minimum_os.macos is empty until it is read from the first built program (otool -l formslot, LC_BUILD_VERSION, minos). Before its first build: ci.yml must have passed on the compile commit and the read token must be able to read nodemode-dev/formslot (the feed plan fails naming any enabled repository it cannot read)."
+}
