@@ -82,7 +82,7 @@
 <table>
   <tr>
     <td width="33%" valign="top">
-      <h4>35 registered apps, all enabled</h4>
+      <h4>37 registered apps, all enabled</h4>
       One <code>apps/&lt;app&gt;.json</code> each: version source · checks · platforms · toolchain · build commands · extra jobs · assets · update files · catalogue entry
     </td>
     <td width="33%" valign="top">
@@ -105,7 +105,7 @@
 - **Channels:** `X.Y.Z` is stable; anything with `-beta.N` or `-rc.N` is beta and never touches `<app>-updates`.
 - **Publishing:** the download store, update feeds, catalogue signature and yanks run in a private companion pipeline.
 - **Worker programs:** `binaries.yml`, started by hand, builds FormCAD's kernel and mesher workers on four runners, signs and notarizes them with the same values as the apps, and can open a draft release in `nodemode-dev/formai-binaries`, where the app downloads them from.
-- **Tested:** 506 tests in 23 files (registry, versions, watch, triggers, tauri config, signing, notary key, app repository releases, GitHub binaries, workflow guards).
+- **Tested:** 512 tests in 23 files (registry, versions, watch, triggers, tauri config, signing, notary key, app repository releases, GitHub binaries, workflow guards).
 
 ## Where releases come from
 
