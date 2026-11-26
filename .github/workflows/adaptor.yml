@@ -92,7 +92,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           TARGET: ${{ matrix.name }}
-        run: python3 -I adaptor/scripts/propose.py plan--target "$TARGET" --checkout target --family "$RUNNER_TEMP/family.json" --previous "$RUNNER_TEMP/previous.json" --out "$RUNNER_TEMP/plan"
+        run: python3 -I adaptor/scripts/propose.py plan --target "$TARGET" --checkout target --family "$RUNNER_TEMP/family.json" --previous "$RUNNER_TEMP/previous.json" --out "$RUNNER_TEMP/plan"
       - name: Keep the plan for the propose job
         if: (inputs.target == '' || inputs.target == matrix.name) && steps.plan.outputs.changed == 'true'
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
