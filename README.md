@@ -11,7 +11,7 @@
 </p>
 
 <p align="center">
-  <img alt="version v0.24.0" src="https://img.shields.io/badge/version-v0.24.0-eef0f4?style=flat-square">
+  <img alt="version v0.24.1" src="https://img.shields.io/badge/version-v0.24.1-eef0f4?style=flat-square">
   <img alt="GitHub Actions" src="https://img.shields.io/badge/GitHub_Actions-watch_%C2%B7_release-2088FF?style=flat-square&logo=githubactions&logoColor=white">
   <img alt="Python 3.11+" src="https://img.shields.io/badge/Python-3.11%2B-3776AB?style=flat-square&logo=python&logoColor=white">
   <img alt="Builds for macOS, Windows and Linux" src="https://img.shields.io/badge/builds-macOS_%C2%B7_Windows_%C2%B7_Linux-2f7bf5?style=flat-square">
@@ -105,7 +105,7 @@
 - **Channels:** `X.Y.Z` is stable; anything with `-beta.N` or `-rc.N` is beta and never touches `<app>-updates`.
 - **Publishing:** the download store, update feeds, catalogue signature and yanks run in a private companion pipeline.
 - **Worker programs:** `binaries.yml`, started by hand, builds FormCAD's kernel and mesher workers on four runners, signs and notarizes them with the same values as the apps, and can open a draft release in `nodemode-dev/formai-binaries`, where the app downloads them from.
-- **Family spec proposals:** `adaptor.yml` runs at minute 48 of every hour, runs formadaptor's generators for its targets without a secret, and opens a pull request with the release App in each target that has a change.
+- **Family spec proposals:** `adaptor.yml` runs at minute 48 of every hour, runs formadaptor's generators for its targets without a secret, and opens a pull request with the release credential in each target that has a change.
 - **Tested:** 512 tests in 23 files (registry, versions, watch, triggers, tauri config, signing, notary key, app repository releases, GitHub binaries, workflow guards).
 
 ## Where releases come from
