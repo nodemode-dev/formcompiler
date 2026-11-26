@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.25.0 · 2026-11-25
+
+- FormSlot's Linux `.zip` is a release file (`apps/formslot.json`). formslot 0.18.4 builds it beside the `.tar.gz`; the catalogue and FormPortal read a Linux `.zip` and leave a `.tar.gz` out, so FormPortal can install FormSlot on Linux from that release on.
+- `adaptor.yml`: the plan artifact keeps hidden files (`include-hidden-files: true`). form.ext's plan includes `.claude/skills/HOSTS.md`, which the upload left out, so its `propose` job stopped at "the plan lists '.claude/skills/HOSTS.md' but does not hold them".
+
 ## v0.24.2 · 2026-11-25
 
 - `adaptor.yml`: the `plan` step's command has its space back between `plan` and `--target`. v0.24.1 lost it, and every `plan` job stopped at "invalid choice: 'plan--target'".
