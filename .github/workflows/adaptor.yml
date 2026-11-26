@@ -99,6 +99,7 @@ jobs:
         with:
           name: plan-${{ matrix.name }}
           path: ${{ runner.temp }}/plan
+          include-hidden-files: true
           retention-days: 1
 
   changed:
