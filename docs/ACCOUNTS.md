@@ -72,7 +72,7 @@ From formcompiler v0.9.0 every app release is created on the app's own repositor
 
 A GitHub App acts as itself, expires its tokens after an hour, and `actions/create-github-app-token` mints one for the single repository being released.
 
-1. In the `nodemode-dev` organisation: Settings, Developer settings, GitHub Apps, New GitHub App. Name `formcompiler releases`, homepage `https://github.com/nodemode-dev/formcompiler`, webhook off, no callback. Repository permissions: Contents, read and write (releases, tags and their assets); nothing else. Where can this app be installed: only on this account.
+1. In the `nodemode-dev` organisation: Settings, Developer settings, GitHub Apps, New GitHub App. Name `formcompiler releases`, homepage `https://github.com/nodemode-dev/formcompiler`, webhook off, no callback. Repository permissions: Contents, read and write (releases, tags and their assets, and the branches the adaptor workflow proposes), and Pull requests, read and write (the adaptor workflow, below); nothing else. Where can this app be installed: only on this account.
 2. Create the app, then on its page generate a private key (a `.pem` file) and note the client ID (`Iv...`; the numeric App ID works too).
 3. Install the app on the organisation, Only select repositories: every app repository in `apps/*.json`, never formcompiler itself. An app registered later is added here, or its release fails with a 404 from the token step.
 4. In formcompiler: Settings, Environments, `release` (create it if it is not there). Deployment branches and tags: Selected branches, `main` only, so a workflow on any other branch cannot reach the secrets. A required reviewer may be added, which then holds every `publish` job until approved. Environment secrets: `FORMCOMPILER_APP_ID` (the client ID) and `FORMCOMPILER_APP_PRIVATE_KEY` (the whole `.pem` file).
@@ -88,9 +88,17 @@ The fallback when the App is not set, and the worse of the two if leaked: it act
 
 ### The binaries workflow and formai-binaries
 
-`binaries.yml` builds FormCAD's kernel and mesher workers and, when `publish` is checked, opens a draft release `occt-<release>` or `mesher-<release>` in `nodemode-dev/formai-binaries`. It uses the same credential as an app release, so that repository has to be within its reach: for shape A, add `formai-binaries` to the repositories the GitHub App is installed on (Organisation settings, GitHub Apps, the App, Configure, Only select repositories); for shape B, add it to the token's repositories. Nothing else changes: the App still holds Contents, read and write, and nothing more. The ruleset `release tags` is not involved, because those tags do not start with `v`.
+`binaries.yml` builds FormCAD's kernel and mesher workers and, when `publish` is checked, opens a draft release `occt-<release>` or `mesher-<release>` in `nodemode-dev/formai-binaries`. It uses the same credential as an app release, so that repository has to be within its reach: for shape A, add `formai-binaries` to the repositories the GitHub App is installed on (Organisation settings, GitHub Apps, the App, Configure, Only select repositories); for shape B, add it to the token's repositories. Nothing else changes: binaries.yml asks the App for Contents, read and write, and nothing more. The ruleset `release tags` is not involved, because those tags do not start with `v`.
 
 The workflow's `release credential` job checks this before anything is built: it mints the token, checks that the tag is free, and creates and deletes a draft release named `probe-<run>-<attempt>` in formai-binaries. If the App is not installed there, that job fails in seconds and no runner builds. The signing values are the ones in the `signing` environment and the Azure variables; nothing is asked of FormCAD's repository or of formai-binaries.
+
+### The adaptor workflow and formadaptor's targets
+
+`adaptor.yml` runs at minute 48 of every hour, 15 minutes after formadaptor publishes the family spec, and on demand for one target. For each enabled target it checks out the target, runs the target's generator against the spec and keeps the result as a plan. For each target whose plan has a change, it pushes a `bot/formadaptor-*` branch to that target and opens a pull request there.
+
+For this the release App needs one more repository permission, Pull requests: read and write; the owner accepts the new permission on the organisation's installation (Organisation settings, GitHub Apps, the App, review the request). The App must also be installed on `formMCP`, `formskills`, `form.ext` and `formai-templates` (Configure, Only select repositories). A target it cannot reach is skipped with one line in the run's summary; the others go on. There is no token fallback: the workflow uses the App only.
+
+The `plan` job runs the target's code and holds no secret: it is outside the `release` environment and reads with the run's own read-only token. The `propose` job is in the `release` environment and runs no target code: it checks out formadaptor's own scripts and the target, then pushes the planned files and opens the pull request. If the `release` environment has a required reviewer, each proposal waits for approval; only targets with a change start a `propose` job, so a quiet hour starts none.
 
 ### The ruleset `release tags`
 

@@ -1,5 +1,12 @@
 # Changelog
 
+## v0.24.0 · 2026-11-26
+
+- `adaptor.yml` proposes formadaptor's generated files to its targets (formMCP, formskills, form.ext, formai-templates) at minute 48 of every hour, 15 minutes after formadaptor publishes the family spec, and on demand for one target. formadaptor's scripts are checked out at main; formadaptor holds no secret.
+- Three stages: `plan` runs each target's generator with no secret and keeps a plan when there is a change; `changed` lists the targets with a plan; `propose`, the only job in the `release` environment, pushes a `bot/formadaptor-*` branch and opens the pull request, and runs no target code. A target that is missing or that the App cannot reach is skipped with one summary line.
+- The token is the release App's only, minted per target with Contents and Pull requests, read and write; the write token is not a fallback.
+- For the owner, once: accept the new Pull requests permission on the organisation's installation of the release App, and install it on the four targets (docs/ACCOUNTS.md). The workflow has not run yet; the first run is the test. No test was added.
+
 ## v0.23.0 · 2026-11-25
 
 - The launch dates of two groups changed places. FormNET, FormSlot and FormSubstrate go out on 25 November; FormPromo, FormRig and FormCraft on 28 November. The v0.22.0 entry below names 25 November for FormRig and FormCraft: that is now 28 November. No entry carries a date, so nothing in a build changes with this; an app is built when its release is started.

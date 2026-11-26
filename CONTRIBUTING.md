@@ -29,7 +29,7 @@ The code lives in:
 
 | Folder | What is there |
 | --- | --- |
-| `.github/workflows` | tick, watch, release, desktop-release, binaries, self-check and windows-signing-check |
+| `.github/workflows` | tick, watch, release, desktop-release, binaries, adaptor, self-check and windows-signing-check |
 | `apps` | one registry file per app |
 | `scripts` | the Python the workflows and the private publishing pipeline run: registry, tick, watch, ledger, readiness, gate, versions, plan, run_build, build_cache, tauri_config, stage, windows_signing, release_assets, with_portal, notes, agents, catalog, public_urls, feed, yank and github_api, plus `release_credential.sh` |
 | `tests` | the test suite |
