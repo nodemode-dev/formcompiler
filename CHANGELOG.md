@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.24.2 · 2026-11-25
+
+- `adaptor.yml`: the `plan` step's command has its space back between `plan` and `--target`. v0.24.1 lost it, and every `plan` job stopped at "invalid choice: 'plan--target'".
+
 ## v0.24.1 · 2026-11-25
 
 - `adaptor.yml` proposes with whichever release credential the `release` environment holds, as release.yml does: the GitHub App, or `FORMCOMPILER_WRITE_TOKEN`. v0.24.0 took the App only, so with the token set every target was skipped. With neither set the `propose` job now fails with one line that names the secrets.
