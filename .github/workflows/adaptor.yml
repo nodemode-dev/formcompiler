@@ -1,0 +1,189 @@
+name: adaptor
+
+on:
+  schedule:
+    - cron: "48 * * * *"
+  workflow_dispatch:
+    inputs:
+      target:
+        description: "One target name from formadaptor's targets.json; empty for every enabled target"
+        type: string
+        default: ""
+
+permissions:
+  contents: read
+
+concurrency:
+  group: adaptor
+  cancel-in-progress: false
+
+jobs:
+  targets:
+    # Only here, never in a fork, and only on main.
+    if: github.repository == 'nodemode-dev/formcompiler' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    outputs:
+      matrix: ${{ steps.list.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: nodemode-dev/formadaptor
+          ref: main
+          path: adaptor
+          persist-credentials: false
+      - name: The enabled targets
+        id: list
+        run: echo "matrix=$(python3 -I adaptor/scripts/propose.py matrix)" >> "$GITHUB_OUTPUT"
+
+  plan:
+    needs: targets
+    if: github.repository == 'nodemode-dev/formcompiler' && github.ref == 'refs/heads/main' && needs.targets.outputs.matrix != '[]'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        include: ${{ fromJSON(needs.targets.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        if: inputs.target == '' || inputs.target == matrix.name
+        with:
+          repository: nodemode-dev/formadaptor
+          ref: main
+          path: adaptor
+          persist-credentials: false
+      - name: The family spec
+        if: inputs.target == '' || inputs.target == matrix.name
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 -I adaptor/scripts/spec.py fetch --out "$RUNNER_TEMP/family.json" --previous-out "$RUNNER_TEMP/previous.json"
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        id: target
+        if: inputs.target == '' || inputs.target == matrix.name
+        continue-on-error: true
+        with:
+          repository: ${{ matrix.repository }}
+          ref: main
+          path: target
+          persist-credentials: false
+      - name: Is the target reachable
+        id: reach
+        if: inputs.target == '' || inputs.target == matrix.name
+        env:
+          CHECKOUT_OUTCOME: ${{ steps.target.outcome }}
+          TARGET: ${{ matrix.name }}
+          REPOSITORY: ${{ matrix.repository }}
+        run: |
+          if [ "$CHECKOUT_OUTCOME" = success ]; then
+            echo "ok=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "$TARGET: $REPOSITORY is not reachable (not created yet or no main), skipped" | tee -a "$GITHUB_STEP_SUMMARY"
+            echo "ok=false" >> "$GITHUB_OUTPUT"
+          fi
+      - name: The apps at their released tags, where the target's generator reads them
+        if: (inputs.target == '' || inputs.target == matrix.name) && steps.reach.outputs.ok == 'true'
+        env:
+          TARGET: ${{ matrix.name }}
+        run: python3 -I adaptor/scripts/propose.py checkouts --target "$TARGET" --checkout target --family "$RUNNER_TEMP/family.json"
+      - name: Run the target's generator and plan the difference
+        id: plan
+        if: (inputs.target == '' || inputs.target == matrix.name) && steps.reach.outputs.ok == 'true'
+        env:
+          TARGET: ${{ matrix.name }}
+        run: python3 -I adaptor/scripts/propose.py plan --target "$TARGET" --checkout target --family "$RUNNER_TEMP/family.json" --previous "$RUNNER_TEMP/previous.json" --out "$RUNNER_TEMP/plan"
+      - name: Keep the plan for the propose job
+        if: (inputs.target == '' || inputs.target == matrix.name) && steps.plan.outputs.changed == 'true'
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: plan-${{ matrix.name }}
+          path: ${{ runner.temp }}/plan
+          retention-days: 1
+
+  changed:
+    needs: plan
+    # Runs when some plan jobs failed, so one broken target does not hold back the others.
+    if: github.repository == 'nodemode-dev/formcompiler' && github.ref == 'refs/heads/main' && !cancelled()
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    outputs:
+      matrix: ${{ steps.list.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: nodemode-dev/formadaptor
+          ref: main
+          path: adaptor
+          persist-credentials: false
+      - name: The plans
+        continue-on-error: true
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          pattern: plan-*
+          path: ${{ runner.temp }}/plans
+      - name: The targets with something to propose
+        id: list
+        run: echo "matrix=$(python3 -I adaptor/scripts/propose.py changed --plans "$RUNNER_TEMP/plans")" >> "$GITHUB_OUTPUT"
+
+  propose:
+    needs: changed
+    if: github.repository == 'nodemode-dev/formcompiler' && github.ref == 'refs/heads/main' && !cancelled() && needs.changed.result == 'success' && needs.changed.outputs.matrix != '[]'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    environment: release
+    strategy:
+      fail-fast: false
+      matrix:
+        include: ${{ fromJSON(needs.changed.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: nodemode-dev/formadaptor
+          ref: main
+          path: adaptor
+          persist-credentials: false
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: plan-${{ matrix.name }}
+          path: ${{ runner.temp }}/plan
+      - name: App token for this target only
+        id: app-token
+        continue-on-error: true
+        uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
+        with:
+          client-id: ${{ secrets.FORMCOMPILER_APP_ID }}
+          private-key: ${{ secrets.FORMCOMPILER_APP_PRIVATE_KEY }}
+          owner: nodemode-dev
+          repositories: ${{ matrix.repo }}
+          permission-contents: write
+          permission-pull-requests: write
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        id: target
+        if: steps.app-token.outcome == 'success'
+        continue-on-error: true
+        with:
+          repository: ${{ matrix.repository }}
+          ref: main
+          path: target
+          token: ${{ steps.app-token.outputs.token }}
+          persist-credentials: false
+      - name: Can the release App write to the target
+        id: reach
+        env:
+          TOKEN_OUTCOME: ${{ steps.app-token.outcome }}
+          CHECKOUT_OUTCOME: ${{ steps.target.outcome }}
+          TARGET: ${{ matrix.name }}
+          REPOSITORY: ${{ matrix.repository }}
+        run: |
+          if [ "$TOKEN_OUTCOME" = success ] && [ "$CHECKOUT_OUTCOME" = success ]; then
+            echo "ok=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "$TARGET: the release App cannot write to $REPOSITORY (it is not installed there, or it lacks Pull requests: read and write), skipped" | tee -a "$GITHUB_STEP_SUMMARY"
+            echo "ok=false" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Push the planned files and open the pull request
+        if: steps.reach.outputs.ok == 'true'
+        env:
+          FORMADAPTOR_TARGET_TOKEN: ${{ steps.app-token.outputs.token }}
+          TARGET: ${{ matrix.name }}
+        run: python3 -I adaptor/scripts/propose.py apply --target "$TARGET" --checkout target --plan "$RUNNER_TEMP/plan"
