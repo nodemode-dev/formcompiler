@@ -1,7 +1,7 @@
 {
   "format": "formai-catalog",
   "format_version": 1,
-  "generated": "2026-11-26T03:19:43Z",
+  "generated": "2026-11-26T04:30:27Z",
   "origin": "https://github.com/nodemode-dev/formcompiler",
   "products": [
     {
@@ -13446,57 +13446,122 @@
       },
       "channels": {
         "stable": {
-          "version": "0.18.3",
-          "published": "2026-11-25T20:39:12Z",
-          "notes": "The first public release of FormSlot: codebase memory for coding agents. It is a command line program with no window; it runs on your own machine, in Rust and SQLite.\n\nNew\n\n- Slots: a slot is a manifest for code worth reusing, with its files, hashes and every copy found. 26 slots come with the first load.\n- Drift: for a repository, which copies of a slot are clean, local, behind or diverged.\n- Recall: ranked memory records with a token estimate, for example formslot recall \"seam carving\".\n- Packs: formslot pack joins the slots, memory and code excerpts a task needs under the token budget you give.\n- Five languages are parsed: TypeScript, Python, Rust, CSS and HTML, with a call and use graph per repository.\n- Agents: an MCP server with 13 tools over stdio and HTTP, on the same store as the command line. Eleven tools only read; slot_reindex and slot_remember write FormSlot's own store and nothing else.\n- Claude Code: formslot install adds the MCP server, the hooks, the lookup and curation skills and the scout agent.\n- Codex, Cursor and Antigravity: formslot connect adds the MCP server to each program's own settings file.\n\nImproved\n\n- When another program already uses the service port, formslot start says so and tells you how to choose another with FORMSLOT_PORT. formslot doctor shows the same advice.",
+          "version": "0.18.4",
+          "published": "2026-11-26T04:18:23Z",
+          "notes": "Added\n\n- FormSlot can be installed from FormPortal on Linux. The Linux release gains a .zip of the same folder the .tar.gz holds; FormPortal reads a Linux .zip and not a .tar.gz, so until now it said \"Not built for this computer yet\". After Install, Open starts FormSlot's own guided installer in a terminal. The .tar.gz is still there for a download by hand. The program itself is the same as 0.18.3, and so are the macOS and Windows files.",
           "origin": "store",
           "artifacts": [
+            {
+              "platform": "linux",
+              "arch": "x86_64",
+              "kind": "zip",
+              "file": "formslot-0.18.4-linux-x64.zip",
+              "url": "https://dl.formai.studio/formslot/0.18.4/formslot-0.18.4-linux-x64.zip",
+              "bytes": 7872206,
+              "sha256": "cb8bbaa4cbf814c25ab3c98d56886ba4fe849d71d3ba2804d5305c69c58e679a",
+              "minimum_os": ""
+            },
             {
               "platform": "macos",
               "arch": "arm64",
               "kind": "dmg",
-              "file": "formslot-0.18.3-macos-arm64.dmg",
-              "url": "https://dl.formai.studio/formslot/0.18.3/formslot-0.18.3-macos-arm64.dmg",
-              "bytes": 5549047,
-              "sha256": "b066d98d3fd451652f8edece63b00f76ccc8fcb14c106c9c3c0592405f9ad39c",
+              "file": "formslot-0.18.4-macos-arm64.dmg",
+              "url": "https://dl.formai.studio/formslot/0.18.4/formslot-0.18.4-macos-arm64.dmg",
+              "bytes": 5548791,
+              "sha256": "d2ff74bb95ae04a42adfe2357ee5a654ba2e7051600ef5ff62583497b83d6873",
               "minimum_os": ""
             },
             {
               "platform": "macos",
               "arch": "x86_64",
               "kind": "dmg",
-              "file": "formslot-0.18.3-macos-x64.dmg",
-              "url": "https://dl.formai.studio/formslot/0.18.3/formslot-0.18.3-macos-x64.dmg",
-              "bytes": 6136313,
-              "sha256": "0cf7096d09b553637d715249f1b363923129a50e2b0a6fc6a3be98136e73ce14",
+              "file": "formslot-0.18.4-macos-x64.dmg",
+              "url": "https://dl.formai.studio/formslot/0.18.4/formslot-0.18.4-macos-x64.dmg",
+              "bytes": 6135729,
+              "sha256": "7313300270ddcdd137c70a433965f80a711d7ee721030049ef4e4cb05f6a386e",
               "minimum_os": ""
             },
             {
               "platform": "windows",
               "arch": "x86_64",
               "kind": "zip",
-              "file": "formslot-0.18.3-windows-x64.zip",
-              "url": "https://dl.formai.studio/formslot/0.18.3/formslot-0.18.3-windows-x64.zip",
-              "bytes": 5118736,
-              "sha256": "a7c019fe22692215fe387812207f9ffa7cea618393e2e76216883a062138f2ee",
+              "file": "formslot-0.18.4-windows-x64.zip",
+              "url": "https://dl.formai.studio/formslot/0.18.4/formslot-0.18.4-windows-x64.zip",
+              "bytes": 5119111,
+              "sha256": "806f3ac92e21bb0f091a47e4abb01a67f025f140750dc3c1aedcd591f2c4b9f4",
               "minimum_os": ""
             }
           ],
-          "commit": "4efdd31a78524a6e94c6eb850df8ac47afee4924",
+          "commit": "7cc98fc9b9c19b6fb7f26b650502e009829c6d21",
           "agents": {
             "manifest": {
               "file": "form-app.json",
-              "url": "https://dl.formai.studio/formslot/0.18.3/form-app.json",
+              "url": "https://dl.formai.studio/formslot/0.18.4/form-app.json",
               "bytes": 2062,
-              "sha256": "18bedfbb89c862c9e9dc7a4ea8d4be79d72c0e3345cc9ff97207ea4783dc77bb"
+              "sha256": "23fd868c80d86a987d15734d08402e582da302cff8412248ff8267f9d7af430d"
             },
             "skills": {
-              "file": "formslot-skills-v0.18.3.zip",
-              "url": "https://dl.formai.studio/formslot/0.18.3/formslot-skills-v0.18.3.zip",
+              "file": "formslot-skills-v0.18.4.zip",
+              "url": "https://dl.formai.studio/formslot/0.18.4/formslot-skills-v0.18.4.zip",
               "bytes": 5538,
               "sha256": "b70f91ad231c75e6e02ce10123784d53d68b0498b12e5ae07d251e3ee671d879"
             }
-          }
+          },
+          "history": [
+            {
+              "version": "0.18.3",
+              "published": "2026-11-25T20:39:12Z",
+              "notes": "The first public release of FormSlot: codebase memory for coding agents. It is a command line program with no window; it runs on your own machine, in Rust and SQLite.\n\nNew\n\n- Slots: a slot is a manifest for code worth reusing, with its files, hashes and every copy found. 26 slots come with the first load.\n- Drift: for a repository, which copies of a slot are clean, local, behind or diverged.\n- Recall: ranked memory records with a token estimate, for example formslot recall \"seam carving\".\n- Packs: formslot pack joins the slots, memory and code excerpts a task needs under the token budget you give.\n- Five languages are parsed: TypeScript, Python, Rust, CSS and HTML, with a call and use graph per repository.\n- Agents: an MCP server with 13 tools over stdio and HTTP, on the same store as the command line. Eleven tools only read; slot_reindex and slot_remember write FormSlot's own store and nothing else.\n- Claude Code: formslot install adds the MCP server, the hooks, the lookup and curation skills and the scout agent.\n- Codex, Cursor and Antigravity: formslot connect adds the MCP server to each program's own settings file.\n\nImproved\n\n- When another program already uses the service port, formslot start says so and tells you how to choose another with FORMSLOT_PORT. formslot doctor shows the same advice.",
+              "origin": "store",
+              "artifacts": [
+                {
+                  "platform": "macos",
+                  "arch": "arm64",
+                  "kind": "dmg",
+                  "file": "formslot-0.18.3-macos-arm64.dmg",
+                  "url": "https://dl.formai.studio/formslot/0.18.3/formslot-0.18.3-macos-arm64.dmg",
+                  "bytes": 5549047,
+                  "sha256": "b066d98d3fd451652f8edece63b00f76ccc8fcb14c106c9c3c0592405f9ad39c",
+                  "minimum_os": ""
+                },
+                {
+                  "platform": "macos",
+                  "arch": "x86_64",
+                  "kind": "dmg",
+                  "file": "formslot-0.18.3-macos-x64.dmg",
+                  "url": "https://dl.formai.studio/formslot/0.18.3/formslot-0.18.3-macos-x64.dmg",
+                  "bytes": 6136313,
+                  "sha256": "0cf7096d09b553637d715249f1b363923129a50e2b0a6fc6a3be98136e73ce14",
+                  "minimum_os": ""
+                },
+                {
+                  "platform": "windows",
+                  "arch": "x86_64",
+                  "kind": "zip",
+                  "file": "formslot-0.18.3-windows-x64.zip",
+                  "url": "https://dl.formai.studio/formslot/0.18.3/formslot-0.18.3-windows-x64.zip",
+                  "bytes": 5118736,
+                  "sha256": "a7c019fe22692215fe387812207f9ffa7cea618393e2e76216883a062138f2ee",
+                  "minimum_os": ""
+                }
+              ],
+              "commit": "4efdd31a78524a6e94c6eb850df8ac47afee4924",
+              "agents": {
+                "manifest": {
+                  "file": "form-app.json",
+                  "url": "https://dl.formai.studio/formslot/0.18.3/form-app.json",
+                  "bytes": 2062,
+                  "sha256": "18bedfbb89c862c9e9dc7a4ea8d4be79d72c0e3345cc9ff97207ea4783dc77bb"
+                },
+                "skills": {
+                  "file": "formslot-skills-v0.18.3.zip",
+                  "url": "https://dl.formai.studio/formslot/0.18.3/formslot-skills-v0.18.3.zip",
+                  "bytes": 5538,
+                  "sha256": "b70f91ad231c75e6e02ce10123784d53d68b0498b12e5ae07d251e3ee671d879"
+                }
+              }
+            }
+          ]
         }
       }
     },
