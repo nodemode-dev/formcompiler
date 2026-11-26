@@ -105,6 +105,7 @@
 - **Channels:** `X.Y.Z` is stable; anything with `-beta.N` or `-rc.N` is beta and never touches `<app>-updates`.
 - **Publishing:** the download store, update feeds, catalogue signature and yanks run in a private companion pipeline.
 - **Worker programs:** `binaries.yml`, started by hand, builds FormCAD's kernel and mesher workers on four runners, signs and notarizes them with the same values as the apps, and can open a draft release in `nodemode-dev/formai-binaries`, where the app downloads them from.
+- **Family spec proposals:** `adaptor.yml` runs at minute 48 of every hour, runs formadaptor's generators for its targets without a secret, and opens a pull request with the release App in each target that has a change.
 - **Tested:** 512 tests in 23 files (registry, versions, watch, triggers, tauri config, signing, notary key, app repository releases, GitHub binaries, workflow guards).
 
 ## Where releases come from
