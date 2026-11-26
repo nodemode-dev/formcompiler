@@ -90,8 +90,9 @@ jobs:
         id: plan
         if: (inputs.target == '' || inputs.target == matrix.name) && steps.reach.outputs.ok == 'true'
         env:
+          GH_TOKEN: ${{ github.token }}
           TARGET: ${{ matrix.name }}
-        run: python3 -I adaptor/scripts/propose.py plan --target "$TARGET" --checkout target --family "$RUNNER_TEMP/family.json" --previous "$RUNNER_TEMP/previous.json" --out "$RUNNER_TEMP/plan"
+        run: python3 -I adaptor/scripts/propose.py plan--target "$TARGET" --checkout target --family "$RUNNER_TEMP/family.json" --previous "$RUNNER_TEMP/previous.json" --out "$RUNNER_TEMP/plan"
       - name: Keep the plan for the propose job
         if: (inputs.target == '' || inputs.target == matrix.name) && steps.plan.outputs.changed == 'true'
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
@@ -146,8 +147,25 @@ jobs:
         with:
           name: plan-${{ matrix.name }}
           path: ${{ runner.temp }}/plan
+      - name: Release credential
+        id: credential
+        env:
+          HAS_APP: ${{ secrets.FORMCOMPILER_APP_ID != '' && secrets.FORMCOMPILER_APP_PRIVATE_KEY != '' }}
+          HAS_TOKEN: ${{ secrets.FORMCOMPILER_WRITE_TOKEN != '' }}
+        run: |
+          if [ "$HAS_APP" = true ]; then
+            echo "shape=app" >> "$GITHUB_OUTPUT"
+            echo "release credential: the GitHub App, a token for this target only"
+          elif [ "$HAS_TOKEN" = true ]; then
+            echo "shape=token" >> "$GITHUB_OUTPUT"
+            echo "release credential: FORMCOMPILER_WRITE_TOKEN"
+          else
+            echo "::error::the release environment holds no credential: set FORMCOMPILER_APP_ID and FORMCOMPILER_APP_PRIVATE_KEY (a GitHub App) or FORMCOMPILER_WRITE_TOKEN; see docs/ACCOUNTS.md"
+            exit 1
+          fi
       - name: App token for this target only
         id: app-token
+        if: steps.credential.outputs.shape == 'app'
         continue-on-error: true
         uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
         with:
@@ -159,31 +177,34 @@ jobs:
           permission-pull-requests: write
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         id: target
-        if: steps.app-token.outcome == 'success'
+        if: steps.credential.outputs.shape == 'token' || steps.app-token.outcome == 'success'
         continue-on-error: true
         with:
           repository: ${{ matrix.repository }}
           ref: main
           path: target
-          token: ${{ steps.app-token.outputs.token }}
+          token: ${{ steps.app-token.outputs.token || secrets.FORMCOMPILER_WRITE_TOKEN }}
           persist-credentials: false
-      - name: Can the release App write to the target
+      - name: Can the release credential reach the target
         id: reach
         env:
-          TOKEN_OUTCOME: ${{ steps.app-token.outcome }}
+          SHAPE: ${{ steps.credential.outputs.shape }}
           CHECKOUT_OUTCOME: ${{ steps.target.outcome }}
           TARGET: ${{ matrix.name }}
           REPOSITORY: ${{ matrix.repository }}
         run: |
-          if [ "$TOKEN_OUTCOME" = success ] && [ "$CHECKOUT_OUTCOME" = success ]; then
+          if [ "$CHECKOUT_OUTCOME" = success ]; then
             echo "ok=true" >> "$GITHUB_OUTPUT"
-          else
+          elif [ "$SHAPE" = app ]; then
             echo "$TARGET: the release App cannot write to $REPOSITORY (it is not installed there, or it lacks Pull requests: read and write), skipped" | tee -a "$GITHUB_STEP_SUMMARY"
+            echo "ok=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "$TARGET: FORMCOMPILER_WRITE_TOKEN cannot read $REPOSITORY (the token has expired, or the repository is not among its repositories), skipped" | tee -a "$GITHUB_STEP_SUMMARY"
             echo "ok=false" >> "$GITHUB_OUTPUT"
           fi
       - name: Push the planned files and open the pull request
         if: steps.reach.outputs.ok == 'true'
         env:
-          FORMADAPTOR_TARGET_TOKEN: ${{ steps.app-token.outputs.token }}
+          FORMADAPTOR_TARGET_TOKEN: ${{ steps.app-token.outputs.token || secrets.FORMCOMPILER_WRITE_TOKEN }}
           TARGET: ${{ matrix.name }}
         run: python3 -I adaptor/scripts/propose.py apply --target "$TARGET" --checkout target --plan "$RUNNER_TEMP/plan"
