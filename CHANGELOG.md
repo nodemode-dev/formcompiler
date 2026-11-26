@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.24.1 · 2026-11-25
+
+- `adaptor.yml` proposes with whichever release credential the `release` environment holds, as release.yml does: the GitHub App, or `FORMCOMPILER_WRITE_TOKEN`. v0.24.0 took the App only, so with the token set every target was skipped. With neither set the `propose` job now fails with one line that names the secrets.
+- For the token (docs/ACCOUNTS.md): add `formMCP`, `formskills`, `form.ext` and `formai-templates` to its repositories and give it Pull requests, read and write.
+- The `plan` step passes the run's read-only token to formadaptor 0.3.1, which starts no `propose` job for a proposal that is already open.
+
 ## v0.24.0 · 2026-11-26
 
 - `adaptor.yml` proposes formadaptor's generated files to its targets (formMCP, formskills, form.ext, formai-templates) at minute 48 of every hour, 15 minutes after formadaptor publishes the family spec, and on demand for one target. formadaptor's scripts are checked out at main; formadaptor holds no secret.
