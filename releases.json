@@ -1,7 +1,7 @@
 {
   "format": "formai-catalog",
   "format_version": 1,
-  "generated": "2026-11-27T04:58:39Z",
+  "generated": "2026-11-27T06:04:10Z",
   "origin": "https://github.com/nodemode-dev/formcompiler",
   "products": [
     {
@@ -3531,69 +3531,69 @@
       },
       "channels": {
         "stable": {
-          "version": "1.32.1",
-          "published": "2026-11-27T04:47:50Z",
-          "notes": "New\n\n- On Linux, FormDAM now comes as an AppImage as well as a deb. The AppImage is one file that runs without installing, and it is what FormPortal picks on Linux unless you chose another kind in Preferences, Updates.\n\nGood to know: the system's unlock prompt for private items is not offered in the AppImage. It needs a system file that only the deb can install.\n\nNothing else changed from 1.32.0.",
+          "version": "1.32.2",
+          "published": "2026-11-27T05:51:55Z",
+          "notes": "Changed\n\n- This release replaces 1.32.1, which was taken back shortly after it went out. If you have 1.32.1, updating to 1.32.2 changes nothing you can see.\n- Nothing in the app changed from 1.32.0. The changes are in how the Linux packages are built.",
           "origin": "store",
           "artifacts": [
             {
               "platform": "linux",
               "arch": "x86_64",
               "kind": "deb",
-              "file": "formDAM-1.32.1-linux-x64.deb",
-              "url": "https://dl.formai.studio/formDAM/1.32.1/formDAM-1.32.1-linux-x64.deb",
-              "bytes": 749476450,
-              "sha256": "aa221e4e31a159f16b4c13a17577e1483fd40e8353cdf497663ab18c44dd962a",
+              "file": "formDAM-1.32.2-linux-x64.deb",
+              "url": "https://dl.formai.studio/formDAM/1.32.2/formDAM-1.32.2-linux-x64.deb",
+              "bytes": 749470694,
+              "sha256": "4734e6d237c84a356b63a8ced5c95ac249946d9d1fbb1f7612d67b6a4755a541",
               "minimum_os": ""
             },
             {
               "platform": "macos",
               "arch": "arm64",
               "kind": "dmg",
-              "file": "formDAM-1.32.1-macos-arm64.dmg",
-              "url": "https://dl.formai.studio/formDAM/1.32.1/formDAM-1.32.1-macos-arm64.dmg",
-              "bytes": 658647105,
-              "sha256": "28407b82135a26071d7f1b092b3b845204504bdf4bef6e45d2e7add598c712cc",
+              "file": "formDAM-1.32.2-macos-arm64.dmg",
+              "url": "https://dl.formai.studio/formDAM/1.32.2/formDAM-1.32.2-macos-arm64.dmg",
+              "bytes": 658712619,
+              "sha256": "38b163e3a48f58586362ede0df0096d0b1504971ce07c3bdc2bd96941e7f7751",
               "minimum_os": "macOS 12"
             },
             {
               "platform": "macos",
               "arch": "x86_64",
               "kind": "dmg",
-              "file": "formDAM-1.32.1-macos-x64.dmg",
-              "url": "https://dl.formai.studio/formDAM/1.32.1/formDAM-1.32.1-macos-x64.dmg",
-              "bytes": 690487802,
-              "sha256": "b751462850c983942f424e34e3ae6b3aec01ee16fa37e79790b42ec801e159ff",
+              "file": "formDAM-1.32.2-macos-x64.dmg",
+              "url": "https://dl.formai.studio/formDAM/1.32.2/formDAM-1.32.2-macos-x64.dmg",
+              "bytes": 690546815,
+              "sha256": "01c0b074ee283d809b0fe3b6eead43fdb65365a7c25cc6eacc3b07a8096f889f",
               "minimum_os": "macOS 12"
             },
             {
               "platform": "windows",
               "arch": "x86_64",
               "kind": "nsis",
-              "file": "formDAM-1.32.1-windows-x64-setup.exe",
-              "url": "https://dl.formai.studio/formDAM/1.32.1/formDAM-1.32.1-windows-x64-setup.exe",
-              "bytes": 611880312,
-              "sha256": "b7fba12c000d18b3f9e22337ad386f1a543039b7c922f879a6d95a64a12b12cb",
+              "file": "formDAM-1.32.2-windows-x64-setup.exe",
+              "url": "https://dl.formai.studio/formDAM/1.32.2/formDAM-1.32.2-windows-x64-setup.exe",
+              "bytes": 611705120,
+              "sha256": "ec1e9266f0307ac397314609b3d023795f9f0fc574871f02d59679ffe7f48c31",
               "minimum_os": ""
             },
             {
               "platform": "windows",
               "arch": "x86_64",
               "kind": "msi",
-              "file": "formDAM-1.32.1-windows-x64.msi",
-              "url": "https://dl.formai.studio/formDAM/1.32.1/formDAM-1.32.1-windows-x64.msi",
-              "bytes": 656465920,
-              "sha256": "31eb6ca825935d5e2aa229976641940d029ee8a7cbc4e97ad1a6852a01adbff3",
+              "file": "formDAM-1.32.2-windows-x64.msi",
+              "url": "https://dl.formai.studio/formDAM/1.32.2/formDAM-1.32.2-windows-x64.msi",
+              "bytes": 656474112,
+              "sha256": "3ef98400d0e7810b7792e69d3d32ca601e9b69e4709ed4fc8c7c3af83879e8f8",
               "minimum_os": ""
             }
           ],
-          "commit": "6601937270fac06f7da7aac631700842a9cd7b1e",
+          "commit": "6750a4411ac63dde8341310ca87dd6fdc3bc379e",
           "agents": {
             "manifest": {
               "file": "form-app.json",
-              "url": "https://dl.formai.studio/formDAM/1.32.1/form-app.json",
+              "url": "https://dl.formai.studio/formDAM/1.32.2/form-app.json",
               "bytes": 312,
-              "sha256": "9a13444b92538ced6fa5600628c6c9768de43a4b281da96af79e19b5d2358c58"
+              "sha256": "7bf8aee22405cebd980f6c76250c8ba1854aa17679ed8f72271eab3411a3c4b1"
             }
           },
           "history": [
