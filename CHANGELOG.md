@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.25.1 · 2026-11-26
+
+- formDAM's Linux AppImage is a release file (`apps/formDAM.json`). formDAM 1.32.1 builds it after the deb. If that step cannot make it, formDAM's build says `AppImage: NOT BUILT` and the release carries the deb alone, as before.
+
 ## v0.25.0 · 2026-11-25
 
 - FormSlot's Linux `.zip` is a release file (`apps/formslot.json`). formslot 0.18.4 builds it beside the `.tar.gz`; the catalogue and FormPortal read a Linux `.zip` and leave a `.tar.gz` out, so FormPortal can install FormSlot on Linux from that release on.
