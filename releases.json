@@ -1,7 +1,7 @@
 {
   "format": "formai-catalog",
   "format_version": 1,
-  "generated": "2026-11-27T06:04:10Z",
+  "generated": "2026-11-27T14:14:12Z",
   "origin": "https://github.com/nodemode-dev/formcompiler",
   "products": [
     {
@@ -3531,72 +3531,149 @@
       },
       "channels": {
         "stable": {
-          "version": "1.32.2",
-          "published": "2026-11-27T05:51:55Z",
-          "notes": "Changed\n\n- This release replaces 1.32.1, which was taken back shortly after it went out. If you have 1.32.1, updating to 1.32.2 changes nothing you can see.\n- Nothing in the app changed from 1.32.0. The changes are in how the Linux packages are built.",
+          "version": "1.32.4",
+          "published": "2026-11-27T13:51:21Z",
+          "notes": "https://github.com/nodemode-dev/formDAM/releases/tag/v1.32.4",
           "origin": "store",
           "artifacts": [
             {
               "platform": "linux",
               "arch": "x86_64",
+              "kind": "appimage",
+              "file": "formDAM-1.32.4-linux-x64.AppImage",
+              "url": "https://dl.formai.studio/formDAM/1.32.4/formDAM-1.32.4-linux-x64.AppImage",
+              "bytes": 757774840,
+              "sha256": "e7aadd1b38734cbd6acca01d91947f5fd8c4bca324f8b6e8cada663cac87d2ec",
+              "minimum_os": ""
+            },
+            {
+              "platform": "linux",
+              "arch": "x86_64",
               "kind": "deb",
-              "file": "formDAM-1.32.2-linux-x64.deb",
-              "url": "https://dl.formai.studio/formDAM/1.32.2/formDAM-1.32.2-linux-x64.deb",
-              "bytes": 749470694,
-              "sha256": "4734e6d237c84a356b63a8ced5c95ac249946d9d1fbb1f7612d67b6a4755a541",
+              "file": "formDAM-1.32.4-linux-x64.deb",
+              "url": "https://dl.formai.studio/formDAM/1.32.4/formDAM-1.32.4-linux-x64.deb",
+              "bytes": 749476220,
+              "sha256": "5a6555e11562f2ac984cd1cb096c8e019f021714a0b5dcc294d5562110779e54",
               "minimum_os": ""
             },
             {
               "platform": "macos",
               "arch": "arm64",
               "kind": "dmg",
-              "file": "formDAM-1.32.2-macos-arm64.dmg",
-              "url": "https://dl.formai.studio/formDAM/1.32.2/formDAM-1.32.2-macos-arm64.dmg",
-              "bytes": 658712619,
-              "sha256": "38b163e3a48f58586362ede0df0096d0b1504971ce07c3bdc2bd96941e7f7751",
+              "file": "formDAM-1.32.4-macos-arm64.dmg",
+              "url": "https://dl.formai.studio/formDAM/1.32.4/formDAM-1.32.4-macos-arm64.dmg",
+              "bytes": 658697501,
+              "sha256": "267babd2f1e8ef24eba6f90191a36b351318d439070d81817af62cea41066e1f",
               "minimum_os": "macOS 12"
             },
             {
               "platform": "macos",
               "arch": "x86_64",
               "kind": "dmg",
-              "file": "formDAM-1.32.2-macos-x64.dmg",
-              "url": "https://dl.formai.studio/formDAM/1.32.2/formDAM-1.32.2-macos-x64.dmg",
-              "bytes": 690546815,
-              "sha256": "01c0b074ee283d809b0fe3b6eead43fdb65365a7c25cc6eacc3b07a8096f889f",
+              "file": "formDAM-1.32.4-macos-x64.dmg",
+              "url": "https://dl.formai.studio/formDAM/1.32.4/formDAM-1.32.4-macos-x64.dmg",
+              "bytes": 690586815,
+              "sha256": "24f480c210460b6683d826ea863f7bce498bbcd42f01358334d17ec5555b9702",
               "minimum_os": "macOS 12"
             },
             {
               "platform": "windows",
               "arch": "x86_64",
               "kind": "nsis",
-              "file": "formDAM-1.32.2-windows-x64-setup.exe",
-              "url": "https://dl.formai.studio/formDAM/1.32.2/formDAM-1.32.2-windows-x64-setup.exe",
-              "bytes": 611705120,
-              "sha256": "ec1e9266f0307ac397314609b3d023795f9f0fc574871f02d59679ffe7f48c31",
+              "file": "formDAM-1.32.4-windows-x64-setup.exe",
+              "url": "https://dl.formai.studio/formDAM/1.32.4/formDAM-1.32.4-windows-x64-setup.exe",
+              "bytes": 611790752,
+              "sha256": "155dbe81869e9c465fcf0e78e1eb39474ae5938cbe6f5a8067e75e49f610e9ad",
               "minimum_os": ""
             },
             {
               "platform": "windows",
               "arch": "x86_64",
               "kind": "msi",
-              "file": "formDAM-1.32.2-windows-x64.msi",
-              "url": "https://dl.formai.studio/formDAM/1.32.2/formDAM-1.32.2-windows-x64.msi",
-              "bytes": 656474112,
-              "sha256": "3ef98400d0e7810b7792e69d3d32ca601e9b69e4709ed4fc8c7c3af83879e8f8",
+              "file": "formDAM-1.32.4-windows-x64.msi",
+              "url": "https://dl.formai.studio/formDAM/1.32.4/formDAM-1.32.4-windows-x64.msi",
+              "bytes": 656465920,
+              "sha256": "1ee5c14d3fca0d9adba1cf6b8797576fc9448da44fc5fe47b1f949611e8dd5da",
               "minimum_os": ""
             }
           ],
-          "commit": "6750a4411ac63dde8341310ca87dd6fdc3bc379e",
+          "commit": "9dc394aaf086e2491ac5e9ef6393f1b2c8fd1f54",
           "agents": {
             "manifest": {
               "file": "form-app.json",
-              "url": "https://dl.formai.studio/formDAM/1.32.2/form-app.json",
+              "url": "https://dl.formai.studio/formDAM/1.32.4/form-app.json",
               "bytes": 312,
-              "sha256": "7bf8aee22405cebd980f6c76250c8ba1854aa17679ed8f72271eab3411a3c4b1"
+              "sha256": "994e979efc49f2bf5cce0f379b739bfccf2fdf82698abd685ee9e86445033692"
             }
           },
           "history": [
+            {
+              "version": "1.32.2",
+              "published": "2026-11-27T05:51:55Z",
+              "notes": "Changed\n\n- This release replaces 1.32.1, which was taken back shortly after it went out. If you have 1.32.1, updating to 1.32.2 changes nothing you can see.\n- Nothing in the app changed from 1.32.0. The changes are in how the Linux packages are built.",
+              "origin": "store",
+              "artifacts": [
+                {
+                  "platform": "linux",
+                  "arch": "x86_64",
+                  "kind": "deb",
+                  "file": "formDAM-1.32.2-linux-x64.deb",
+                  "url": "https://dl.formai.studio/formDAM/1.32.2/formDAM-1.32.2-linux-x64.deb",
+                  "bytes": 749470694,
+                  "sha256": "4734e6d237c84a356b63a8ced5c95ac249946d9d1fbb1f7612d67b6a4755a541",
+                  "minimum_os": ""
+                },
+                {
+                  "platform": "macos",
+                  "arch": "arm64",
+                  "kind": "dmg",
+                  "file": "formDAM-1.32.2-macos-arm64.dmg",
+                  "url": "https://dl.formai.studio/formDAM/1.32.2/formDAM-1.32.2-macos-arm64.dmg",
+                  "bytes": 658712619,
+                  "sha256": "38b163e3a48f58586362ede0df0096d0b1504971ce07c3bdc2bd96941e7f7751",
+                  "minimum_os": "macOS 12"
+                },
+                {
+                  "platform": "macos",
+                  "arch": "x86_64",
+                  "kind": "dmg",
+                  "file": "formDAM-1.32.2-macos-x64.dmg",
+                  "url": "https://dl.formai.studio/formDAM/1.32.2/formDAM-1.32.2-macos-x64.dmg",
+                  "bytes": 690546815,
+                  "sha256": "01c0b074ee283d809b0fe3b6eead43fdb65365a7c25cc6eacc3b07a8096f889f",
+                  "minimum_os": "macOS 12"
+                },
+                {
+                  "platform": "windows",
+                  "arch": "x86_64",
+                  "kind": "nsis",
+                  "file": "formDAM-1.32.2-windows-x64-setup.exe",
+                  "url": "https://dl.formai.studio/formDAM/1.32.2/formDAM-1.32.2-windows-x64-setup.exe",
+                  "bytes": 611705120,
+                  "sha256": "ec1e9266f0307ac397314609b3d023795f9f0fc574871f02d59679ffe7f48c31",
+                  "minimum_os": ""
+                },
+                {
+                  "platform": "windows",
+                  "arch": "x86_64",
+                  "kind": "msi",
+                  "file": "formDAM-1.32.2-windows-x64.msi",
+                  "url": "https://dl.formai.studio/formDAM/1.32.2/formDAM-1.32.2-windows-x64.msi",
+                  "bytes": 656474112,
+                  "sha256": "3ef98400d0e7810b7792e69d3d32ca601e9b69e4709ed4fc8c7c3af83879e8f8",
+                  "minimum_os": ""
+                }
+              ],
+              "commit": "6750a4411ac63dde8341310ca87dd6fdc3bc379e",
+              "agents": {
+                "manifest": {
+                  "file": "form-app.json",
+                  "url": "https://dl.formai.studio/formDAM/1.32.2/form-app.json",
+                  "bytes": 312,
+                  "sha256": "7bf8aee22405cebd980f6c76250c8ba1854aa17679ed8f72271eab3411a3c4b1"
+                }
+              }
+            },
             {
               "version": "1.32.0",
               "published": "2026-11-21T03:52:09Z",
@@ -3862,63 +3939,6 @@
                   "url": "https://dl.formai.studio/formDAM/1.29.0/form-app.json",
                   "bytes": 312,
                   "sha256": "54494a5dc876d3f8ace7612c4441b4dd01e087e18d196d6d89dc80d31f23f18c"
-                }
-              }
-            },
-            {
-              "version": "1.28.9",
-              "published": "2026-11-11T13:47:15Z",
-              "notes": "The first version published through the family build. The changes that led up to it:\n\nFixed\n\n- The WAL switch is tried again when another connection is switching the same new library.\n- The vault sweep ends with the app and stops before a library switch.\n- Clearing a label in Browse Disk clears it on the library item too.\n- The launchers open the dev server at localhost:5173.\n- A zip with a non-object marker is reported as not a package.\n- build_app.bat --install works from a folder with a parenthesis in its path.\n- An item whose file was briefly missing is pushed once it is back.\n- Renaming a file never takes or overwrites another file's sidecar.\n- Text like 2024-13 is searched instead of failing.\n- Device unlock is only offered to the formDAM window.\n- Export Trim refuses protected videos and leaves no temporary folder.\n- Location, date and pasted-edit changes need the vault for hidden items.\n- The info panel's person, album, subject and Look Up links close the viewer.\n- A private album asks for its passkey again after it is left.\n- A thumbnail is never served half written.\n- Quick arrow presses show the right slide, not a black frame.\n- Dropping large files no longer freezes the window.\n- The keyword shortcut hint says the key adds the keyword.\n- A 2 GiB video no longer stops a Shared Library device for good.\n- A failed batch in a drop import is reported and the rest still import.\n- Returning to People after leaving in Select mode opens it normally.\n- Reset theme also resets the Fade sliders and the Background effect.\n- Sealing and deleting an item remove its plaintext caches and edit files.\n- A Fade blur of 0 and the saved quick filters come back after a relaunch.",
-              "origin": "store",
-              "artifacts": [
-                {
-                  "platform": "linux",
-                  "arch": "x86_64",
-                  "kind": "deb",
-                  "file": "formDAM-1.28.9-linux-x64.deb",
-                  "url": "https://dl.formai.studio/formDAM/1.28.9/formDAM-1.28.9-linux-x64.deb",
-                  "bytes": 746818342,
-                  "sha256": "82511c06094347221cc714e510747488960d2b0b057bd58614979d0a431aad5e",
-                  "minimum_os": ""
-                },
-                {
-                  "platform": "macos",
-                  "arch": "arm64",
-                  "kind": "dmg",
-                  "file": "formDAM-1.28.9-macos-arm64.dmg",
-                  "url": "https://dl.formai.studio/formDAM/1.28.9/formDAM-1.28.9-macos-arm64.dmg",
-                  "bytes": 660178770,
-                  "sha256": "e2ca95a3705f9e40f4500ffa48e983126560f1e6e11aa78b1c3610c1f0f40319",
-                  "minimum_os": "macOS 12"
-                },
-                {
-                  "platform": "windows",
-                  "arch": "x86_64",
-                  "kind": "nsis",
-                  "file": "formDAM-1.28.9-windows-x64-setup.exe",
-                  "url": "https://dl.formai.studio/formDAM/1.28.9/formDAM-1.28.9-windows-x64-setup.exe",
-                  "bytes": 609617760,
-                  "sha256": "caf7b226efd8a4ec3528d6d27ec1dae75a83d5a5c9f5e244298f4340636c8130",
-                  "minimum_os": ""
-                },
-                {
-                  "platform": "windows",
-                  "arch": "x86_64",
-                  "kind": "msi",
-                  "file": "formDAM-1.28.9-windows-x64.msi",
-                  "url": "https://dl.formai.studio/formDAM/1.28.9/formDAM-1.28.9-windows-x64.msi",
-                  "bytes": 652398592,
-                  "sha256": "ef5147fab389360c2b3edc20d384446db7bceadb9579d1410e0e500b282bf8a0",
-                  "minimum_os": ""
-                }
-              ],
-              "commit": "62a6d75ec46d03165330413cd84bcd11241a9243",
-              "agents": {
-                "manifest": {
-                  "file": "form-app.json",
-                  "url": "https://dl.formai.studio/formDAM/1.28.9/form-app.json",
-                  "bytes": 312,
-                  "sha256": "5e2b0682254f8d103f3cca67858499629e97d9d1f7be5abadcaa15163c819f60"
                 }
               }
             }
@@ -18597,98 +18617,191 @@
       },
       "channels": {
         "stable": {
-          "version": "0.31.2",
-          "published": "2026-11-25T21:09:51Z",
-          "notes": "Fixed\n\n- The editor no longer falls back to an older state of your site. When a change from outside the window (the assistant, the command line, another window) arrived just after one of your own, the window could show the site as it was before that change, and stay that way until the next change. It now keeps the newest state it has received.",
+          "version": "0.33.0",
+          "published": "2026-11-27T13:51:23Z",
+          "notes": "https://github.com/nodemode-dev/formweb/releases/tag/v0.33.0",
           "origin": "store",
           "artifacts": [
             {
               "platform": "linux",
               "arch": "x86_64",
               "kind": "appimage",
-              "file": "formweb-0.31.2-linux-x64.AppImage",
-              "url": "https://dl.formai.studio/formweb/0.31.2/formweb-0.31.2-linux-x64.AppImage",
-              "bytes": 161126904,
-              "sha256": "465702bce18e183c65d800550c54ad67857c42c461693c8eac02ef1f20c4835d",
+              "file": "formweb-0.33.0-linux-x64.AppImage",
+              "url": "https://dl.formai.studio/formweb/0.33.0/formweb-0.33.0-linux-x64.AppImage",
+              "bytes": 161266168,
+              "sha256": "a9c69b7f6947232edb3c362f65633a4a61c847acedba9618857065cde13fc7f4",
               "minimum_os": ""
             },
             {
               "platform": "linux",
               "arch": "x86_64",
               "kind": "deb",
-              "file": "formweb-0.31.2-linux-x64.deb",
-              "url": "https://dl.formai.studio/formweb/0.31.2/formweb-0.31.2-linux-x64.deb",
-              "bytes": 82913358,
-              "sha256": "49bc661673a4fedfd4cf724ba46622f1fbff4069daf3280857fa6120552a3826",
+              "file": "formweb-0.33.0-linux-x64.deb",
+              "url": "https://dl.formai.studio/formweb/0.33.0/formweb-0.33.0-linux-x64.deb",
+              "bytes": 83050102,
+              "sha256": "5007402f0a73a9db708186343a6bd87847deca1ef5184ad42a5bd49a57b2af01",
               "minimum_os": ""
             },
             {
               "platform": "linux",
               "arch": "x86_64",
               "kind": "rpm",
-              "file": "formweb-0.31.2-linux-x64.rpm",
-              "url": "https://dl.formai.studio/formweb/0.31.2/formweb-0.31.2-linux-x64.rpm",
-              "bytes": 82925633,
-              "sha256": "4ec01ee5cac6e5014c3d4e83b1856c11dd30bd619906d03ee9208aebc9d567f1",
+              "file": "formweb-0.33.0-linux-x64.rpm",
+              "url": "https://dl.formai.studio/formweb/0.33.0/formweb-0.33.0-linux-x64.rpm",
+              "bytes": 83067599,
+              "sha256": "607478216f17c4064eb89e0677c1ee5e96a32c5fa8b285c19c151a9c99227b97",
               "minimum_os": ""
             },
             {
               "platform": "macos",
               "arch": "arm64",
               "kind": "dmg",
-              "file": "formweb-0.31.2-macos-arm64.dmg",
-              "url": "https://dl.formai.studio/formweb/0.31.2/formweb-0.31.2-macos-arm64.dmg",
-              "bytes": 59892433,
-              "sha256": "3bd4995555c274d8396945d0552e63322e8b4b238dc2ab47da6fbbab825b260d",
+              "file": "formweb-0.33.0-macos-arm64.dmg",
+              "url": "https://dl.formai.studio/formweb/0.33.0/formweb-0.33.0-macos-arm64.dmg",
+              "bytes": 60028756,
+              "sha256": "ce7cdf83c0847d158f646e99d9113b475d758b186c2de9d92aa786bae0b5458e",
               "minimum_os": ""
             },
             {
               "platform": "macos",
               "arch": "x86_64",
               "kind": "dmg",
-              "file": "formweb-0.31.2-macos-x64.dmg",
-              "url": "https://dl.formai.studio/formweb/0.31.2/formweb-0.31.2-macos-x64.dmg",
-              "bytes": 61602918,
-              "sha256": "36d9cafb8c9591d5a47f734f235aae09271c3e39f02d1e8182d155dd522741e8",
+              "file": "formweb-0.33.0-macos-x64.dmg",
+              "url": "https://dl.formai.studio/formweb/0.33.0/formweb-0.33.0-macos-x64.dmg",
+              "bytes": 62746593,
+              "sha256": "8b7a66ed9d3079ae7af2b7a8a741f8e3f0e8af225775b0dcb4b3310bc585e741",
               "minimum_os": ""
             },
             {
               "platform": "windows",
               "arch": "x86_64",
               "kind": "nsis",
-              "file": "formweb-0.31.2-windows-x64-setup.exe",
-              "url": "https://dl.formai.studio/formweb/0.31.2/formweb-0.31.2-windows-x64-setup.exe",
-              "bytes": 61188544,
-              "sha256": "f65861303d14d7fedc98d2aae8f9472c068935792ff92dd25f8c3d0b199eb577",
+              "file": "formweb-0.33.0-windows-x64-setup.exe",
+              "url": "https://dl.formai.studio/formweb/0.33.0/formweb-0.33.0-windows-x64-setup.exe",
+              "bytes": 61327784,
+              "sha256": "b8bb1e7f7766386b7d43fb5ca2ffdd92db4594b9f0862bda3ed2e53e0568491b",
               "minimum_os": ""
             },
             {
               "platform": "windows",
               "arch": "x86_64",
               "kind": "msi",
-              "file": "formweb-0.31.2-windows-x64.msi",
-              "url": "https://dl.formai.studio/formweb/0.31.2/formweb-0.31.2-windows-x64.msi",
-              "bytes": 62242816,
-              "sha256": "917325fea8d0331e1c0d3e761e2e1844bb236ed825229cc13502917bd2bd80ee",
+              "file": "formweb-0.33.0-windows-x64.msi",
+              "url": "https://dl.formai.studio/formweb/0.33.0/formweb-0.33.0-windows-x64.msi",
+              "bytes": 62386176,
+              "sha256": "f689b406eb42e2c19318186972c564175432b60dff6a9a2c647c3117c8955544",
               "minimum_os": ""
             }
           ],
-          "commit": "0ae234513052e3666d6e078593a1171fccefeea0",
+          "commit": "a01210bc321edbe17f9bc0965ecea39d4eb03b9c",
           "agents": {
             "manifest": {
               "file": "form-app.json",
-              "url": "https://dl.formai.studio/formweb/0.31.2/form-app.json",
+              "url": "https://dl.formai.studio/formweb/0.33.0/form-app.json",
               "bytes": 3200,
-              "sha256": "2714eb129e0380d038dafd7045676d7dc71f60471c3e690aadbcfe4189252550"
+              "sha256": "13290a45ef7142b03eadd6efc49234733a95c5aa90fe25755a518e1107893276"
             },
             "skills": {
-              "file": "formweb-skills-v0.31.2.zip",
-              "url": "https://dl.formai.studio/formweb/0.31.2/formweb-skills-v0.31.2.zip",
+              "file": "formweb-skills-v0.33.0.zip",
+              "url": "https://dl.formai.studio/formweb/0.33.0/formweb-skills-v0.33.0.zip",
               "bytes": 86252,
-              "sha256": "ca7ffbf68c276cab0e791681659fd2559347d1b856636ed6843315441883f956"
+              "sha256": "a5441cb3889a51c5f65b161813c2c2eb5f38466bb5badef3b3f7053bd743fedb"
             }
           },
           "history": [
+            {
+              "version": "0.31.2",
+              "published": "2026-11-25T21:09:51Z",
+              "notes": "Fixed\n\n- The editor no longer falls back to an older state of your site. When a change from outside the window (the assistant, the command line, another window) arrived just after one of your own, the window could show the site as it was before that change, and stay that way until the next change. It now keeps the newest state it has received.",
+              "origin": "store",
+              "artifacts": [
+                {
+                  "platform": "linux",
+                  "arch": "x86_64",
+                  "kind": "appimage",
+                  "file": "formweb-0.31.2-linux-x64.AppImage",
+                  "url": "https://dl.formai.studio/formweb/0.31.2/formweb-0.31.2-linux-x64.AppImage",
+                  "bytes": 161126904,
+                  "sha256": "465702bce18e183c65d800550c54ad67857c42c461693c8eac02ef1f20c4835d",
+                  "minimum_os": ""
+                },
+                {
+                  "platform": "linux",
+                  "arch": "x86_64",
+                  "kind": "deb",
+                  "file": "formweb-0.31.2-linux-x64.deb",
+                  "url": "https://dl.formai.studio/formweb/0.31.2/formweb-0.31.2-linux-x64.deb",
+                  "bytes": 82913358,
+                  "sha256": "49bc661673a4fedfd4cf724ba46622f1fbff4069daf3280857fa6120552a3826",
+                  "minimum_os": ""
+                },
+                {
+                  "platform": "linux",
+                  "arch": "x86_64",
+                  "kind": "rpm",
+                  "file": "formweb-0.31.2-linux-x64.rpm",
+                  "url": "https://dl.formai.studio/formweb/0.31.2/formweb-0.31.2-linux-x64.rpm",
+                  "bytes": 82925633,
+                  "sha256": "4ec01ee5cac6e5014c3d4e83b1856c11dd30bd619906d03ee9208aebc9d567f1",
+                  "minimum_os": ""
+                },
+                {
+                  "platform": "macos",
+                  "arch": "arm64",
+                  "kind": "dmg",
+                  "file": "formweb-0.31.2-macos-arm64.dmg",
+                  "url": "https://dl.formai.studio/formweb/0.31.2/formweb-0.31.2-macos-arm64.dmg",
+                  "bytes": 59892433,
+                  "sha256": "3bd4995555c274d8396945d0552e63322e8b4b238dc2ab47da6fbbab825b260d",
+                  "minimum_os": ""
+                },
+                {
+                  "platform": "macos",
+                  "arch": "x86_64",
+                  "kind": "dmg",
+                  "file": "formweb-0.31.2-macos-x64.dmg",
+                  "url": "https://dl.formai.studio/formweb/0.31.2/formweb-0.31.2-macos-x64.dmg",
+                  "bytes": 61602918,
+                  "sha256": "36d9cafb8c9591d5a47f734f235aae09271c3e39f02d1e8182d155dd522741e8",
+                  "minimum_os": ""
+                },
+                {
+                  "platform": "windows",
+                  "arch": "x86_64",
+                  "kind": "nsis",
+                  "file": "formweb-0.31.2-windows-x64-setup.exe",
+                  "url": "https://dl.formai.studio/formweb/0.31.2/formweb-0.31.2-windows-x64-setup.exe",
+                  "bytes": 61188544,
+                  "sha256": "f65861303d14d7fedc98d2aae8f9472c068935792ff92dd25f8c3d0b199eb577",
+                  "minimum_os": ""
+                },
+                {
+                  "platform": "windows",
+                  "arch": "x86_64",
+                  "kind": "msi",
+                  "file": "formweb-0.31.2-windows-x64.msi",
+                  "url": "https://dl.formai.studio/formweb/0.31.2/formweb-0.31.2-windows-x64.msi",
+                  "bytes": 62242816,
+                  "sha256": "917325fea8d0331e1c0d3e761e2e1844bb236ed825229cc13502917bd2bd80ee",
+                  "minimum_os": ""
+                }
+              ],
+              "commit": "0ae234513052e3666d6e078593a1171fccefeea0",
+              "agents": {
+                "manifest": {
+                  "file": "form-app.json",
+                  "url": "https://dl.formai.studio/formweb/0.31.2/form-app.json",
+                  "bytes": 3200,
+                  "sha256": "2714eb129e0380d038dafd7045676d7dc71f60471c3e690aadbcfe4189252550"
+                },
+                "skills": {
+                  "file": "formweb-skills-v0.31.2.zip",
+                  "url": "https://dl.formai.studio/formweb/0.31.2/formweb-skills-v0.31.2.zip",
+                  "bytes": 86252,
+                  "sha256": "ca7ffbf68c276cab0e791681659fd2559347d1b856636ed6843315441883f956"
+                }
+              }
+            },
             {
               "version": "0.31.1",
               "published": "2026-11-25T20:06:27Z",
