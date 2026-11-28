@@ -1,7 +1,7 @@
 {
   "format": "formai-catalog",
   "format_version": 1,
-  "generated": "2026-11-27T14:14:12Z",
+  "generated": "2026-11-27T23:48:51Z",
   "origin": "https://github.com/nodemode-dev/formcompiler",
   "products": [
     {
@@ -2955,98 +2955,191 @@
       },
       "channels": {
         "stable": {
-          "version": "2.20.1",
-          "published": "2026-11-21T17:30:23Z",
-          "notes": "A small fix release for the files FormCut downloads for itself.\n\nFixed\n\n- When a file from the first download address fails its integrity check, FormCut now removes it and tries the next address. Before, it stopped.\n- When no address gives the right file, the message names the address that gave the wrong one, and nothing from it is kept.",
+          "version": "2.20.2",
+          "published": "2026-11-27T22:43:04Z",
+          "notes": "https://github.com/nodemode-dev/formcut/releases/tag/v2.20.2",
           "origin": "store",
           "artifacts": [
             {
               "platform": "android",
               "arch": "arm64",
               "kind": "apk",
-              "file": "formcut-2.20.1-android-arm64.apk",
-              "url": "https://dl.formai.studio/formcut/2.20.1/formcut-2.20.1-android-arm64.apk",
-              "bytes": 125401561,
-              "sha256": "dd357dd459406ea2d946b9d9485fb1137c4473c32c785fb04999e434fc73a580",
+              "file": "formcut-2.20.2-android-arm64.apk",
+              "url": "https://dl.formai.studio/formcut/2.20.2/formcut-2.20.2-android-arm64.apk",
+              "bytes": 125426269,
+              "sha256": "4e2b3f64b544c32b6c76cad1a24f846083a5faeaab69c2547a1a077c912bc0f9",
               "minimum_os": ""
             },
             {
               "platform": "ios",
               "arch": "arm64",
               "kind": "ipa",
-              "file": "formcut-2.20.1-ios-arm64.ipa",
-              "url": "https://dl.formai.studio/formcut/2.20.1/formcut-2.20.1-ios-arm64.ipa",
-              "bytes": 3478139,
-              "sha256": "5386cb44d2be1283aadb62170cbd06ea4723731da208d5bd42634b75370ea027",
+              "file": "formcut-2.20.2-ios-arm64.ipa",
+              "url": "https://dl.formai.studio/formcut/2.20.2/formcut-2.20.2-ios-arm64.ipa",
+              "bytes": 3478158,
+              "sha256": "b374020b81ba5d3110baf6adefa992b3f9b78d420f1578460e749afadd7a7b67",
               "minimum_os": ""
             },
             {
               "platform": "linux",
               "arch": "x86_64",
               "kind": "zip",
-              "file": "formcut-2.20.1-linux-x64.zip",
-              "url": "https://dl.formai.studio/formcut/2.20.1/formcut-2.20.1-linux-x64.zip",
-              "bytes": 430334227,
-              "sha256": "4654b3dab88ce80c14f18c05cafec05d6fa4f7cfdc8bd7dcd027900160e518f9",
+              "file": "formcut-2.20.2-linux-x64.zip",
+              "url": "https://dl.formai.studio/formcut/2.20.2/formcut-2.20.2-linux-x64.zip",
+              "bytes": 429139602,
+              "sha256": "a4eb707ce7db84810b902d2dea6bd4f9a4990f84ca99f0e22f22ef4f0cd796f9",
               "minimum_os": "glibc 2.35"
             },
             {
               "platform": "macos",
               "arch": "arm64",
               "kind": "zip",
-              "file": "formcut-2.20.1-macos-arm64.zip",
-              "url": "https://dl.formai.studio/formcut/2.20.1/formcut-2.20.1-macos-arm64.zip",
-              "bytes": 294250488,
-              "sha256": "c72e27e45958cf31a6b87d35af271e2e6558200e0d186011abf718ff35c554fb",
+              "file": "formcut-2.20.2-macos-arm64.zip",
+              "url": "https://dl.formai.studio/formcut/2.20.2/formcut-2.20.2-macos-arm64.zip",
+              "bytes": 294181736,
+              "sha256": "e9398fadbbdb2358256d5ec4e82b6c9f8ff18a830d92f7d5f3c585aaae32fc3b",
               "minimum_os": "macOS 14"
             },
             {
               "platform": "macos",
               "arch": "x86_64",
               "kind": "zip",
-              "file": "formcut-2.20.1-macos-x64.zip",
-              "url": "https://dl.formai.studio/formcut/2.20.1/formcut-2.20.1-macos-x64.zip",
-              "bytes": 307155291,
-              "sha256": "5db62966e09250109f325cb388df0b8bc0540821f403bd95b5c095e607b4169c",
+              "file": "formcut-2.20.2-macos-x64.zip",
+              "url": "https://dl.formai.studio/formcut/2.20.2/formcut-2.20.2-macos-x64.zip",
+              "bytes": 307091898,
+              "sha256": "15d67970e32e742b6bea277312cf906ed09b3b3f2954645eb19bb8f7340e3124",
               "minimum_os": "macOS 14"
             },
             {
               "platform": "windows",
               "arch": "x86_64",
               "kind": "nsis",
-              "file": "formcut-2.20.1-windows-x64-setup.exe",
-              "url": "https://dl.formai.studio/formcut/2.20.1/formcut-2.20.1-windows-x64-setup.exe",
-              "bytes": 298315136,
-              "sha256": "6568f7464a103f36a448b83922223f3e8b18279c951ecaebc2b50d1d390ffbd7",
+              "file": "formcut-2.20.2-windows-x64-setup.exe",
+              "url": "https://dl.formai.studio/formcut/2.20.2/formcut-2.20.2-windows-x64-setup.exe",
+              "bytes": 298427480,
+              "sha256": "54dd1ea8bd4b1fae342bb96dfb4817e5657f6dad4c7c5592901b58ed18dc293b",
               "minimum_os": "Windows 10"
             },
             {
               "platform": "windows",
               "arch": "x86_64",
               "kind": "zip",
-              "file": "formcut-2.20.1-windows-x64.zip",
-              "url": "https://dl.formai.studio/formcut/2.20.1/formcut-2.20.1-windows-x64.zip",
-              "bytes": 316529959,
-              "sha256": "09669e799a1616381700fb0a3e6147c9f59febe0a8175418776858e269754964",
+              "file": "formcut-2.20.2-windows-x64.zip",
+              "url": "https://dl.formai.studio/formcut/2.20.2/formcut-2.20.2-windows-x64.zip",
+              "bytes": 316627597,
+              "sha256": "36b3ed17e3fa0ee144b9ec34a97d0a82fa8c4502510a6af414ded4b08fd5e2e6",
               "minimum_os": "Windows 10"
             }
           ],
-          "commit": "87180ef2d25b8c37cc5a652f07a12ab5d1e28d7f",
+          "commit": "7434433d4bbc073cb6e49f9e52ef816efa3be774",
           "agents": {
             "manifest": {
               "file": "form-app.json",
-              "url": "https://dl.formai.studio/formcut/2.20.1/form-app.json",
+              "url": "https://dl.formai.studio/formcut/2.20.2/form-app.json",
               "bytes": 2694,
-              "sha256": "0d28be32d7fd8c030067b7138b74db8e3096f40dd003c44ed3dc219f21947444"
+              "sha256": "b800a14823ef68f3afe40708cc1e270bc499c0fa0fb6818ea87e4c77b8935d50"
             },
             "skills": {
-              "file": "formcut-skills-v2.20.1.zip",
-              "url": "https://dl.formai.studio/formcut/2.20.1/formcut-skills-v2.20.1.zip",
-              "bytes": 56103,
-              "sha256": "3c67a1b5b53b0f3a448df6e244f1fc2e78165103add029b595db24da9e35c4f6"
+              "file": "formcut-skills-v2.20.2.zip",
+              "url": "https://dl.formai.studio/formcut/2.20.2/formcut-skills-v2.20.2.zip",
+              "bytes": 56150,
+              "sha256": "f01f2c90330731289f28178b2c5fa44e46a072eeccc31c59fda4b24951b4d00b"
             }
           },
           "history": [
+            {
+              "version": "2.20.1",
+              "published": "2026-11-21T17:30:23Z",
+              "notes": "A small fix release for the files FormCut downloads for itself.\n\nFixed\n\n- When a file from the first download address fails its integrity check, FormCut now removes it and tries the next address. Before, it stopped.\n- When no address gives the right file, the message names the address that gave the wrong one, and nothing from it is kept.",
+              "origin": "store",
+              "artifacts": [
+                {
+                  "platform": "android",
+                  "arch": "arm64",
+                  "kind": "apk",
+                  "file": "formcut-2.20.1-android-arm64.apk",
+                  "url": "https://dl.formai.studio/formcut/2.20.1/formcut-2.20.1-android-arm64.apk",
+                  "bytes": 125401561,
+                  "sha256": "dd357dd459406ea2d946b9d9485fb1137c4473c32c785fb04999e434fc73a580",
+                  "minimum_os": ""
+                },
+                {
+                  "platform": "ios",
+                  "arch": "arm64",
+                  "kind": "ipa",
+                  "file": "formcut-2.20.1-ios-arm64.ipa",
+                  "url": "https://dl.formai.studio/formcut/2.20.1/formcut-2.20.1-ios-arm64.ipa",
+                  "bytes": 3478139,
+                  "sha256": "5386cb44d2be1283aadb62170cbd06ea4723731da208d5bd42634b75370ea027",
+                  "minimum_os": ""
+                },
+                {
+                  "platform": "linux",
+                  "arch": "x86_64",
+                  "kind": "zip",
+                  "file": "formcut-2.20.1-linux-x64.zip",
+                  "url": "https://dl.formai.studio/formcut/2.20.1/formcut-2.20.1-linux-x64.zip",
+                  "bytes": 430334227,
+                  "sha256": "4654b3dab88ce80c14f18c05cafec05d6fa4f7cfdc8bd7dcd027900160e518f9",
+                  "minimum_os": "glibc 2.35"
+                },
+                {
+                  "platform": "macos",
+                  "arch": "arm64",
+                  "kind": "zip",
+                  "file": "formcut-2.20.1-macos-arm64.zip",
+                  "url": "https://dl.formai.studio/formcut/2.20.1/formcut-2.20.1-macos-arm64.zip",
+                  "bytes": 294250488,
+                  "sha256": "c72e27e45958cf31a6b87d35af271e2e6558200e0d186011abf718ff35c554fb",
+                  "minimum_os": "macOS 14"
+                },
+                {
+                  "platform": "macos",
+                  "arch": "x86_64",
+                  "kind": "zip",
+                  "file": "formcut-2.20.1-macos-x64.zip",
+                  "url": "https://dl.formai.studio/formcut/2.20.1/formcut-2.20.1-macos-x64.zip",
+                  "bytes": 307155291,
+                  "sha256": "5db62966e09250109f325cb388df0b8bc0540821f403bd95b5c095e607b4169c",
+                  "minimum_os": "macOS 14"
+                },
+                {
+                  "platform": "windows",
+                  "arch": "x86_64",
+                  "kind": "nsis",
+                  "file": "formcut-2.20.1-windows-x64-setup.exe",
+                  "url": "https://dl.formai.studio/formcut/2.20.1/formcut-2.20.1-windows-x64-setup.exe",
+                  "bytes": 298315136,
+                  "sha256": "6568f7464a103f36a448b83922223f3e8b18279c951ecaebc2b50d1d390ffbd7",
+                  "minimum_os": "Windows 10"
+                },
+                {
+                  "platform": "windows",
+                  "arch": "x86_64",
+                  "kind": "zip",
+                  "file": "formcut-2.20.1-windows-x64.zip",
+                  "url": "https://dl.formai.studio/formcut/2.20.1/formcut-2.20.1-windows-x64.zip",
+                  "bytes": 316529959,
+                  "sha256": "09669e799a1616381700fb0a3e6147c9f59febe0a8175418776858e269754964",
+                  "minimum_os": "Windows 10"
+                }
+              ],
+              "commit": "87180ef2d25b8c37cc5a652f07a12ab5d1e28d7f",
+              "agents": {
+                "manifest": {
+                  "file": "form-app.json",
+                  "url": "https://dl.formai.studio/formcut/2.20.1/form-app.json",
+                  "bytes": 2694,
+                  "sha256": "0d28be32d7fd8c030067b7138b74db8e3096f40dd003c44ed3dc219f21947444"
+                },
+                "skills": {
+                  "file": "formcut-skills-v2.20.1.zip",
+                  "url": "https://dl.formai.studio/formcut/2.20.1/formcut-skills-v2.20.1.zip",
+                  "bytes": 56103,
+                  "sha256": "3c67a1b5b53b0f3a448df6e244f1fc2e78165103add029b595db24da9e35c4f6"
+                }
+              }
+            },
             {
               "version": "2.20.0",
               "published": "2026-11-21T01:44:10Z",
@@ -3414,99 +3507,6 @@
                 "skills": {
                   "file": "formcut-skills-v2.15.8.zip",
                   "url": "https://dl.formai.studio/formcut/2.15.8/formcut-skills-v2.15.8.zip",
-                  "bytes": 54818,
-                  "sha256": "a3078ffd080554eb7778cf32ac436b6998366ed1f857e1132590eddc5e54f08a"
-                }
-              }
-            },
-            {
-              "version": "2.15.5",
-              "published": "2026-11-12T12:35:10Z",
-              "notes": "Fixed\n\n- Object removal ingests only a complete clip and never leaves a partial one.\n- The ruler, the timecode and the EDL count frames on one grid.\n- The timecode counts frames on the grid a frame step moves on.\n- Object removal and the HDR bench work with the shipped LGPL ffmpeg.\n\nUnder the hood\n\n- HASHOUT entries for the 2.15.5 review fixes.",
-              "origin": "store",
-              "artifacts": [
-                {
-                  "platform": "android",
-                  "arch": "arm64",
-                  "kind": "apk",
-                  "file": "formcut-2.15.5-android-arm64.apk",
-                  "url": "https://dl.formai.studio/formcut/2.15.5/formcut-2.15.5-android-arm64.apk",
-                  "bytes": 128876873,
-                  "sha256": "e722679fd0dae9ac0387880aa8562163cc49fc6cfedffe64bad532bd550a8a52",
-                  "minimum_os": ""
-                },
-                {
-                  "platform": "ios",
-                  "arch": "arm64",
-                  "kind": "ipa",
-                  "file": "formcut-2.15.5-ios-arm64.ipa",
-                  "url": "https://dl.formai.studio/formcut/2.15.5/formcut-2.15.5-ios-arm64.ipa",
-                  "bytes": 3477072,
-                  "sha256": "6b8508bec88dc7fea788d3b77f7478898c88d39496dd4a9169178cd289e44d21",
-                  "minimum_os": ""
-                },
-                {
-                  "platform": "linux",
-                  "arch": "x86_64",
-                  "kind": "zip",
-                  "file": "formcut-2.15.5-linux-x64.zip",
-                  "url": "https://dl.formai.studio/formcut/2.15.5/formcut-2.15.5-linux-x64.zip",
-                  "bytes": 429675861,
-                  "sha256": "7b65a7c97479897126d646cc05c4eb7949878673bea0c52f2b2ec5c6a7f76066",
-                  "minimum_os": "glibc 2.35"
-                },
-                {
-                  "platform": "macos",
-                  "arch": "arm64",
-                  "kind": "zip",
-                  "file": "formcut-2.15.5-macos-arm64.zip",
-                  "url": "https://dl.formai.studio/formcut/2.15.5/formcut-2.15.5-macos-arm64.zip",
-                  "bytes": 293734523,
-                  "sha256": "ef17824afba439c695762296883bf5120696574dd670e4b36a22d677cf2e33bd",
-                  "minimum_os": "macOS 14"
-                },
-                {
-                  "platform": "macos",
-                  "arch": "x86_64",
-                  "kind": "zip",
-                  "file": "formcut-2.15.5-macos-x64.zip",
-                  "url": "https://dl.formai.studio/formcut/2.15.5/formcut-2.15.5-macos-x64.zip",
-                  "bytes": 306785397,
-                  "sha256": "3a39534de45d904677f1f956d4e74d1c26bed7452c764c4a8647590f7ac9fee8",
-                  "minimum_os": "macOS 14"
-                },
-                {
-                  "platform": "windows",
-                  "arch": "x86_64",
-                  "kind": "nsis",
-                  "file": "formcut-2.15.5-windows-x64-setup.exe",
-                  "url": "https://dl.formai.studio/formcut/2.15.5/formcut-2.15.5-windows-x64-setup.exe",
-                  "bytes": 297578376,
-                  "sha256": "67ee49158b7648229b07cde4869cb97dacb0ee06b653becfa78464dad602e04d",
-                  "minimum_os": "Windows 10"
-                },
-                {
-                  "platform": "windows",
-                  "arch": "x86_64",
-                  "kind": "zip",
-                  "file": "formcut-2.15.5-windows-x64.zip",
-                  "url": "https://dl.formai.studio/formcut/2.15.5/formcut-2.15.5-windows-x64.zip",
-                  "bytes": 315791616,
-                  "sha256": "04c9ef62368c9e4a04df0fab5d5de29c9c71f9a6bf39536df97195e747b18370",
-                  "minimum_os": "Windows 10"
-                }
-              ],
-              "commit": "3b3e8cfba104e2e717c20da6f9a80bb1a14add44",
-              "agents": {
-                "manifest": {
-                  "file": "form-app.json",
-                  "url": "https://dl.formai.studio/formcut/2.15.5/form-app.json",
-                  "bytes": 2694,
-                  "sha256": "70bc3c00985cb20e6bdad17ec7499f427342be4bee6fac6f2680525ebe8ffa37"
-                },
-                "skills": {
-                  "file": "formcut-skills-v2.15.5.zip",
-                  "url": "https://dl.formai.studio/formcut/2.15.5/formcut-skills-v2.15.5.zip",
                   "bytes": 54818,
                   "sha256": "a3078ffd080554eb7778cf32ac436b6998366ed1f857e1132590eddc5e54f08a"
                 }
@@ -18617,98 +18617,191 @@
       },
       "channels": {
         "stable": {
-          "version": "0.33.0",
-          "published": "2026-11-27T13:51:23Z",
-          "notes": "https://github.com/nodemode-dev/formweb/releases/tag/v0.33.0",
+          "version": "0.34.0",
+          "published": "2026-11-27T23:41:07Z",
+          "notes": "https://github.com/nodemode-dev/formweb/releases/tag/v0.34.0",
           "origin": "store",
           "artifacts": [
             {
               "platform": "linux",
               "arch": "x86_64",
               "kind": "appimage",
-              "file": "formweb-0.33.0-linux-x64.AppImage",
-              "url": "https://dl.formai.studio/formweb/0.33.0/formweb-0.33.0-linux-x64.AppImage",
-              "bytes": 161266168,
-              "sha256": "a9c69b7f6947232edb3c362f65633a4a61c847acedba9618857065cde13fc7f4",
+              "file": "formweb-0.34.0-linux-x64.AppImage",
+              "url": "https://dl.formai.studio/formweb/0.34.0/formweb-0.34.0-linux-x64.AppImage",
+              "bytes": 161298936,
+              "sha256": "aa50a5b8ab1463d10a7046dcc014ebc199648f65435fc71bcec0912e395e882a",
               "minimum_os": ""
             },
             {
               "platform": "linux",
               "arch": "x86_64",
               "kind": "deb",
-              "file": "formweb-0.33.0-linux-x64.deb",
-              "url": "https://dl.formai.studio/formweb/0.33.0/formweb-0.33.0-linux-x64.deb",
-              "bytes": 83050102,
-              "sha256": "5007402f0a73a9db708186343a6bd87847deca1ef5184ad42a5bd49a57b2af01",
+              "file": "formweb-0.34.0-linux-x64.deb",
+              "url": "https://dl.formai.studio/formweb/0.34.0/formweb-0.34.0-linux-x64.deb",
+              "bytes": 83086878,
+              "sha256": "537483c04311988a4d47c8ae0c368401fb4232f02f5c473d6beb75c557faa959",
               "minimum_os": ""
             },
             {
               "platform": "linux",
               "arch": "x86_64",
               "kind": "rpm",
-              "file": "formweb-0.33.0-linux-x64.rpm",
-              "url": "https://dl.formai.studio/formweb/0.33.0/formweb-0.33.0-linux-x64.rpm",
-              "bytes": 83067599,
-              "sha256": "607478216f17c4064eb89e0677c1ee5e96a32c5fa8b285c19c151a9c99227b97",
+              "file": "formweb-0.34.0-linux-x64.rpm",
+              "url": "https://dl.formai.studio/formweb/0.34.0/formweb-0.34.0-linux-x64.rpm",
+              "bytes": 83104054,
+              "sha256": "dc6c7bf1e212aded748d8c277bd052326caaf9263f6de1e5cb667207d8d729aa",
               "minimum_os": ""
             },
             {
               "platform": "macos",
               "arch": "arm64",
               "kind": "dmg",
-              "file": "formweb-0.33.0-macos-arm64.dmg",
-              "url": "https://dl.formai.studio/formweb/0.33.0/formweb-0.33.0-macos-arm64.dmg",
-              "bytes": 60028756,
-              "sha256": "ce7cdf83c0847d158f646e99d9113b475d758b186c2de9d92aa786bae0b5458e",
+              "file": "formweb-0.34.0-macos-arm64.dmg",
+              "url": "https://dl.formai.studio/formweb/0.34.0/formweb-0.34.0-macos-arm64.dmg",
+              "bytes": 60059294,
+              "sha256": "e6c4816bdd2e8bdc68ceeffb31072549c735c442a145d6596e7ef4df4ae0330e",
               "minimum_os": ""
             },
             {
               "platform": "macos",
               "arch": "x86_64",
               "kind": "dmg",
-              "file": "formweb-0.33.0-macos-x64.dmg",
-              "url": "https://dl.formai.studio/formweb/0.33.0/formweb-0.33.0-macos-x64.dmg",
-              "bytes": 62746593,
-              "sha256": "8b7a66ed9d3079ae7af2b7a8a741f8e3f0e8af225775b0dcb4b3310bc585e741",
+              "file": "formweb-0.34.0-macos-x64.dmg",
+              "url": "https://dl.formai.studio/formweb/0.34.0/formweb-0.34.0-macos-x64.dmg",
+              "bytes": 62747655,
+              "sha256": "6fc2f60fc351d311b4775f9ae7fc68a378f9027afc2a54c3267bccf24bfde017",
               "minimum_os": ""
             },
             {
               "platform": "windows",
               "arch": "x86_64",
               "kind": "nsis",
-              "file": "formweb-0.33.0-windows-x64-setup.exe",
-              "url": "https://dl.formai.studio/formweb/0.33.0/formweb-0.33.0-windows-x64-setup.exe",
-              "bytes": 61327784,
-              "sha256": "b8bb1e7f7766386b7d43fb5ca2ffdd92db4594b9f0862bda3ed2e53e0568491b",
+              "file": "formweb-0.34.0-windows-x64-setup.exe",
+              "url": "https://dl.formai.studio/formweb/0.34.0/formweb-0.34.0-windows-x64-setup.exe",
+              "bytes": 61353096,
+              "sha256": "26b494411c195529c3f53989c6e89fe704c9bc96892b8fbd933e6c88414fd286",
               "minimum_os": ""
             },
             {
               "platform": "windows",
               "arch": "x86_64",
               "kind": "msi",
-              "file": "formweb-0.33.0-windows-x64.msi",
-              "url": "https://dl.formai.studio/formweb/0.33.0/formweb-0.33.0-windows-x64.msi",
-              "bytes": 62386176,
-              "sha256": "f689b406eb42e2c19318186972c564175432b60dff6a9a2c647c3117c8955544",
+              "file": "formweb-0.34.0-windows-x64.msi",
+              "url": "https://dl.formai.studio/formweb/0.34.0/formweb-0.34.0-windows-x64.msi",
+              "bytes": 62406656,
+              "sha256": "33938811d5e1cba03bdf9c2a96d2d6e91b5e612cb4b20a702c2f873070e74e9e",
               "minimum_os": ""
             }
           ],
-          "commit": "a01210bc321edbe17f9bc0965ecea39d4eb03b9c",
+          "commit": "d818876a79e4a453ecb95051e580c370a2afb8ad",
           "agents": {
             "manifest": {
               "file": "form-app.json",
-              "url": "https://dl.formai.studio/formweb/0.33.0/form-app.json",
+              "url": "https://dl.formai.studio/formweb/0.34.0/form-app.json",
               "bytes": 3200,
-              "sha256": "13290a45ef7142b03eadd6efc49234733a95c5aa90fe25755a518e1107893276"
+              "sha256": "89fa0435367102e3a91620bc6b79b16aaff35c151fbd665bf6bfc6b45324ea6b"
             },
             "skills": {
-              "file": "formweb-skills-v0.33.0.zip",
-              "url": "https://dl.formai.studio/formweb/0.33.0/formweb-skills-v0.33.0.zip",
-              "bytes": 86252,
-              "sha256": "a5441cb3889a51c5f65b161813c2c2eb5f38466bb5badef3b3f7053bd743fedb"
+              "file": "formweb-skills-v0.34.0.zip",
+              "url": "https://dl.formai.studio/formweb/0.34.0/formweb-skills-v0.34.0.zip",
+              "bytes": 86253,
+              "sha256": "e4a5e84fd906d9b5e4fff16c7cab18a4c3ced85219747052e39c13fb82eb6fc7"
             }
           },
           "history": [
+            {
+              "version": "0.33.0",
+              "published": "2026-11-27T13:51:23Z",
+              "notes": "https://github.com/nodemode-dev/formweb/releases/tag/v0.33.0",
+              "origin": "store",
+              "artifacts": [
+                {
+                  "platform": "linux",
+                  "arch": "x86_64",
+                  "kind": "appimage",
+                  "file": "formweb-0.33.0-linux-x64.AppImage",
+                  "url": "https://dl.formai.studio/formweb/0.33.0/formweb-0.33.0-linux-x64.AppImage",
+                  "bytes": 161266168,
+                  "sha256": "a9c69b7f6947232edb3c362f65633a4a61c847acedba9618857065cde13fc7f4",
+                  "minimum_os": ""
+                },
+                {
+                  "platform": "linux",
+                  "arch": "x86_64",
+                  "kind": "deb",
+                  "file": "formweb-0.33.0-linux-x64.deb",
+                  "url": "https://dl.formai.studio/formweb/0.33.0/formweb-0.33.0-linux-x64.deb",
+                  "bytes": 83050102,
+                  "sha256": "5007402f0a73a9db708186343a6bd87847deca1ef5184ad42a5bd49a57b2af01",
+                  "minimum_os": ""
+                },
+                {
+                  "platform": "linux",
+                  "arch": "x86_64",
+                  "kind": "rpm",
+                  "file": "formweb-0.33.0-linux-x64.rpm",
+                  "url": "https://dl.formai.studio/formweb/0.33.0/formweb-0.33.0-linux-x64.rpm",
+                  "bytes": 83067599,
+                  "sha256": "607478216f17c4064eb89e0677c1ee5e96a32c5fa8b285c19c151a9c99227b97",
+                  "minimum_os": ""
+                },
+                {
+                  "platform": "macos",
+                  "arch": "arm64",
+                  "kind": "dmg",
+                  "file": "formweb-0.33.0-macos-arm64.dmg",
+                  "url": "https://dl.formai.studio/formweb/0.33.0/formweb-0.33.0-macos-arm64.dmg",
+                  "bytes": 60028756,
+                  "sha256": "ce7cdf83c0847d158f646e99d9113b475d758b186c2de9d92aa786bae0b5458e",
+                  "minimum_os": ""
+                },
+                {
+                  "platform": "macos",
+                  "arch": "x86_64",
+                  "kind": "dmg",
+                  "file": "formweb-0.33.0-macos-x64.dmg",
+                  "url": "https://dl.formai.studio/formweb/0.33.0/formweb-0.33.0-macos-x64.dmg",
+                  "bytes": 62746593,
+                  "sha256": "8b7a66ed9d3079ae7af2b7a8a741f8e3f0e8af225775b0dcb4b3310bc585e741",
+                  "minimum_os": ""
+                },
+                {
+                  "platform": "windows",
+                  "arch": "x86_64",
+                  "kind": "nsis",
+                  "file": "formweb-0.33.0-windows-x64-setup.exe",
+                  "url": "https://dl.formai.studio/formweb/0.33.0/formweb-0.33.0-windows-x64-setup.exe",
+                  "bytes": 61327784,
+                  "sha256": "b8bb1e7f7766386b7d43fb5ca2ffdd92db4594b9f0862bda3ed2e53e0568491b",
+                  "minimum_os": ""
+                },
+                {
+                  "platform": "windows",
+                  "arch": "x86_64",
+                  "kind": "msi",
+                  "file": "formweb-0.33.0-windows-x64.msi",
+                  "url": "https://dl.formai.studio/formweb/0.33.0/formweb-0.33.0-windows-x64.msi",
+                  "bytes": 62386176,
+                  "sha256": "f689b406eb42e2c19318186972c564175432b60dff6a9a2c647c3117c8955544",
+                  "minimum_os": ""
+                }
+              ],
+              "commit": "a01210bc321edbe17f9bc0965ecea39d4eb03b9c",
+              "agents": {
+                "manifest": {
+                  "file": "form-app.json",
+                  "url": "https://dl.formai.studio/formweb/0.33.0/form-app.json",
+                  "bytes": 3200,
+                  "sha256": "13290a45ef7142b03eadd6efc49234733a95c5aa90fe25755a518e1107893276"
+                },
+                "skills": {
+                  "file": "formweb-skills-v0.33.0.zip",
+                  "url": "https://dl.formai.studio/formweb/0.33.0/formweb-skills-v0.33.0.zip",
+                  "bytes": 86252,
+                  "sha256": "a5441cb3889a51c5f65b161813c2c2eb5f38466bb5badef3b3f7053bd743fedb"
+                }
+              }
+            },
             {
               "version": "0.31.2",
               "published": "2026-11-25T21:09:51Z",
