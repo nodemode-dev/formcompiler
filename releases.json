@@ -1,7 +1,7 @@
 {
   "format": "formai-catalog",
   "format_version": 1,
-  "generated": "2026-11-27T23:48:51Z",
+  "generated": "2026-11-28T05:46:07Z",
   "origin": "https://github.com/nodemode-dev/formcompiler",
   "products": [
     {
@@ -8933,92 +8933,179 @@
       },
       "channels": {
         "stable": {
-          "version": "0.31.0",
-          "published": "2026-11-25T21:09:56Z",
-          "notes": "The Character Builder in every language, and the finishing touches on characters and actions.\n\nNew\n\n- The Character Builder, the 26 starter characters, the outfits, hair styles and kinds, and the starter actions Run, Dance, Talk and Cheer are translated into all 27 full languages.\n- The manual covers the Character Builder, a built character's parts, the 26 starters and the twelve starter actions.\n\nImproved\n\n- The Character Builder lays out right to left in Arabic and keeps long slider labels clear of the slider.\n\nFixed\n\n- Windows: the app no longer opens to a black window on PCs where another program has changed the file type the system gives to .js files.\n- Characters added to a plain movie at full size stand far enough apart, so two never touch.\n- A starter action never writes over your lip-sync, and clearing it gives back only the frames it set.\n- Laying one action into the middle of a looping one eases the loop out and back in instead of snapping the arms.\n- A looping action shortened below its ease plays its moves instead of standing still.",
+          "version": "0.36.0",
+          "published": "2026-11-28T05:35:49Z",
+          "notes": "https://github.com/nodemode-dev/formmorpheus/releases/tag/v0.36.0",
           "origin": "store",
           "artifacts": [
             {
               "platform": "linux",
               "arch": "x86_64",
               "kind": "appimage",
-              "file": "formmorpheus-0.31.0-linux-x64.AppImage",
-              "url": "https://dl.formai.studio/formmorpheus/0.31.0/formmorpheus-0.31.0-linux-x64.AppImage",
-              "bytes": 222779896,
-              "sha256": "1f6e4e95707a7bd2adf56abb43175300b489000649df7624d878d4091a64e23a",
+              "file": "formmorpheus-0.36.0-linux-x64.AppImage",
+              "url": "https://dl.formai.studio/formmorpheus/0.36.0/formmorpheus-0.36.0-linux-x64.AppImage",
+              "bytes": 223099384,
+              "sha256": "ffa179d0b95b1b00bc16423db9cba3407c42f1bffc9f3cb3c80372bbb8d185ab",
               "minimum_os": ""
             },
             {
               "platform": "linux",
               "arch": "x86_64",
               "kind": "deb",
-              "file": "formmorpheus-0.31.0-linux-x64.deb",
-              "url": "https://dl.formai.studio/formmorpheus/0.31.0/formmorpheus-0.31.0-linux-x64.deb",
-              "bytes": 134364474,
-              "sha256": "4db52a1c066ac1d41b88dd335f3a13bc2e3c41b18f22bd2f0a4dfb67a6d4554f",
+              "file": "formmorpheus-0.36.0-linux-x64.deb",
+              "url": "https://dl.formai.studio/formmorpheus/0.36.0/formmorpheus-0.36.0-linux-x64.deb",
+              "bytes": 134683008,
+              "sha256": "c25afb548cf40460556ecc2335ed0adfdfdd0edad4718eb6226252ec4c497dd8",
               "minimum_os": ""
             },
             {
               "platform": "linux",
               "arch": "x86_64",
               "kind": "rpm",
-              "file": "formmorpheus-0.31.0-linux-x64.rpm",
-              "url": "https://dl.formai.studio/formmorpheus/0.31.0/formmorpheus-0.31.0-linux-x64.rpm",
-              "bytes": 142032485,
-              "sha256": "5ff4949d01bc97ef74273b1e14de51787899b57d42e34356f010499e8f891de9",
+              "file": "formmorpheus-0.36.0-linux-x64.rpm",
+              "url": "https://dl.formai.studio/formmorpheus/0.36.0/formmorpheus-0.36.0-linux-x64.rpm",
+              "bytes": 142351693,
+              "sha256": "24c3d0eb34a14ee9a93d797e79eda2455a8f3600b15e784dbdcaf2c64a50a7e7",
               "minimum_os": ""
             },
             {
               "platform": "macos",
               "arch": "arm64",
               "kind": "dmg",
-              "file": "formmorpheus-0.31.0-macos-arm64.dmg",
-              "url": "https://dl.formai.studio/formmorpheus/0.31.0/formmorpheus-0.31.0-macos-arm64.dmg",
-              "bytes": 111976963,
-              "sha256": "8edf7f95296367d5f426c570fc1b2bee1a844f110483a70dfbd13d55fc9182de",
+              "file": "formmorpheus-0.36.0-macos-arm64.dmg",
+              "url": "https://dl.formai.studio/formmorpheus/0.36.0/formmorpheus-0.36.0-macos-arm64.dmg",
+              "bytes": 112281693,
+              "sha256": "3226a5e52769ac3ebe911852787656d9cebf3aa76dbfd14d756cd9835aed0508",
               "minimum_os": "macOS 11"
             },
             {
               "platform": "macos",
               "arch": "x86_64",
               "kind": "dmg",
-              "file": "formmorpheus-0.31.0-macos-x64.dmg",
-              "url": "https://dl.formai.studio/formmorpheus/0.31.0/formmorpheus-0.31.0-macos-x64.dmg",
-              "bytes": 113397918,
-              "sha256": "58b45a0e4d5599cbbd43e095b0cbf482dce673fb1a778bb237ba7ddf0070de5b",
+              "file": "formmorpheus-0.36.0-macos-x64.dmg",
+              "url": "https://dl.formai.studio/formmorpheus/0.36.0/formmorpheus-0.36.0-macos-x64.dmg",
+              "bytes": 113721275,
+              "sha256": "ca154ffbfeace1420156559c938c20b865f015c217538b8ba61bd7f1116aea99",
               "minimum_os": "macOS 11"
             },
             {
               "platform": "windows",
               "arch": "x86_64",
               "kind": "nsis",
-              "file": "formmorpheus-0.31.0-windows-x64-setup.exe",
-              "url": "https://dl.formai.studio/formmorpheus/0.31.0/formmorpheus-0.31.0-windows-x64-setup.exe",
-              "bytes": 104795296,
-              "sha256": "1e7d03a8b9d76f31b1a7c3d081dc9ff43430d8b43484d5604e386e9efca4a3ea",
+              "file": "formmorpheus-0.36.0-windows-x64-setup.exe",
+              "url": "https://dl.formai.studio/formmorpheus/0.36.0/formmorpheus-0.36.0-windows-x64-setup.exe",
+              "bytes": 105064920,
+              "sha256": "dd466b73253e30a80712cafa16777af2bbdeae9886f4151013bed0e334588adb",
               "minimum_os": ""
             },
             {
               "platform": "windows",
               "arch": "x86_64",
               "kind": "msi",
-              "file": "formmorpheus-0.31.0-windows-x64.msi",
-              "url": "https://dl.formai.studio/formmorpheus/0.31.0/formmorpheus-0.31.0-windows-x64.msi",
-              "bytes": 112590848,
-              "sha256": "4f4ceedc8fbe22daff166d625a13ef26108adba2798f40ab27dc1a990bebcd2f",
+              "file": "formmorpheus-0.36.0-windows-x64.msi",
+              "url": "https://dl.formai.studio/formmorpheus/0.36.0/formmorpheus-0.36.0-windows-x64.msi",
+              "bytes": 112914432,
+              "sha256": "a9cbc89770b07f3d824019b4bc30600d0030e155116ea5a658e16680c521a47e",
               "minimum_os": ""
             }
           ],
-          "commit": "cd09214f162ff33067bad1e11e98fb4120741d38",
+          "commit": "f891d0939d744c07d6de6d74bb7e19c473229b28",
           "agents": {
             "manifest": {
               "file": "form-app.json",
-              "url": "https://dl.formai.studio/formmorpheus/0.31.0/form-app.json",
+              "url": "https://dl.formai.studio/formmorpheus/0.36.0/form-app.json",
               "bytes": 332,
-              "sha256": "a46749354cac32c1f6f83002750ccb1d5d238ec016d25f804cccc210de9f07d4"
+              "sha256": "2611f6a56759df910c29c49651503eb07063c4f6e951595e06b05303246dc548"
             }
           },
           "history": [
+            {
+              "version": "0.31.0",
+              "published": "2026-11-25T21:09:56Z",
+              "notes": "The Character Builder in every language, and the finishing touches on characters and actions.\n\nNew\n\n- The Character Builder, the 26 starter characters, the outfits, hair styles and kinds, and the starter actions Run, Dance, Talk and Cheer are translated into all 27 full languages.\n- The manual covers the Character Builder, a built character's parts, the 26 starters and the twelve starter actions.\n\nImproved\n\n- The Character Builder lays out right to left in Arabic and keeps long slider labels clear of the slider.\n\nFixed\n\n- Windows: the app no longer opens to a black window on PCs where another program has changed the file type the system gives to .js files.\n- Characters added to a plain movie at full size stand far enough apart, so two never touch.\n- A starter action never writes over your lip-sync, and clearing it gives back only the frames it set.\n- Laying one action into the middle of a looping one eases the loop out and back in instead of snapping the arms.\n- A looping action shortened below its ease plays its moves instead of standing still.",
+              "origin": "store",
+              "artifacts": [
+                {
+                  "platform": "linux",
+                  "arch": "x86_64",
+                  "kind": "appimage",
+                  "file": "formmorpheus-0.31.0-linux-x64.AppImage",
+                  "url": "https://dl.formai.studio/formmorpheus/0.31.0/formmorpheus-0.31.0-linux-x64.AppImage",
+                  "bytes": 222779896,
+                  "sha256": "1f6e4e95707a7bd2adf56abb43175300b489000649df7624d878d4091a64e23a",
+                  "minimum_os": ""
+                },
+                {
+                  "platform": "linux",
+                  "arch": "x86_64",
+                  "kind": "deb",
+                  "file": "formmorpheus-0.31.0-linux-x64.deb",
+                  "url": "https://dl.formai.studio/formmorpheus/0.31.0/formmorpheus-0.31.0-linux-x64.deb",
+                  "bytes": 134364474,
+                  "sha256": "4db52a1c066ac1d41b88dd335f3a13bc2e3c41b18f22bd2f0a4dfb67a6d4554f",
+                  "minimum_os": ""
+                },
+                {
+                  "platform": "linux",
+                  "arch": "x86_64",
+                  "kind": "rpm",
+                  "file": "formmorpheus-0.31.0-linux-x64.rpm",
+                  "url": "https://dl.formai.studio/formmorpheus/0.31.0/formmorpheus-0.31.0-linux-x64.rpm",
+                  "bytes": 142032485,
+                  "sha256": "5ff4949d01bc97ef74273b1e14de51787899b57d42e34356f010499e8f891de9",
+                  "minimum_os": ""
+                },
+                {
+                  "platform": "macos",
+                  "arch": "arm64",
+                  "kind": "dmg",
+                  "file": "formmorpheus-0.31.0-macos-arm64.dmg",
+                  "url": "https://dl.formai.studio/formmorpheus/0.31.0/formmorpheus-0.31.0-macos-arm64.dmg",
+                  "bytes": 111976963,
+                  "sha256": "8edf7f95296367d5f426c570fc1b2bee1a844f110483a70dfbd13d55fc9182de",
+                  "minimum_os": "macOS 11"
+                },
+                {
+                  "platform": "macos",
+                  "arch": "x86_64",
+                  "kind": "dmg",
+                  "file": "formmorpheus-0.31.0-macos-x64.dmg",
+                  "url": "https://dl.formai.studio/formmorpheus/0.31.0/formmorpheus-0.31.0-macos-x64.dmg",
+                  "bytes": 113397918,
+                  "sha256": "58b45a0e4d5599cbbd43e095b0cbf482dce673fb1a778bb237ba7ddf0070de5b",
+                  "minimum_os": "macOS 11"
+                },
+                {
+                  "platform": "windows",
+                  "arch": "x86_64",
+                  "kind": "nsis",
+                  "file": "formmorpheus-0.31.0-windows-x64-setup.exe",
+                  "url": "https://dl.formai.studio/formmorpheus/0.31.0/formmorpheus-0.31.0-windows-x64-setup.exe",
+                  "bytes": 104795296,
+                  "sha256": "1e7d03a8b9d76f31b1a7c3d081dc9ff43430d8b43484d5604e386e9efca4a3ea",
+                  "minimum_os": ""
+                },
+                {
+                  "platform": "windows",
+                  "arch": "x86_64",
+                  "kind": "msi",
+                  "file": "formmorpheus-0.31.0-windows-x64.msi",
+                  "url": "https://dl.formai.studio/formmorpheus/0.31.0/formmorpheus-0.31.0-windows-x64.msi",
+                  "bytes": 112590848,
+                  "sha256": "4f4ceedc8fbe22daff166d625a13ef26108adba2798f40ab27dc1a990bebcd2f",
+                  "minimum_os": ""
+                }
+              ],
+              "commit": "cd09214f162ff33067bad1e11e98fb4120741d38",
+              "agents": {
+                "manifest": {
+                  "file": "form-app.json",
+                  "url": "https://dl.formai.studio/formmorpheus/0.31.0/form-app.json",
+                  "bytes": 332,
+                  "sha256": "a46749354cac32c1f6f83002750ccb1d5d238ec016d25f804cccc210de9f07d4"
+                }
+              }
+            },
             {
               "version": "0.30.0",
               "published": "2026-11-25T20:01:00Z",
@@ -18617,98 +18704,191 @@
       },
       "channels": {
         "stable": {
-          "version": "0.34.0",
-          "published": "2026-11-27T23:41:07Z",
-          "notes": "https://github.com/nodemode-dev/formweb/releases/tag/v0.34.0",
+          "version": "0.36.0",
+          "published": "2026-11-28T05:35:50Z",
+          "notes": "https://github.com/nodemode-dev/formweb/releases/tag/v0.36.0",
           "origin": "store",
           "artifacts": [
             {
               "platform": "linux",
               "arch": "x86_64",
               "kind": "appimage",
-              "file": "formweb-0.34.0-linux-x64.AppImage",
-              "url": "https://dl.formai.studio/formweb/0.34.0/formweb-0.34.0-linux-x64.AppImage",
-              "bytes": 161298936,
-              "sha256": "aa50a5b8ab1463d10a7046dcc014ebc199648f65435fc71bcec0912e395e882a",
+              "file": "formweb-0.36.0-linux-x64.AppImage",
+              "url": "https://dl.formai.studio/formweb/0.36.0/formweb-0.36.0-linux-x64.AppImage",
+              "bytes": 161430008,
+              "sha256": "4a38e0d40fdb41d42376e0cf2e4c4998ec6d51defd4be78741edb0ef7e5bfe20",
               "minimum_os": ""
             },
             {
               "platform": "linux",
               "arch": "x86_64",
               "kind": "deb",
-              "file": "formweb-0.34.0-linux-x64.deb",
-              "url": "https://dl.formai.studio/formweb/0.34.0/formweb-0.34.0-linux-x64.deb",
-              "bytes": 83086878,
-              "sha256": "537483c04311988a4d47c8ae0c368401fb4232f02f5c473d6beb75c557faa959",
+              "file": "formweb-0.36.0-linux-x64.deb",
+              "url": "https://dl.formai.studio/formweb/0.36.0/formweb-0.36.0-linux-x64.deb",
+              "bytes": 83219606,
+              "sha256": "3f283dd0dcafbac4e7ef19407b94dcf8f0a18090a2aea371acdb559a4cb85a00",
               "minimum_os": ""
             },
             {
               "platform": "linux",
               "arch": "x86_64",
               "kind": "rpm",
-              "file": "formweb-0.34.0-linux-x64.rpm",
-              "url": "https://dl.formai.studio/formweb/0.34.0/formweb-0.34.0-linux-x64.rpm",
-              "bytes": 83104054,
-              "sha256": "dc6c7bf1e212aded748d8c277bd052326caaf9263f6de1e5cb667207d8d729aa",
+              "file": "formweb-0.36.0-linux-x64.rpm",
+              "url": "https://dl.formai.studio/formweb/0.36.0/formweb-0.36.0-linux-x64.rpm",
+              "bytes": 83237377,
+              "sha256": "06407ebb996948ad2f35fd9f1e5fa37576a51afbbd4bc6ca89442c012dcef24e",
               "minimum_os": ""
             },
             {
               "platform": "macos",
               "arch": "arm64",
               "kind": "dmg",
-              "file": "formweb-0.34.0-macos-arm64.dmg",
-              "url": "https://dl.formai.studio/formweb/0.34.0/formweb-0.34.0-macos-arm64.dmg",
-              "bytes": 60059294,
-              "sha256": "e6c4816bdd2e8bdc68ceeffb31072549c735c442a145d6596e7ef4df4ae0330e",
+              "file": "formweb-0.36.0-macos-arm64.dmg",
+              "url": "https://dl.formai.studio/formweb/0.36.0/formweb-0.36.0-macos-arm64.dmg",
+              "bytes": 60200430,
+              "sha256": "dafa0c3708898dc3de5fa02a2407bf3fc58a7ffc778b15ff931d33b78792233a",
               "minimum_os": ""
             },
             {
               "platform": "macos",
               "arch": "x86_64",
               "kind": "dmg",
-              "file": "formweb-0.34.0-macos-x64.dmg",
-              "url": "https://dl.formai.studio/formweb/0.34.0/formweb-0.34.0-macos-x64.dmg",
-              "bytes": 62747655,
-              "sha256": "6fc2f60fc351d311b4775f9ae7fc68a378f9027afc2a54c3267bccf24bfde017",
+              "file": "formweb-0.36.0-macos-x64.dmg",
+              "url": "https://dl.formai.studio/formweb/0.36.0/formweb-0.36.0-macos-x64.dmg",
+              "bytes": 62886528,
+              "sha256": "066f9736ad8664c8c4ad783d0d5802ac08dc4ba106e6dfc65e87a565d08e2a15",
               "minimum_os": ""
             },
             {
               "platform": "windows",
               "arch": "x86_64",
               "kind": "nsis",
-              "file": "formweb-0.34.0-windows-x64-setup.exe",
-              "url": "https://dl.formai.studio/formweb/0.34.0/formweb-0.34.0-windows-x64-setup.exe",
-              "bytes": 61353096,
-              "sha256": "26b494411c195529c3f53989c6e89fe704c9bc96892b8fbd933e6c88414fd286",
+              "file": "formweb-0.36.0-windows-x64-setup.exe",
+              "url": "https://dl.formai.studio/formweb/0.36.0/formweb-0.36.0-windows-x64-setup.exe",
+              "bytes": 61487528,
+              "sha256": "bb11a7ef2c25b4161183382d878fdb3ba28ab8043cdf31656d15689a308ffa43",
               "minimum_os": ""
             },
             {
               "platform": "windows",
               "arch": "x86_64",
               "kind": "msi",
-              "file": "formweb-0.34.0-windows-x64.msi",
-              "url": "https://dl.formai.studio/formweb/0.34.0/formweb-0.34.0-windows-x64.msi",
-              "bytes": 62406656,
-              "sha256": "33938811d5e1cba03bdf9c2a96d2d6e91b5e612cb4b20a702c2f873070e74e9e",
+              "file": "formweb-0.36.0-windows-x64.msi",
+              "url": "https://dl.formai.studio/formweb/0.36.0/formweb-0.36.0-windows-x64.msi",
+              "bytes": 62541824,
+              "sha256": "cde6b011f18f8a690eb67de24c9a9b849467e67a3678ba15613543ee4946fca7",
               "minimum_os": ""
             }
           ],
-          "commit": "d818876a79e4a453ecb95051e580c370a2afb8ad",
+          "commit": "527d5e464e7a621b678ce657d5d1c46ea41adc81",
           "agents": {
             "manifest": {
               "file": "form-app.json",
-              "url": "https://dl.formai.studio/formweb/0.34.0/form-app.json",
+              "url": "https://dl.formai.studio/formweb/0.36.0/form-app.json",
               "bytes": 3200,
-              "sha256": "89fa0435367102e3a91620bc6b79b16aaff35c151fbd665bf6bfc6b45324ea6b"
+              "sha256": "c99659c96ab0ec45fe14651ddb87f955d50ed93df03927fc142783bfe0c16139"
             },
             "skills": {
-              "file": "formweb-skills-v0.34.0.zip",
-              "url": "https://dl.formai.studio/formweb/0.34.0/formweb-skills-v0.34.0.zip",
-              "bytes": 86253,
-              "sha256": "e4a5e84fd906d9b5e4fff16c7cab18a4c3ced85219747052e39c13fb82eb6fc7"
+              "file": "formweb-skills-v0.36.0.zip",
+              "url": "https://dl.formai.studio/formweb/0.36.0/formweb-skills-v0.36.0.zip",
+              "bytes": 86254,
+              "sha256": "25a14da73b5d1dabf368cf7564b750ed61d6beb3f0fb57622ef5c596007ab258"
             }
           },
           "history": [
+            {
+              "version": "0.34.0",
+              "published": "2026-11-27T23:41:07Z",
+              "notes": "https://github.com/nodemode-dev/formweb/releases/tag/v0.34.0",
+              "origin": "store",
+              "artifacts": [
+                {
+                  "platform": "linux",
+                  "arch": "x86_64",
+                  "kind": "appimage",
+                  "file": "formweb-0.34.0-linux-x64.AppImage",
+                  "url": "https://dl.formai.studio/formweb/0.34.0/formweb-0.34.0-linux-x64.AppImage",
+                  "bytes": 161298936,
+                  "sha256": "aa50a5b8ab1463d10a7046dcc014ebc199648f65435fc71bcec0912e395e882a",
+                  "minimum_os": ""
+                },
+                {
+                  "platform": "linux",
+                  "arch": "x86_64",
+                  "kind": "deb",
+                  "file": "formweb-0.34.0-linux-x64.deb",
+                  "url": "https://dl.formai.studio/formweb/0.34.0/formweb-0.34.0-linux-x64.deb",
+                  "bytes": 83086878,
+                  "sha256": "537483c04311988a4d47c8ae0c368401fb4232f02f5c473d6beb75c557faa959",
+                  "minimum_os": ""
+                },
+                {
+                  "platform": "linux",
+                  "arch": "x86_64",
+                  "kind": "rpm",
+                  "file": "formweb-0.34.0-linux-x64.rpm",
+                  "url": "https://dl.formai.studio/formweb/0.34.0/formweb-0.34.0-linux-x64.rpm",
+                  "bytes": 83104054,
+                  "sha256": "dc6c7bf1e212aded748d8c277bd052326caaf9263f6de1e5cb667207d8d729aa",
+                  "minimum_os": ""
+                },
+                {
+                  "platform": "macos",
+                  "arch": "arm64",
+                  "kind": "dmg",
+                  "file": "formweb-0.34.0-macos-arm64.dmg",
+                  "url": "https://dl.formai.studio/formweb/0.34.0/formweb-0.34.0-macos-arm64.dmg",
+                  "bytes": 60059294,
+                  "sha256": "e6c4816bdd2e8bdc68ceeffb31072549c735c442a145d6596e7ef4df4ae0330e",
+                  "minimum_os": ""
+                },
+                {
+                  "platform": "macos",
+                  "arch": "x86_64",
+                  "kind": "dmg",
+                  "file": "formweb-0.34.0-macos-x64.dmg",
+                  "url": "https://dl.formai.studio/formweb/0.34.0/formweb-0.34.0-macos-x64.dmg",
+                  "bytes": 62747655,
+                  "sha256": "6fc2f60fc351d311b4775f9ae7fc68a378f9027afc2a54c3267bccf24bfde017",
+                  "minimum_os": ""
+                },
+                {
+                  "platform": "windows",
+                  "arch": "x86_64",
+                  "kind": "nsis",
+                  "file": "formweb-0.34.0-windows-x64-setup.exe",
+                  "url": "https://dl.formai.studio/formweb/0.34.0/formweb-0.34.0-windows-x64-setup.exe",
+                  "bytes": 61353096,
+                  "sha256": "26b494411c195529c3f53989c6e89fe704c9bc96892b8fbd933e6c88414fd286",
+                  "minimum_os": ""
+                },
+                {
+                  "platform": "windows",
+                  "arch": "x86_64",
+                  "kind": "msi",
+                  "file": "formweb-0.34.0-windows-x64.msi",
+                  "url": "https://dl.formai.studio/formweb/0.34.0/formweb-0.34.0-windows-x64.msi",
+                  "bytes": 62406656,
+                  "sha256": "33938811d5e1cba03bdf9c2a96d2d6e91b5e612cb4b20a702c2f873070e74e9e",
+                  "minimum_os": ""
+                }
+              ],
+              "commit": "d818876a79e4a453ecb95051e580c370a2afb8ad",
+              "agents": {
+                "manifest": {
+                  "file": "form-app.json",
+                  "url": "https://dl.formai.studio/formweb/0.34.0/form-app.json",
+                  "bytes": 3200,
+                  "sha256": "89fa0435367102e3a91620bc6b79b16aaff35c151fbd665bf6bfc6b45324ea6b"
+                },
+                "skills": {
+                  "file": "formweb-skills-v0.34.0.zip",
+                  "url": "https://dl.formai.studio/formweb/0.34.0/formweb-skills-v0.34.0.zip",
+                  "bytes": 86253,
+                  "sha256": "e4a5e84fd906d9b5e4fff16c7cab18a4c3ced85219747052e39c13fb82eb6fc7"
+                }
+              }
+            },
             {
               "version": "0.33.0",
               "published": "2026-11-27T13:51:23Z",
